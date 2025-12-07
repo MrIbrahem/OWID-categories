@@ -329,26 +329,4 @@ def test_dry_run_simulation():
     print()
 
 
-def main():
-    """Run all tests."""
-    print("\nOWID Commons Categorization Test Suite")
-    print("=" * 80)
-    print()
-    
-    test_normalize_country_name()
-    test_build_category_name()
-    test_category_exists()
-    test_load_country_json()
-    test_mock_categorization()
-    test_ensure_category_exists()
-    test_dry_run_simulation()
-    
-    print("=" * 80)
-    print("All tests completed!")
-    print("\nTo test with actual Commons connection:")
-    print("1. Create a .env file with your bot credentials")
-    print("2. Run: python3 src/categorize_commons_files.py --dry-run --limit 2")
 
-
-if __name__ == "__main__":
-    main()

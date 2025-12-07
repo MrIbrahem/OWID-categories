@@ -130,19 +130,4 @@ def test_processing():
     print("\n" + "=" * 80)
 
 
-def main():
-    """Run all tests."""
-    print("OWID Commons Processing Test Suite")
-    print("=" * 80)
-    
-    # Test classification
-    test_classification()
-    
-    # Test full processing
-    test_processing()
-    
-    print("\nAll tests completed successfully!")
 
-
-if __name__ == "__main__":
-    main()
