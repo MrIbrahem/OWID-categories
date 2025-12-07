@@ -281,6 +281,39 @@ def add_category_to_page(
     return True
 
 
+def get_category_member_count(site: mwclient.Site, category: str) -> int:
+    """
+    Get the number of files currently in a category.
+
+    Args:
+        site: Connected mwclient Site
+        category: Category name (e.g., "Category:Our World in Data graphs of Canada")
+
+    Returns:
+        Number of members in the category (0 if category doesn't exist)
+    """
+    try:
+        # Remove "Category:" prefix if present for the API call
+        category_name = category.replace("Category:", "")
+
+        # Get the category page
+        category_page = site.pages[f"Category:{category_name}"]
+
+        if not category_page.exists:
+            logging.debug(f"Category doesn't exist yet: {category}")
+            return 0
+
+        # Count members in the category
+        member_count = sum(1 for _ in category_page.members())
+
+        logging.debug(f"Category '{category}' has {member_count} members")
+        return member_count
+
+    except Exception as e:
+        logging.error(f"Error counting members in category '{category}': {e}")
+        return 0
+
+
 def load_country_json(file_path: Path) -> Optional[Dict]:
     """
     Load a country JSON file.
@@ -340,16 +373,24 @@ def process_country_file(
         stats["errors"] += 1
         return stats
 
-    # Apply per-country file limit if specified
-    if files_per_country:
-        graphs = graphs[:files_per_country]
-        logging.info(f"Limiting to {files_per_country} file(s) per country")
-
     # Normalize country name and build category name
     normalized_country = normalize_country_name(country)
     category = build_category_name(country)
 
-    logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
+    # Check if category already has enough files when files_per_country is set
+    if files_per_country:
+        current_member_count = get_category_member_count(site, category)
+        if current_member_count >= files_per_country:
+            logging.info(f"\nSkipping {iso3} ({normalized_country}): Category already has {current_member_count} files (>= {files_per_country} requested)")
+            return stats
+        logging.info(f"\nProcessing {iso3} ({normalized_country}): Category has {current_member_count} files, will add up to {files_per_country} files")
+    else:
+        logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
+
+    # Apply per-country file limit if specified
+    if files_per_country:
+        graphs = graphs[:files_per_country]
+        logging.info(f"Limiting to {files_per_country} file(s) per country")
 
     # Ensure the category page exists before adding files to it
     if not ensure_category_exists(site, country, dry_run):
@@ -433,28 +474,31 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: 
     # Apply limit if specified
     if limit:
         country_files = country_files[:limit]
-        logging.info(f"Processing limited to first {limit} countries")
-
-    # Process each country file
+        logging.info(f"Processing limited to first {limit} countries")    # Process each country file
     total_stats = {
         "added": 0,
         "skipped": 0,
         "errors": 0,
-        "countries_processed": 0
+        "countries_processed": 0,
+        "countries_skipped": 0
     }
 
     for file_path in country_files:
         stats = process_country_file(site, file_path, dry_run, files_per_country=files_per_country)
-        total_stats["added"] += stats["added"]
-        total_stats["skipped"] += stats["skipped"]
-        total_stats["errors"] += stats["errors"]
-        total_stats["countries_processed"] += 1
 
-    # Final summary
+        # If no files were added or skipped, the country was skipped entirely
+        if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
+            total_stats["countries_skipped"] += 1
+        else:
+            total_stats["added"] += stats["added"]
+            total_stats["skipped"] += stats["skipped"]
+            total_stats["errors"] += stats["errors"]
+            total_stats["countries_processed"] += 1    # Final summary
     logging.info("\n" + "=" * 80)
     logging.info("FINAL SUMMARY")
     logging.info("=" * 80)
     logging.info(f"Countries processed: {total_stats['countries_processed']}")
+    logging.info(f"Countries skipped (already have enough files): {total_stats['countries_skipped']}")
     logging.info(f"Categories added: {total_stats['added']}")
     logging.info(f"Already had category (skipped): {total_stats['skipped']}")
     logging.info(f"Errors: {total_stats['errors']}")
