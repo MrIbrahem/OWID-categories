@@ -98,7 +98,7 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
 
 2. **Edit `.env` and add your Wikimedia Commons bot credentials:**
    ```
-   USERNAME=YourBotUsername
+   WM_USERNAME=YourBotUsername
    PASSWORD=YourBotPassword
    ```
 
@@ -111,7 +111,7 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
    ```bash
    # Either run Phase 1 to generate real data:
    python3 src/fetch_commons_files.py
-   
+
    # Or generate test data:
    python3 tests/test_fetch_commons.py
    ```

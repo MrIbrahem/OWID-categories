@@ -59,11 +59,11 @@ def load_credentials() -> tuple[Optional[str], Optional[str]]:
         Tuple of (username, password) or (None, None) if not found
     """
     load_dotenv()
-    username = os.getenv("USERNAME")
+    username = os.getenv("WM_USERNAME")
     password = os.getenv("PASSWORD")
 
     if not username or not password:
-        logging.error("USERNAME and/or PASSWORD not found in .env file")
+        logging.error("WM_USERNAME and/or PASSWORD not found in .env file")
         return None, None
 
     return username, password
@@ -80,19 +80,14 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
     Returns:
         Connected Site object or None on failure
     """
-    try:
-        logging.info("Connecting to Wikimedia Commons...")
-        site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
+    logging.info("Connecting to Wikimedia Commons...")
+    site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
 
-        logging.info(f"Logging in as {username}...")
-        site.login(username, password)
+    logging.info(f"Logging in as {username}...")
+    site.login(username, password)
 
-        logging.info("Successfully connected and logged in")
-        return site
-
-    except Exception as e:
-        logging.error(f"Failed to connect to Commons: {e}")
-        return None
+    logging.info("Successfully connected and logged in")
+    return site
 
 
 def normalize_country_name(country: str) -> str:
@@ -172,31 +167,26 @@ def ensure_category_exists(
     normalized_country = normalize_country_name(country)
     category_title = build_category_name(country)
 
-    try:
-        category_page = site.pages[category_title]
+    category_page = site.pages[category_title]
 
-        if category_page.exists:
-            logging.debug(f"Category already exists: {category_title}")
-            return True
-
-        # Category doesn't exist, create it
-        # Use normalized country name for sorting in parent category
-        category_content = f"[[Category:Our World in Data graphs|{normalized_country}]]"
-
-        if dry_run:
-            logging.info(f"[DRY RUN] Would create category page: {category_title}")
-            return True
-
-        # Create the category page with normalized name in edit summary
-        edit_summary = f"Create category for {normalized_country} OWID graphs (automated)"
-        category_page.save(category_content, summary=edit_summary)
-
-        logging.info(f"Created category page: {category_title}")
+    if category_page.exists:
+        logging.debug(f"Category already exists: {category_title}")
         return True
 
-    except Exception as e:
-        logging.error(f"Error ensuring category exists for {country}: {e}")
-        return False
+    # Category doesn't exist, create it
+    # Use normalized country name for sorting in parent category
+    category_content = f"[[Category:Our World in Data graphs|{normalized_country}]]"
+
+    if dry_run:
+        logging.info(f"[DRY RUN] Would create category page: {category_title}")
+        return True
+
+    # Create the category page with normalized name in edit summary
+    edit_summary = f"Create category for {normalized_country} OWID graphs (automated)"
+    category_page.save(category_content, summary=edit_summary)
+
+    logging.info(f"Created category page: {category_title}")
+    return True
 
 
 def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
@@ -210,14 +200,10 @@ def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
     Returns:
         Page text or None if page doesn't exist
     """
-    try:
-        page = site.pages[title]
-        if page.exists:
-            return page.text()
-        return None
-    except Exception as e:
-        logging.error(f"Error getting page text for {title}: {e}")
-        return None
+    page = site.pages[title]
+    if page.exists:
+        return page.text()
+    return None
 
 
 def category_exists_on_page(page_text: str, category: str) -> bool:
@@ -266,38 +252,33 @@ def add_category_to_page(
     Returns:
         True if category was added (or would be added in dry-run), False otherwise
     """
-    try:
-        page = site.pages[title]
+    page = site.pages[title]
 
-        if not page.exists:
-            logging.warning(f"Page does not exist: {title}")
-            return False
+    if not page.exists:
+        logging.warning(f"Page does not exist: {title}")
+        return False
 
-        # Get current page text
-        current_text = page.text()
+    # Get current page text
+    current_text = page.text()
 
-        # Check if category already exists
-        if category_exists_on_page(current_text, category):
-            logging.info(f"Category already exists on {title}")
-            return False
+    # Check if category already exists
+    if category_exists_on_page(current_text, category):
+        logging.info(f"Category already exists on {title}")
+        return False
 
-        # Add category at the end of the page
-        new_text = current_text.rstrip() + f"\n[[{category}]]\n"
+    # Add category at the end of the page
+    new_text = current_text.rstrip() + f"\n[[{category}]]\n"
 
-        if dry_run:
-            logging.info(f"[DRY RUN] Would add '{category}' to {title}")
-            return True
-
-        # Make the edit
-        edit_summary = f"Add {category} (automated)"
-        page.save(new_text, summary=edit_summary)
-
-        logging.info(f"Successfully added '{category}' to {title}")
+    if dry_run:
+        logging.info(f"[DRY RUN] Would add '{category}' to {title}")
         return True
 
-    except Exception as e:
-        logging.error(f"Error adding category to {title}: {e}")
-        return False
+    # Make the edit
+    edit_summary = f"Add {category} (automated)"
+    page.save(new_text, summary=edit_summary)
+
+    logging.info(f"Successfully added '{category}' to {title}")
+    return True
 
 
 def load_country_json(file_path: Path) -> Optional[Dict]:
@@ -414,7 +395,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
     username, password = load_credentials()
     if not username or not password:
         logging.error("Failed to load credentials from .env file")
-        logging.error("Please create a .env file with USERNAME and PASSWORD")
+        logging.error("Please create a .env file with WM_USERNAME and PASSWORD")
         sys.exit(1)
 
     # Connect to Commons
@@ -492,11 +473,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    try:
-        main(dry_run=args.dry_run, limit=args.limit)
-    except KeyboardInterrupt:
-        logging.info("\nInterrupted by user")
-        sys.exit(0)
-    except Exception as e:
-        logging.error(f"Fatal error: {e}", exc_info=True)
-        sys.exit(1)
+    main(dry_run=args.dry_run, limit=args.limit)
