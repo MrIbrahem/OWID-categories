@@ -293,7 +293,9 @@ def process_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], L
             if continent not in continents:
                 continents[continent] = {
                     "continent": continent,
-                    "maps": []
+                    "graphs": [],
+                    "maps": [],
+                    "unknowns": []
                 }
 
             # Build entry
