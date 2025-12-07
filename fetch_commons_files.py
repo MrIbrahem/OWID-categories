@@ -4,6 +4,10 @@ OWID Commons File Fetcher and Processor
 
 This script fetches all files from Category:Uploaded_by_OWID_importer_tool on Wikimedia Commons,
 classifies them as graphs or maps, extracts country codes, and generates JSON output files.
+
+Requirements:
+- Python 3.10+ (uses union type syntax: str | None)
+- requests library
 """
 
 import json
@@ -34,7 +38,8 @@ USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-cate
 GRAPH_PATTERN = re.compile(r",\s*(\d{4})\s+to\s+(\d{4}),\s*([A-Z]{3})\.svg$")
 # Map pattern: country/region name followed by a single year
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
-MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \-\(\)]+),\s*(\d{4})\.svg$")
+# Note: Hyphen is at the end of character class to avoid being interpreted as a range
+MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d{4})\.svg$")
 
 
 def setup_logging():

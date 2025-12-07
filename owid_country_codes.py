@@ -3,6 +3,9 @@ OWID Country Codes Mapping
 
 This module contains the mapping between country names and their ISO3 codes
 as used by Our World in Data (OWID).
+
+Note: This module uses Python 3.10+ union type syntax (str | None).
+For Python <3.10, use Optional[str] from typing instead.
 """
 
 OWID_COUNTRY_CODES = {
