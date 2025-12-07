@@ -87,6 +87,51 @@ python3 src/categorize_commons_files.py --files-per-country 1
 python3 src/categorize_commons_files.py
 ```
 
+## Command-Line Options
+
+The script supports the following command-line arguments:
+
+### `--dry-run`
+Run in dry-run mode without making any actual edits. The script will log what it would do but won't modify any pages on Wikimedia Commons.
+
+**Example:**
+```bash
+python3 src/categorize_commons_files.py --dry-run
+```
+
+### `--limit N`
+Limit processing to the first N countries (alphabetically by ISO3 code). Useful for testing or processing in batches.
+
+**Example:**
+```bash
+# Process only the first 5 countries
+python3 src/categorize_commons_files.py --limit 5
+```
+
+### `--files-per-country N`
+Limit processing to N files per country. Useful for testing or conservative incremental processing.
+
+**Example:**
+```bash
+# Process only 1 file per country
+python3 src/categorize_commons_files.py --files-per-country 1
+
+# Process 3 files per country from the first 10 countries
+python3 src/categorize_commons_files.py --limit 10 --files-per-country 3
+```
+
+### Combining Options
+
+You can combine multiple options for fine-grained control:
+
+```bash
+# Dry-run test: first 2 countries, 1 file each
+python3 src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+
+# Real run: first 10 countries, 2 files each
+python3 src/categorize_commons_files.py --limit 10 --files-per-country 2
+```
+
 ## What Happens
 
 For each country in `output/countries/*.json`:

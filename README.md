@@ -122,18 +122,36 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
 ```bash
 # Test on first 2 countries without making actual edits
 python3 src/categorize_commons_files.py --dry-run --limit 2
+
+# Test with just 1 file per country
+python3 src/categorize_commons_files.py --dry-run --files-per-country 1
+
+# Test on 2 countries, 1 file each
+python3 src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
 ```
 
 **Run on limited set of countries:**
 ```bash
 # Process first 5 countries
 python3 src/categorize_commons_files.py --limit 5
+
+# Process first 5 countries, 2 files per country
+python3 src/categorize_commons_files.py --limit 5 --files-per-country 2
 ```
 
 **Run on all countries:**
 ```bash
+# Process all countries, all files
 python3 src/categorize_commons_files.py
+
+# Process all countries, but only 1 file per country (conservative approach)
+python3 src/categorize_commons_files.py --files-per-country 1
 ```
+
+**Available options:**
+- `--dry-run`: Test mode without making actual edits
+- `--limit N`: Process only first N countries
+- `--files-per-country N`: Process only N files per country
 
 #### What it Does
 
