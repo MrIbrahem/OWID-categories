@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import mwclient
 import logging
 import sys
 import time
@@ -59,9 +60,10 @@ CONTINENTS = [
 
 
 def process_continent_file(
-    site,
+    site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
+    graphs_only: bool = True,
     files_per_continent: Optional[int] = None
 ) -> Dict[str, int]:
     """
@@ -71,6 +73,7 @@ def process_continent_file(
         site: Connected mwclient Site
         file_path: Path to continent JSON file
         dry_run: If True, don't actually make edits
+        graphs_only: If True, only process graph files (not maps)
         files_per_continent: Optional limit on number of files to process per continent
 
     Returns:

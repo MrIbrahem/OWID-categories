@@ -20,6 +20,7 @@ Usage:
 """
 
 import argparse
+import mwclient
 import logging
 import sys
 import time
@@ -49,9 +50,10 @@ LOG_FILE = Path("logs/categorize_countries.log")
 
 
 def process_country_file(
-    site,
+    site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
+    graphs_only: bool = True,
     files_per_country: Optional[int] = None
 ) -> Dict[str, int]:
     """
@@ -61,6 +63,7 @@ def process_country_file(
         site: Connected mwclient Site
         file_path: Path to country JSON file
         dry_run: If True, don't actually make edits
+        graphs_only: If True, only process graph files (not maps)
         files_per_country: Optional limit on number of files to process per country
 
     Returns:
