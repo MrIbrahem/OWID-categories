@@ -29,6 +29,22 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+## Project Structure
+
+```
+OWID-categories/
+├── src/                        # Main source code
+│   ├── fetch_commons_files.py  # Main processing script
+│   └── owid_country_codes.py   # Country code mappings
+├── tests/                      # Test files
+│   ├── test_fetch_commons.py   # Test suite with sample data
+│   └── example_usage.py        # Usage examples
+├── output/                     # Generated output (gitignored)
+│   ├── countries/              # Per-country JSON files
+│   └── owid_country_summary.json
+└── logs/                       # Log files (gitignored)
+```
+
 ## Usage
 
 ### Phase 1: Fetch and Process Files
@@ -36,7 +52,7 @@ pip install -r requirements.txt
 Run the main script:
 
 ```bash
-python3 fetch_commons_files.py
+python3 src/fetch_commons_files.py
 ```
 
 This will:
@@ -50,7 +66,7 @@ This will:
 To test the functionality without network access:
 
 ```bash
-python3 test_fetch_commons.py
+python3 tests/test_fetch_commons.py
 ```
 
 ### Example Usage
@@ -58,7 +74,7 @@ python3 test_fetch_commons.py
 To see examples of how to use the various functions:
 
 ```bash
-python3 example_usage.py
+python3 tests/example_usage.py
 ```
 
 ### Output Structure
@@ -136,7 +152,7 @@ Logs are written to `logs/fetch_commons.log` and also displayed on the console.
 
 ## Country Codes
 
-The script uses ISO 3166-1 alpha-3 country codes. The mapping between country names and codes is defined in `owid_country_codes.py`.
+The script uses ISO 3166-1 alpha-3 country codes. The mapping between country names and codes is defined in `src/owid_country_codes.py`.
 
 ## Notes
 

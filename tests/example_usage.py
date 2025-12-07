@@ -6,7 +6,11 @@ This script demonstrates how to use the various functions in the package.
 """
 
 import json
+import sys
 from pathlib import Path
+
+# Add src directory to path
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from fetch_commons_files import (
     classify_and_parse_file,

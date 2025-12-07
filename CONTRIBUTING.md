@@ -6,12 +6,15 @@ This document provides technical details for developers contributing to the proj
 
 ```
 OWID-categories/
-├── fetch_commons_files.py      # Main script for fetching and processing
-├── owid_country_codes.py       # Country code mappings and lookup functions
-├── test_fetch_commons.py       # Test suite with sample data
-├── example_usage.py            # Usage examples and demonstrations
+├── src/                        # Main source code
+│   ├── fetch_commons_files.py  # Main script for fetching and processing
+│   └── owid_country_codes.py   # Country code mappings and lookup functions
+├── tests/                      # Test files
+│   ├── test_fetch_commons.py   # Test suite with sample data
+│   └── example_usage.py        # Usage examples and demonstrations
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # User-facing documentation
+├── CONTRIBUTING.md             # Developer documentation
 ├── plan.md                     # Phase 1 implementation plan
 ├── plan2.md                    # Phase 2 implementation plan
 ├── .gitignore                  # Git exclusions
@@ -27,7 +30,7 @@ OWID-categories/
 
 ## Core Components
 
-### 1. Country Code Mappings (`owid_country_codes.py`)
+### 1. Country Code Mappings (`src/owid_country_codes.py`)
 
 Provides:
 - `OWID_COUNTRY_CODES`: Dictionary mapping country names to ISO3 codes
@@ -35,7 +38,7 @@ Provides:
 - `get_iso3_from_country(country_name)`: Lookup function
 - `get_country_from_iso3(iso3)`: Reverse lookup function
 
-### 2. Main Processing Script (`fetch_commons_files.py`)
+### 2. Main Processing Script (`src/fetch_commons_files.py`)
 
 Key functions:
 
@@ -62,13 +65,13 @@ Key functions:
 - `write_country_json_files(countries)`: Writes per-country JSON files
 - `write_summary_json(countries)`: Writes global summary
 
-### 3. Testing (`test_fetch_commons.py`)
+### 3. Testing (`tests/test_fetch_commons.py`)
 
 - Uses sample data to test functionality
 - No network access required
 - Validates classification and output generation
 
-### 4. Examples (`example_usage.py`)
+### 4. Examples (`tests/example_usage.py`)
 
 - Demonstrates all major functions
 - Shows how to read output files
@@ -105,15 +108,15 @@ Matches: `Life expectancy, Canada, 2020.svg`
 
 ### Adding a New File Type
 
-1. Add regex pattern to `fetch_commons_files.py`
+1. Add regex pattern to `src/fetch_commons_files.py`
 2. Update `classify_and_parse_file()` to handle new pattern
 3. Update `process_files()` to handle new file type
 4. Update output JSON structure in `write_country_json_files()`
-5. Add tests in `test_fetch_commons.py`
+5. Add tests in `tests/test_fetch_commons.py`
 
 ### Adding New Country Codes
 
-1. Update `OWID_COUNTRY_CODES` dictionary in `owid_country_codes.py`
+1. Update `OWID_COUNTRY_CODES` dictionary in `src/owid_country_codes.py`
 2. The reverse mapping `ISO3_TO_COUNTRY` is generated automatically
 3. Test with sample files
 
@@ -136,13 +139,13 @@ The script handles:
 
 ```bash
 # Run tests with sample data
-python3 test_fetch_commons.py
+python3 tests/test_fetch_commons.py
 
 # Run examples
-python3 example_usage.py
+python3 tests/example_usage.py
 
 # Run main script (requires network access)
-python3 fetch_commons_files.py
+python3 src/fetch_commons_files.py
 ```
 
 ## Code Style
