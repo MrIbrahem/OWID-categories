@@ -178,8 +178,8 @@ OWID-categories/
 │   ├── test_fetch_commons.py    # Tests for fetch module
 │   ├── test_categorize.py       # Tests for categorize module
 │   ├── example_usage.py         # Usage examples
-│   ├── conftest.py              # Pytest fixtures (shared)
-│   └── fixtures/                # Test data files
+│   ├── conftest.py              # Pytest fixtures (shared) - create as needed
+│   └── fixtures/                # Test data files - create as needed
 │       ├── sample_files.json
 │       └── mock_responses.json
 ├── pytest.ini                    # Pytest configuration
@@ -271,7 +271,7 @@ def test_imports_work():
 
 **Using pytest fixtures:**
 ```python
-# tests/conftest.py
+# tests/conftest.py - Create this file to share fixtures across test modules
 import pytest
 from unittest.mock import Mock, MagicMock
 
