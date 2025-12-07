@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 # Configuration
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
-OUTPUT_DIR = Path(__file__).parent / "output"
+OUTPUT_DIR = Path(__file__).parent.parent / "output"
 COUNTRIES_DIR = OUTPUT_DIR / "countries"
 SUMMARY_FILE = OUTPUT_DIR / "owid_country_summary.json"
-LOG_DIR = Path(__file__).parent / "logs"
+LOG_DIR = Path(__file__).parent.parent / "logs"
 LOG_FILE = LOG_DIR / "fetch_commons.log"
 
 # User-Agent header (required by Wikimedia)
@@ -72,12 +72,12 @@ def get_category_members_petscan(category) -> list | list[str]:
         "categories": f"{category}",
         "format": "plain",
         "depth": 0,
-        "ns[10]": 1,
+        "ns[6]": 1,
         "doit": "Do it!"
     }
     url = f"{base_url}?{urllib.parse.urlencode(params)}"
 
-    logger.debug(f"petscan url: {url}")
+    logger.info(f"petscan url: {url}")
 
     headers = {}
     headers["User-Agent"] = USER_AGENT
@@ -91,10 +91,11 @@ def get_category_members_petscan(category) -> list | list[str]:
         return []
 
     if not text:
+        logger.warning("get_petscan_category_pages: empty response")
         return []
 
     result = [x.strip() for x in text.splitlines()]
-
+    logger.debug(f"get_petscan_category_pages: found {len(result)} members")
     return result
 
 
@@ -217,7 +218,7 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
             "indicator": indicator,
             "year": int(year)
         }
-
+    # Unknown file type
     return None, None
 
 
@@ -254,6 +255,7 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
 
     logger.info("Starting file classification and aggregation")
 
+    not_matched = []
     for title in files:
 
         file_type, parsed_data = classify_and_parse_file(title)
@@ -261,6 +263,7 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
         if not file_type or not parsed_data:
             stats["unknown_count"] += 1
             logger.debug(f"Unknown file type: {title}")
+            not_matched.append(title)
             continue
 
         iso3 = parsed_data.get("iso3")
@@ -275,7 +278,6 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
             country_name = get_country_from_iso3(iso3)
             if not country_name:
                 logger.warning(f"Unknown ISO3 code: {iso3}")
-                continue
 
             countries[iso3] = {
                 "iso3": iso3,
@@ -309,14 +311,6 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
             }
             countries[iso3]["maps"].append(entry)
             stats["map_count"] += 1
-        else:
-            entry = {
-                "title": title,
-                "file_page": file_page
-            }
-            countries[iso3]["unknowns"].append(entry)
-            stats["unknown_count"] += 1
-            logger.debug(f"Unhandled file type: {title}")
 
     logger.info("Classification complete:")
     logger.info(f"  Graphs: {stats['graph_count']}")
@@ -325,7 +319,7 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
     logger.info(f"  Unresolved regions: {stats['unresolved_region_count']}")
     logger.info(f"  Countries with data: {len(countries)}")
 
-    return countries
+    return countries, not_matched
 
 
 def write_country_json_files(countries: Dict[str, Dict]):
@@ -372,6 +366,27 @@ def write_summary_json(countries: Dict[str, Dict]):
     logger.info(f"Summary JSON written to {SUMMARY_FILE}")
 
 
+def write_not_matched_files(not_matched: List[str]) -> None:
+    """
+    Write a text file listing files that could not be matched.
+
+    Args:
+        not_matched: List of file titles that were not matched
+    """
+    if not not_matched:
+        logger.info("No unmatched files to write.")
+        return
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    not_matched_file = OUTPUT_DIR / "not_matched_files.txt"
+
+    with open(not_matched_file, "w", encoding="utf-8") as f:
+        for title in not_matched:
+            f.write(f"{title}\n")
+
+    logger.info(f"Unmatched files written to {not_matched_file}")
+
+
 def main() -> None:
     """Main execution function."""
     setup_logging()
@@ -381,11 +396,12 @@ def main() -> None:
     files = get_category_members_petscan(CATEGORY_NAME)
 
     # Process and aggregate files by country
-    countries = process_files(files)
+    countries, not_matched = process_files(files)
 
     # Write output files
     write_country_json_files(countries)
     write_summary_json(countries)
+    write_not_matched_files(not_matched)
 
     logger.info("Processing complete!")
 
