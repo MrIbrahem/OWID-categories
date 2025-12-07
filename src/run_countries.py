@@ -100,6 +100,7 @@ def process_country_file(
         if current_member_count >= files_per_country:
             logging.info(f"\nSkipping {iso3} ({normalized_country}): Category already has {current_member_count} files (>= {files_per_country} requested)")
             return stats
+
         logging.info(f"\nProcessing {iso3} ({normalized_country}): Category has {current_member_count} files, will add up to {files_per_country} files")
     else:
         logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
