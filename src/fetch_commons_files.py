@@ -337,22 +337,17 @@ def main():
     """Main execution function."""
     setup_logging()
 
-    try:
-        # Fetch all files from the category
-        files = fetch_category_members()
+    # Fetch all files from the category
+    files = fetch_category_members()
 
-        # Process and aggregate files by country
-        countries = process_files(files)
+    # Process and aggregate files by country
+    countries = process_files(files)
 
-        # Write output files
-        write_country_json_files(countries)
-        write_summary_json(countries)
+    # Write output files
+    write_country_json_files(countries)
+    write_summary_json(countries)
 
-        logging.info("Processing complete!")
-
-    except Exception as e:
-        logging.error(f"Fatal error: {e}", exc_info=True)
-        sys.exit(1)
+    logging.info("Processing complete!")
 
 
 if __name__ == "__main__":
