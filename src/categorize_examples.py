@@ -52,13 +52,13 @@ def example_build_categories():
     # Countries
     print("\nCountries:")
     for country in ["Canada", "United States", "France"]:
-        category = build_category_name(country, "country")
+        category = build_category_name(country, "country", "graphs")
         print(f"  {category}")
 
     # Continents
     print("\nContinents:")
     for continent in ["Africa", "Asia", "Europe"]:
-        category = build_category_name(continent, "continent")
+        category = build_category_name(continent, "continent", "graphs")
         print(f"  {category}")
     print()
 

@@ -249,7 +249,7 @@ def build_file_page_url(title: str) -> str:
     return "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")
 
 
-def process_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], List[str]]:
+def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], List[str]]:
     """
     Process all files and aggregate them by country and continent.
 
@@ -475,7 +475,7 @@ def main() -> None:
     files = get_category_members_petscan(CATEGORY_NAME)
 
     # Process and aggregate files by country and continent
-    countries, continents, not_matched = process_files(files)
+    countries, continents, not_matched = fetch_files(files)
 
     # Write output files
     write_country_json_files(countries)

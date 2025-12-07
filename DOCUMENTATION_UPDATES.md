@@ -9,13 +9,13 @@ This document summarizes the documentation updates made to reflect the new `--fi
 ### 1. Code Changes (categorize_commons_files.py)
 
 #### Added Parameter: `files_per_country`
-- **Location:** `process_country_file()` function signature
+- **Location:** `process_files()` function signature
 - **Type:** `Optional[int]`
 - **Purpose:** Limit the number of files processed per country
 - **Implementation:** Slices the graphs list: `graphs = graphs[:files_per_country]`
 
 #### Updated Functions:
-1. **`process_country_file()`**
+1. **`process_files()`**
    - Added `files_per_country` parameter
    - Added logic to limit graphs processed
    - Added logging message when limit is applied
@@ -23,7 +23,7 @@ This document summarizes the documentation updates made to reflect the new `--fi
 2. **`main()`**
    - Added `files_per_country` parameter to signature
    - Added logging for files_per_country setting
-   - Passed parameter to `process_country_file()`
+   - Passed parameter to `process_files()`
 
 3. **Argument Parser**
    - Added `--files-per-country` argument

@@ -96,7 +96,7 @@ def normalize_country_name(country: str) -> str:
     return country
 
 
-def build_category_name(entity_name: str, category_type: str = "country") -> str:
+def build_category_name(entity_name: str, category_type: str = "country", files_type: str = "graphs") -> str:
     """
     Build the category name for a country or continent.
 
@@ -109,12 +109,27 @@ def build_category_name(entity_name: str, category_type: str = "country") -> str
         (e.g., "Category:Our World in Data graphs of Canada",
                "Category:Our World in Data graphs of Africa")
     """
+    pre_defined_categories = {
+        "graphs": {
+            "World": "Category:Our World in Data graphs of the world",
+        },
+        "maps": {
+            "World": "Category:Our World in Data maps of the world",
+        },
+    }
+
+    if files_type not in pre_defined_categories:
+        files_type = "graphs"
+
+    if entity_name in pre_defined_categories.get(files_type, {}):
+        return pre_defined_categories[files_type][entity_name]
+
     if category_type == "country":
         normalized_name = normalize_country_name(entity_name)
     else:
         normalized_name = entity_name
 
-    return f"Category:Our World in Data graphs of {normalized_name}"
+    return f"Category:Our World in Data {files_type} of {normalized_name}"
 
 
 def get_parent_category(category_type: str = "country") -> str:

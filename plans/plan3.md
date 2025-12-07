@@ -84,10 +84,10 @@ Create a new function `normalize_country_name(country: str) -> str` in `src/cate
 def normalize_country_name(country: str) -> str:
     """
     Normalize country name by adding "the" prefix where appropriate.
-    
+
     Args:
         country: Country name (e.g., "United Kingdom", "Canada")
-        
+
     Returns:
         Normalized country name (e.g., "the United Kingdom", "Canada")
     """
@@ -111,7 +111,7 @@ Update the following existing functions to use the normalized country name:
    - The country parameter should already be normalized when passed to this function
    - The function will use the normalized name in edit summaries
 
-3. **`process_country_file(site, file_path, dry_run, graphs_only)`**
+3. **`process_files(site, file_path, dry_run, graphs_only)`**
    - Normalize the country name after loading from JSON
    - Use the normalized name throughout the function
 

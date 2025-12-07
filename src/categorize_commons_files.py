@@ -332,7 +332,7 @@ def load_country_json(file_path: Path) -> Optional[Dict]:
         return None
 
 
-def process_country_file(
+def process_files(
     site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
@@ -484,7 +484,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: 
     }
 
     for file_path in country_files:
-        stats = process_country_file(site, file_path, dry_run, files_per_country=files_per_country)
+        stats = process_files(site, file_path, dry_run, files_per_country=files_per_country)
 
         # If no files were added or skipped, the country was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:

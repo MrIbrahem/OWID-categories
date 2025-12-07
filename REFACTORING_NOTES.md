@@ -62,7 +62,7 @@ src/
 - Supports --dry-run, --limit, --files-per-country
 - Logs to `logs/categorize_countries.log`
 
-**Key Function**: `process_country_file()`
+**Key Function**: `process_files()`
 
 #### run_continents.py
 **Purpose**: Process continent JSON files and categorize

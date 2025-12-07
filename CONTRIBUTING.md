@@ -55,7 +55,7 @@ Key functions:
   - Uses regex patterns for classification
 
 #### Data Processing
-- `process_files(files)`: Aggregates files by country
+- `fetch_files(files)`: Aggregates files by country
   - Classifies each file
   - Resolves country codes
   - Builds in-memory data structure
@@ -110,7 +110,7 @@ Matches: `Life expectancy, Canada, 2020.svg`
 
 1. Add regex pattern to `src/fetch_commons_files.py`
 2. Update `classify_and_parse_file()` to handle new pattern
-3. Update `process_files()` to handle new file type
+3. Update `fetch_files()` to handle new file type
 4. Update output JSON structure in `write_country_json_files()`
 5. Add tests in `tests/test_fetch_commons.py`
 

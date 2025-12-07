@@ -49,7 +49,7 @@ COUNTRIES_DIR = Path("output/countries")
 LOG_FILE = Path("logs/categorize_countries.log")
 
 
-def process_country_file(
+def process_files(
     site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
@@ -83,7 +83,7 @@ def process_country_file(
 
     iso3 = data.get("iso3")
     country = data.get("country")
-    graphs = data.get("graphs", [])
+    files = data.get("graphs", [])
 
     if not country:
         logging.error(f"No country name in {file_path}")
@@ -92,7 +92,7 @@ def process_country_file(
 
     # Normalize country name and build category name
     normalized_country = normalize_country_name(country)
-    category = build_category_name(country, "country")
+    category = build_category_name(country, "country", "graphs")
 
     # Check if category already has enough files when files_per_country is set
     if files_per_country:
@@ -103,11 +103,11 @@ def process_country_file(
 
         logging.info(f"\nProcessing {iso3} ({normalized_country}): Category has {current_member_count} files, will add up to {files_per_country} files")
     else:
-        logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
+        logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(files)} files")
 
     # Apply per-country file limit if specified
     if files_per_country:
-        graphs = graphs[:files_per_country]
+        files = files[:files_per_country]
         logging.info(f"Limiting to {files_per_country} file(s) per country")
 
     # Ensure the category page exists before adding files to it
@@ -117,11 +117,11 @@ def process_country_file(
         stats["errors"] += 1
         return stats
 
-    # Process graphs
-    for graph in graphs:
-        title = graph.get("title")
+    # Process files
+    for file in files:
+        title = file.get("title")
         if not title:
-            logging.warning(f"Graph missing title in {file_path}")
+            logging.warning(f"File missing title in {file_path}")
             stats["errors"] += 1
             continue
 
@@ -200,7 +200,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: 
     }
 
     for file_path in country_files:
-        stats = process_country_file(site, file_path, dry_run=dry_run, files_per_country=files_per_country)
+        stats = process_files(site, file_path, dry_run=dry_run, files_per_country=files_per_country)
 
         # If no files were added or skipped, the country was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:

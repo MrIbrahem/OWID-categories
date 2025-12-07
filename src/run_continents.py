@@ -100,7 +100,7 @@ def process_continent_file(
         return stats
 
     # Build category name
-    category = build_category_name(continent, "continent")
+    category = build_category_name(continent, "continent", "graphs")
 
     # Check if category already has enough files when files_per_continent is set
     if files_per_continent:
