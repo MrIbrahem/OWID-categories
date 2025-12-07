@@ -271,6 +271,7 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
         if not iso3:
             stats["unresolved_region_count"] += 1
             logger.debug(f"Could not resolve region: {title}")
+            not_matched.append(title)
             continue
 
         # Initialize country entry if needed
