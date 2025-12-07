@@ -34,7 +34,7 @@ LOG_FILE = LOG_DIR / "categorize_commons.log"
 USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
 # Rate limiting: delay between edits in seconds
-EDIT_DELAY = 1.5
+EDIT_DELAY = 0.1
 
 
 def setup_logging():

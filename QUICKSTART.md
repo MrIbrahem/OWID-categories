@@ -6,7 +6,7 @@ This is a quick reference for running the OWID Commons processing tools.
 
 Fetch all OWID files from Wikimedia Commons and classify them:
 
-```powershell
+```
 python src/fetch_commons_files.py
 ```
 
@@ -35,7 +35,7 @@ Add country-specific categories to graph files on Wikimedia Commons.
 
 **Always test with dry-run first!**
 
-```powershell
+```
 # Test with 2 countries only
 python src/categorize_commons_files.py --dry-run --limit 2
 
@@ -48,7 +48,7 @@ python src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
 
 ### Production Run
 
-```powershell
+```
 # Process first 5 countries
 python src/categorize_commons_files.py --limit 5
 
@@ -78,7 +78,7 @@ python src/categorize_commons_files.py
 
 All options can be combined for fine-grained control:
 
-```powershell
+```
 # Test: 3 countries, 2 files each
 python src/categorize_commons_files.py --dry-run --limit 3 --files-per-country 2
 ```
@@ -88,7 +88,7 @@ python src/categorize_commons_files.py --dry-run --limit 3 --files-per-country 2
 ## Common Workflows
 
 ### 1. Initial Setup and Test
-```powershell
+```
 # 1. Fetch all files from Commons
 python src/fetch_commons_files.py
 
@@ -100,7 +100,7 @@ type logs\categorize_commons.log
 ```
 
 ### 2. Conservative Production Run
-```powershell
+```
 # Process 1 file per country to verify everything works
 python src/categorize_commons_files.py --files-per-country 1
 
@@ -109,7 +109,7 @@ python src/categorize_commons_files.py
 ```
 
 ### 3. Batch Processing
-```powershell
+```
 # Process countries in batches of 10
 python src/categorize_commons_files.py --limit 10
 # ... check results ...
@@ -125,7 +125,7 @@ python src/categorize_commons_files.py --limit 10
 - **Phase 2:** `logs/categorize_commons.log`
 
 ### View Logs
-```powershell
+```
 # View last 50 lines of Phase 2 log
 Get-Content logs\categorize_commons.log -Tail 50
 
@@ -170,7 +170,7 @@ The script includes built-in rate limiting (1.5s between edits). If you still hi
 
 ## Quick Reference
 
-```powershell
+```
 # Phase 1: Fetch everything
 python src/fetch_commons_files.py
 
