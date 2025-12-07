@@ -111,7 +111,6 @@ def test_classification():
 
 
 @pytest.mark.integration
-@pytest.mark.filesystem
 def test_processing():
     """Test full processing pipeline with sample data."""
     # Create sample data

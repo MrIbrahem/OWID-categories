@@ -146,14 +146,12 @@ Some file description here.
 def test_load_country_json():
     """Test loading country JSON files."""
     if not COUNTRIES_DIR.exists():
-        # Skip test if directory doesn't exist (needs test_fetch_commons to run first)
-        return
+        pytest.skip('Country files directory not found. Run test_fetch_commons.py first.')
     
     json_files = list(COUNTRIES_DIR.glob("*.json"))
     
     if not json_files:
-        # Skip test if no files exist yet
-        return
+        pytest.skip('No JSON files found in output/countries/')
     
     # Test loading first file
     first_file = json_files[0]
@@ -231,18 +229,15 @@ def test_ensure_category_exists():
 
 
 @pytest.mark.integration
-@pytest.mark.filesystem
 def test_dry_run_simulation():
     """Simulate a dry-run on actual test data."""
     if not COUNTRIES_DIR.exists():
-        # Skip test if directory doesn't exist
-        return
+        pytest.skip('Country files directory not found')
     
     json_files = list(COUNTRIES_DIR.glob("*.json"))
     
     if not json_files:
-        # Skip test if no files exist yet
-        return
+        pytest.skip('No JSON files found')
     
     total_graphs = 0
     countries_processed = 0
