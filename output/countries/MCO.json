@@ -1,0 +1,245 @@
+{
+  "iso3": "MCO",
+  "country": "Monaco",
+  "graphs": [
+    {
+      "title": "File:Child mortality, 1751 to 2023, MCO.svg",
+      "indicator": "Child mortality",
+      "start_year": 1751,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Child_mortality,_1751_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Child mortality, 1985 to 2023, MCO.svg",
+      "indicator": "Child mortality",
+      "start_year": 1985,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Child_mortality,_1985_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Crude birth rate, 1950 to 2023, MCO.svg",
+      "indicator": "Crude birth rate",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Crude_birth_rate,_1950_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from digestive diseases gbd, 1980 to 2021, MCO.svg",
+      "indicator": "Death rate from digestive diseases gbd",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_digestive_diseases_gbd,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from drowning ghe, 2000 to 2021, MCO.svg",
+      "indicator": "Death rate from drowning ghe",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_drowning_ghe,_2000_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from maternal disorders ihme, 1980 to 2021, MCO.svg",
+      "indicator": "Death rate from maternal disorders ihme",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_maternal_disorders_ihme,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from meningitis who, 2000 to 2021, MCO.svg",
+      "indicator": "Death rate from meningitis who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_meningitis_who,_2000_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from poisoning, 1980 to 2021, MCO.svg",
+      "indicator": "Death rate from poisoning",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_poisoning,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rate from smoking, 1990 to 2021, MCO.svg",
+      "indicator": "Death rate from smoking",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_smoking,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rates from high blood pressure, 1990 to 2021, MCO.svg",
+      "indicator": "Death rates from high blood pressure",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rates_from_high_blood_pressure,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Death rates substance disorders who, 2000 to 2021, MCO.svg",
+      "indicator": "Death rates substance disorders who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rates_substance_disorders_who,_2000_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Deaths from fires and burns, 1980 to 2021, MCO.svg",
+      "indicator": "Deaths from fires and burns",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_fires_and_burns,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Deaths from liver disease, 1980 to 2021, MCO.svg",
+      "indicator": "Deaths from liver disease",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_liver_disease,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Deaths from substance disorders who, 2000 to 2021, MCO.svg",
+      "indicator": "Deaths from substance disorders who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_substance_disorders_who,_2000_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Dengue fever deaths, 2000 to 2021, MCO.svg",
+      "indicator": "Dengue fever deaths",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Dengue_fever_deaths,_2000_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Dengue incidence, 1990 to 2021, MCO.svg",
+      "indicator": "Dengue incidence",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Dengue_incidence,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Drowning death rates under 5, 1980 to 2021, MCO.svg",
+      "indicator": "Drowning death rates under 5",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Drowning_death_rates_under_5,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Hepatitis b incidence sdgs, 1990 to 2021, MCO.svg",
+      "indicator": "Hepatitis b incidence sdgs",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Hepatitis_b_incidence_sdgs,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Hepatitis death rate, 1980 to 2021, MCO.svg",
+      "indicator": "Hepatitis death rate",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Hepatitis_death_rate,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Infectious disease death rates, 1980 to 2021, MCO.svg",
+      "indicator": "Infectious disease death rates",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Infectious_disease_death_rates,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Long run birth rate, 1950 to 2023, MCO.svg",
+      "indicator": "Long run birth rate",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Long_run_birth_rate,_1950_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Malnutrition death rates, 1980 to 2021, MCO.svg",
+      "indicator": "Malnutrition death rates",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Malnutrition_death_rates,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:New infections with tetanus, 1990 to 2021, MCO.svg",
+      "indicator": "New infections with tetanus",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:New_infections_with_tetanus,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:New neonatal tetanus cases per million, 1975 to 2023, MCO.svg",
+      "indicator": "New neonatal tetanus cases per million",
+      "start_year": 1975,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:New_neonatal_tetanus_cases_per_million,_1975_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Period average age of mothers, 1950 to 2023, MCO.svg",
+      "indicator": "Period average age of mothers",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Period_average_age_of_mothers,_1950_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Refugee population by country or territory of asylum, 2011 to 2024, MCO.svg",
+      "indicator": "Refugee population by country or territory of asylum",
+      "start_year": 2011,
+      "end_year": 2024,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Refugee_population_by_country_or_territory_of_asylum,_2011_to_2024,_MCO.svg"
+    },
+    {
+      "title": "File:Share of deaths from opioid overdoses, 1980 to 2021, MCO.svg",
+      "indicator": "Share of deaths from opioid overdoses",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Share_of_deaths_from_opioid_overdoses,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Share of individuals using the internet, 1990 to 2022, MCO.svg",
+      "indicator": "Share of individuals using the internet",
+      "start_year": 1990,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Share_of_individuals_using_the_internet,_1990_to_2022,_MCO.svg"
+    },
+    {
+      "title": "File:Share of the population with access to electricity, 1990 to 2023, MCO.svg",
+      "indicator": "Share of the population with access to electricity",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Share_of_the_population_with_access_to_electricity,_1990_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Stillbirth rate, 2000 to 2023, MCO.svg",
+      "indicator": "Stillbirth rate",
+      "start_year": 2000,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Stillbirth_rate,_2000_to_2023,_MCO.svg"
+    },
+    {
+      "title": "File:Tetanus death rate, 1980 to 2021, MCO.svg",
+      "indicator": "Tetanus death rate",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Tetanus_death_rate,_1980_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Trachoma prevalence age standardized ihme, 1990 to 2021, MCO.svg",
+      "indicator": "Trachoma prevalence age standardized ihme",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Trachoma_prevalence_age_standardized_ihme,_1990_to_2021,_MCO.svg"
+    },
+    {
+      "title": "File:Urban population share 2050, 2024 to 2024, MCO.svg",
+      "indicator": "Urban population share 2050",
+      "start_year": 2024,
+      "end_year": 2024,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Urban_population_share_2050,_2024_to_2024,_MCO.svg"
+    },
+    {
+      "title": "File:Youth mortality rate, 1990 to 2023, MCO.svg",
+      "indicator": "Youth mortality rate",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Youth_mortality_rate,_1990_to_2023,_MCO.svg"
+    }
+  ],
+  "maps": []
+}

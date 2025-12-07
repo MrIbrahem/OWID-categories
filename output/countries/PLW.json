@@ -1,0 +1,322 @@
+{
+  "iso3": "PLW",
+  "country": "Palau",
+  "graphs": [
+    {
+      "title": "File:Agriculture share gdp, 2000 to 2023, PLW.svg",
+      "indicator": "Agriculture share gdp",
+      "start_year": 2000,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Agriculture_share_gdp,_2000_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Child mortality, 1751 to 2023, PLW.svg",
+      "indicator": "Child mortality",
+      "start_year": 1751,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Child_mortality,_1751_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Child mortality, 1965 to 2023, PLW.svg",
+      "indicator": "Child mortality",
+      "start_year": 1965,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Child_mortality,_1965_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Crude birth rate, 1950 to 2023, PLW.svg",
+      "indicator": "Crude birth rate",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Crude_birth_rate,_1950_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from digestive diseases gbd, 1980 to 2021, PLW.svg",
+      "indicator": "Death rate from digestive diseases gbd",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_digestive_diseases_gbd,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from drowning ghe, 2000 to 2021, PLW.svg",
+      "indicator": "Death rate from drowning ghe",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_drowning_ghe,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from fires and burns who, 2000 to 2021, PLW.svg",
+      "indicator": "Death rate from fires and burns who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_fires_and_burns_who,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from maternal disorders ihme, 1980 to 2021, PLW.svg",
+      "indicator": "Death rate from maternal disorders ihme",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_maternal_disorders_ihme,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from meningitis who, 2000 to 2021, PLW.svg",
+      "indicator": "Death rate from meningitis who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_meningitis_who,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from obesity, 1990 to 2021, PLW.svg",
+      "indicator": "Death rate from obesity",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_obesity,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from poisoning, 1980 to 2021, PLW.svg",
+      "indicator": "Death rate from poisoning",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_poisoning,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rate from smoking, 1990 to 2021, PLW.svg",
+      "indicator": "Death rate from smoking",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rate_from_smoking,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rates from high blood pressure, 1990 to 2021, PLW.svg",
+      "indicator": "Death rates from high blood pressure",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rates_from_high_blood_pressure,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Death rates substance disorders who, 2000 to 2021, PLW.svg",
+      "indicator": "Death rates substance disorders who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Death_rates_substance_disorders_who,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Deaths from fires and burns, 1980 to 2021, PLW.svg",
+      "indicator": "Deaths from fires and burns",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_fires_and_burns,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Deaths from liver disease, 1980 to 2021, PLW.svg",
+      "indicator": "Deaths from liver disease",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_liver_disease,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Deaths from substance disorders who, 2000 to 2021, PLW.svg",
+      "indicator": "Deaths from substance disorders who",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Deaths_from_substance_disorders_who,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Dengue fever deaths, 2000 to 2021, PLW.svg",
+      "indicator": "Dengue fever deaths",
+      "start_year": 2000,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Dengue_fever_deaths,_2000_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Dengue incidence, 1990 to 2021, PLW.svg",
+      "indicator": "Dengue incidence",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Dengue_incidence,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Drowning death rates under 5, 1980 to 2021, PLW.svg",
+      "indicator": "Drowning death rates under 5",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Drowning_death_rates_under_5,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Gdp per capita worldbank, 1990 to 2023, PLW.svg",
+      "indicator": "Gdp per capita worldbank",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Gdp_per_capita_worldbank,_1990_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Gdp worldbank, 1990 to 2023, PLW.svg",
+      "indicator": "Gdp worldbank",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Gdp_worldbank,_1990_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Hepatitis b incidence sdgs, 1990 to 2021, PLW.svg",
+      "indicator": "Hepatitis b incidence sdgs",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Hepatitis_b_incidence_sdgs,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Hepatitis death rate, 1980 to 2021, PLW.svg",
+      "indicator": "Hepatitis death rate",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Hepatitis_death_rate,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Infectious disease death rates, 1980 to 2021, PLW.svg",
+      "indicator": "Infectious disease death rates",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Infectious_disease_death_rates,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Insecticide use, 1990 to 2022, PLW.svg",
+      "indicator": "Insecticide use",
+      "start_year": 1990,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Insecticide_use,_1990_to_2022,_PLW.svg"
+    },
+    {
+      "title": "File:Law mandate nondiscrimination hiring, 1970 to 2023, PLW.svg",
+      "indicator": "Law mandate nondiscrimination hiring",
+      "start_year": 1970,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Law_mandate_nondiscrimination_hiring,_1970_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Long run birth rate, 1950 to 2023, PLW.svg",
+      "indicator": "Long run birth rate",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Long_run_birth_rate,_1950_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Malnutrition death rates, 1980 to 2021, PLW.svg",
+      "indicator": "Malnutrition death rates",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Malnutrition_death_rates,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:New infections with tetanus, 1990 to 2021, PLW.svg",
+      "indicator": "New infections with tetanus",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:New_infections_with_tetanus,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:New neonatal tetanus cases per million, 1975 to 2023, PLW.svg",
+      "indicator": "New neonatal tetanus cases per million",
+      "start_year": 1975,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:New_neonatal_tetanus_cases_per_million,_1975_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Obesity prevalence adults who gho, 1990 to 2022, PLW.svg",
+      "indicator": "Obesity prevalence adults who gho",
+      "start_year": 1990,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Obesity_prevalence_adults_who_gho,_1990_to_2022,_PLW.svg"
+    },
+    {
+      "title": "File:Period average age of mothers, 1950 to 2023, PLW.svg",
+      "indicator": "Period average age of mothers",
+      "start_year": 1950,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Period_average_age_of_mothers,_1950_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Pesticide use per hectare of cropland, 1990 to 2022, PLW.svg",
+      "indicator": "Pesticide use per hectare of cropland",
+      "start_year": 1990,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Pesticide_use_per_hectare_of_cropland,_1990_to_2022,_PLW.svg"
+    },
+    {
+      "title": "File:Pesticide use tonnes, 1990 to 2022, PLW.svg",
+      "indicator": "Pesticide use tonnes",
+      "start_year": 1990,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Pesticide_use_tonnes,_1990_to_2022,_PLW.svg"
+    },
+    {
+      "title": "File:Refugee population by country or territory of asylum, 2009 to 2024, PLW.svg",
+      "indicator": "Refugee population by country or territory of asylum",
+      "start_year": 2009,
+      "end_year": 2024,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Refugee_population_by_country_or_territory_of_asylum,_2009_to_2024,_PLW.svg"
+    },
+    {
+      "title": "File:Share of deaths from opioid overdoses, 1980 to 2021, PLW.svg",
+      "indicator": "Share of deaths from opioid overdoses",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Share_of_deaths_from_opioid_overdoses,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Share of the population with access to electricity, 1990 to 2023, PLW.svg",
+      "indicator": "Share of the population with access to electricity",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Share_of_the_population_with_access_to_electricity,_1990_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Stillbirth rate, 2000 to 2023, PLW.svg",
+      "indicator": "Stillbirth rate",
+      "start_year": 2000,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Stillbirth_rate,_2000_to_2023,_PLW.svg"
+    },
+    {
+      "title": "File:Tax revenues as a share of gdp unu wider, 1993 to 2020, PLW.svg",
+      "indicator": "Tax revenues as a share of gdp unu wider",
+      "start_year": 1993,
+      "end_year": 2020,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Tax_revenues_as_a_share_of_gdp_unu_wider,_1993_to_2020,_PLW.svg"
+    },
+    {
+      "title": "File:Taxes on goods and services gdp, 2008 to 2020, PLW.svg",
+      "indicator": "Taxes on goods and services gdp",
+      "start_year": 2008,
+      "end_year": 2020,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Taxes_on_goods_and_services_gdp,_2008_to_2020,_PLW.svg"
+    },
+    {
+      "title": "File:Taxes on incomes of individuals and corporations gdp, 1993 to 2020, PLW.svg",
+      "indicator": "Taxes on incomes of individuals and corporations gdp",
+      "start_year": 1993,
+      "end_year": 2020,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Taxes_on_incomes_of_individuals_and_corporations_gdp,_1993_to_2020,_PLW.svg"
+    },
+    {
+      "title": "File:Tetanus death rate, 1980 to 2021, PLW.svg",
+      "indicator": "Tetanus death rate",
+      "start_year": 1980,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Tetanus_death_rate,_1980_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Trachoma prevalence age standardized ihme, 1990 to 2021, PLW.svg",
+      "indicator": "Trachoma prevalence age standardized ihme",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Trachoma_prevalence_age_standardized_ihme,_1990_to_2021,_PLW.svg"
+    },
+    {
+      "title": "File:Youth mortality rate, 1990 to 2023, PLW.svg",
+      "indicator": "Youth mortality rate",
+      "start_year": 1990,
+      "end_year": 2023,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Youth_mortality_rate,_1990_to_2023,_PLW.svg"
+    }
+  ],
+  "maps": []
+}
