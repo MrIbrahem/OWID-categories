@@ -95,17 +95,57 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
         return None
 
 
+def normalize_country_name(country: str) -> str:
+    """
+    Normalize country name by adding "the" prefix where appropriate.
+    
+    According to proper English grammar, certain country names require "the" article.
+    
+    Args:
+        country: Country name (e.g., "United States", "Canada")
+        
+    Returns:
+        Normalized country name (e.g., "the United States", "Canada")
+    """
+    # Countries that require "the" prefix
+    countries_with_the = {
+        "United States",
+        "United Kingdom",
+        "United Arab Emirates",
+        "Czech Republic",
+        "Dominican Republic",
+        "Central African Republic",
+        "Philippines",
+        "Maldives",
+        "Seychelles",
+        "Bahamas",
+        "Marshall Islands",
+        "Solomon Islands",
+        "Comoros",
+        "Gambia",
+        "Vatican City",
+        "Vatican",  # Also handle "Vatican" from OWID codes
+    }
+    
+    if country in countries_with_the:
+        return f"the {country}"
+    return country
+
+
 def build_category_name(country: str) -> str:
     """
     Build the category name for a country.
     
     Args:
-        country: Country name (e.g., "Canada")
+        country: Country name (e.g., "Canada", "United States")
         
     Returns:
-        Category name (e.g., "Category:Our World in Data graphs of Canada")
+        Category name with normalized country name
+        (e.g., "Category:Our World in Data graphs of Canada",
+               "Category:Our World in Data graphs of the United States")
     """
-    return f"Category:Our World in Data graphs of {country}"
+    normalized_country = normalize_country_name(country)
+    return f"Category:Our World in Data graphs of {normalized_country}"
 
 
 def ensure_category_exists(
@@ -118,12 +158,13 @@ def ensure_category_exists(
     
     Args:
         site: Connected mwclient Site
-        country: Country name (e.g., "Canada")
+        country: Country name (e.g., "Canada", "United States")
         dry_run: If True, don't actually make the edit
         
     Returns:
         True if category exists or was created, False on error
     """
+    normalized_country = normalize_country_name(country)
     category_title = build_category_name(country)
     
     try:
@@ -134,14 +175,15 @@ def ensure_category_exists(
             return True
         
         # Category doesn't exist, create it
-        category_content = f"[[Category:Our World in Data graphs|{country}]]"
+        # Use normalized country name for sorting in parent category
+        category_content = f"[[Category:Our World in Data graphs|{normalized_country}]]"
         
         if dry_run:
             logging.info(f"[DRY RUN] Would create category page: {category_title}")
             return True
         
-        # Create the category page
-        edit_summary = f"Create category for {country} OWID graphs (automated)"
+        # Create the category page with normalized name in edit summary
+        edit_summary = f"Create category for {normalized_country} OWID graphs (automated)"
         category_page.save(category_content, summary=edit_summary)
         
         logging.info(f"Created category page: {category_title}")
@@ -310,14 +352,15 @@ def process_country_file(
         stats["errors"] += 1
         return stats
     
-    # Build category name
+    # Normalize country name and build category name
+    normalized_country = normalize_country_name(country)
     category = build_category_name(country)
     
-    logging.info(f"\nProcessing {iso3} ({country}): {len(graphs)} graphs")
+    logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
     
     # Ensure the category page exists before adding files to it
     if not ensure_category_exists(site, country, dry_run):
-        logging.error(f"Failed to ensure category '{category}' exists for {country}, skipping this country (see detailed error above)")
+        logging.error(f"Failed to ensure category '{category}' exists for {normalized_country}, skipping this country (see detailed error above)")
         stats["errors"] += 1
         return stats
     
