@@ -89,12 +89,466 @@ Example: Access to clean fuels and technologies for cooking, Canada, 1990.svg
 - Validate and sanitize all external data
 - Follow Wikimedia's bot policy and guidelines
 
-## Testing Approach
-- Implement dry-run modes before making live edits
-- Spot-check output files manually
-- Validate JSON structure and content
-- Test with a small subset of files first
-- Cross-check counts and statistics
+## Testing
+
+### Test Framework
+This project uses **pytest** as the primary testing framework. Pytest provides powerful features including:
+- Simple test discovery and execution
+- Detailed assertion introspection
+- Fixtures for test setup/teardown
+- Parametrized testing
+- Comprehensive plugin ecosystem
+
+### Installation and Setup
+
+#### Installing pytest
+```bash
+# Basic pytest installation
+pip install pytest
+
+# Recommended: Install with coverage and common plugins
+pip install pytest pytest-cov pytest-mock
+
+# Or install all dev dependencies (when requirements-dev.txt is available)
+pip install -r requirements-dev.txt
+```
+
+#### Running Tests
+
+**Basic test execution:**
+```bash
+# Run all tests
+pytest
+
+# Run tests in a specific file
+pytest tests/test_fetch_commons.py
+
+# Run tests in a specific directory
+pytest tests/
+
+# Run with verbose output
+pytest -v
+
+# Run tests matching a pattern
+pytest -k "test_classification"
+```
+
+**Using markers to run specific test types:**
+```bash
+# Run only unit tests
+pytest -m unit
+
+# Run only API tests (typically use mocks)
+pytest -m api
+
+# Run integration tests
+pytest -m integration
+
+# Run quick smoke tests
+pytest -m smoke
+
+# Exclude slow tests
+pytest -m "not slow"
+
+# Skip tests requiring credentials
+pytest -m "not requires_credentials"
+```
+
+**Coverage reporting:**
+```bash
+# Run tests with coverage
+pytest --cov=src --cov-report=html
+
+# View coverage in terminal
+pytest --cov=src --cov-report=term-missing
+
+# Generate multiple report formats
+pytest --cov=src --cov-report=html --cov-report=term --cov-report=xml
+```
+
+### Directory Structure and Conventions
+
+```
+OWID-categories/
+├── src/                          # Source code
+│   ├── fetch_commons_files.py
+│   ├── categorize_commons_files.py
+│   └── owid_country_codes.py
+├── tests/                        # Test directory
+│   ├── test_fetch_commons.py    # Tests for fetch module
+│   ├── test_categorize.py       # Tests for categorize module
+│   ├── example_usage.py         # Usage examples
+│   ├── conftest.py              # Pytest fixtures (shared) - create as needed
+│   └── fixtures/                # Test data files - create as needed
+│       ├── sample_files.json
+│       └── mock_responses.json
+├── pytest.ini                    # Pytest configuration
+└── requirements.txt              # Dependencies
+```
+
+### Test Naming and Organization
+
+**File naming:**
+- Test files: `test_*.py` or `*_test.py`
+- Test files should mirror source structure: `src/module.py` → `tests/test_module.py`
+
+**Test function naming:**
+```python
+# Good test names - descriptive and clear
+def test_classify_graph_file_with_valid_iso3():
+def test_classify_map_file_with_country_name():
+def test_build_category_name_formats_correctly():
+def test_api_request_handles_pagination():
+def test_json_output_has_required_fields():
+
+# Use parametrize for similar test cases
+@pytest.mark.parametrize("iso3,expected", [
+    ("CAN", "Canada"),
+    ("USA", "United States"),
+    ("BRA", "Brazil"),
+])
+def test_iso3_to_country_conversion(iso3, expected):
+    assert get_country_from_iso3(iso3) == expected
+```
+
+**Test class naming (optional):**
+```python
+class TestFileClassification:
+    """Group related tests together."""
+    
+    def test_graph_pattern_matching(self):
+        pass
+    
+    def test_map_pattern_matching(self):
+        pass
+```
+
+### Test Types and Markers
+
+Use pytest markers to categorize tests (defined in `pytest.ini`):
+
+```python
+import pytest
+
+@pytest.mark.unit
+def test_parse_filename():
+    """Pure unit test with no external dependencies."""
+    pass
+
+@pytest.mark.api
+def test_fetch_category_members_with_mock(mock_requests):
+    """Test API interaction with mocked requests."""
+    pass
+
+@pytest.mark.integration
+def test_full_processing_pipeline():
+    """Test multiple components working together."""
+    pass
+
+@pytest.mark.slow
+def test_process_large_dataset():
+    """Test that takes significant time."""
+    pass
+
+@pytest.mark.requires_credentials
+def test_actual_commons_connection():
+    """Test requiring real .env credentials (skip in CI)."""
+    pass
+
+@pytest.mark.smoke
+def test_imports_work():
+    """Quick sanity check."""
+    pass
+```
+
+### Mocking and Fixtures for API Testing
+
+**Always mock external API calls** to avoid:
+- Network dependencies
+- Rate limiting issues
+- Inconsistent test results
+- Slow test execution
+
+**Using pytest fixtures:**
+```python
+# tests/conftest.py - Create this file to share fixtures across test modules
+import pytest
+from unittest.mock import Mock, MagicMock
+
+@pytest.fixture
+def mock_mediawiki_response():
+    """Mock MediaWiki API response."""
+    return {
+        "query": {
+            "categorymembers": [
+                {
+                    "pageid": 1,
+                    "title": "File:Agriculture share gdp, 1997 to 2021, CAN.svg"
+                }
+            ]
+        }
+    }
+
+@pytest.fixture
+def mock_requests_get(monkeypatch):
+    """Mock requests.get for API calls."""
+    mock_response = Mock()
+    mock_response.json.return_value = {"query": {"categorymembers": []}}
+    mock_response.status_code = 200
+    
+    mock_get = Mock(return_value=mock_response)
+    monkeypatch.setattr("requests.get", mock_get)
+    return mock_get
+
+@pytest.fixture
+def mock_mwclient_site():
+    """Mock mwclient Site object."""
+    mock_site = MagicMock()
+    mock_page = MagicMock()
+    mock_page.exists = True
+    mock_page.text.return_value = "Page content\n[[Category:Existing]]"
+    mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+    return mock_site
+```
+
+**Using fixtures in tests:**
+```python
+def test_fetch_files_from_api(mock_requests_get, mock_mediawiki_response):
+    """Test fetching files with mocked API."""
+    mock_requests_get.return_value.json.return_value = mock_mediawiki_response
+    
+    result = fetch_category_members()
+    
+    assert len(result) > 0
+    mock_requests_get.assert_called_once()
+
+def test_add_category_to_page(mock_mwclient_site):
+    """Test adding category with mocked site."""
+    page = mock_mwclient_site.pages["File:Test.svg"]
+    
+    # Test categorization logic
+    assert page.exists
+    assert "Category:Existing" in page.text()
+```
+
+**Pytest-mock plugin (recommended):**
+```python
+def test_with_pytest_mock(mocker):
+    """Using pytest-mock plugin."""
+    mock_get = mocker.patch("requests.get")
+    mock_get.return_value.json.return_value = {"data": "test"}
+    
+    # Your test code
+    result = fetch_data()
+    assert result == {"data": "test"}
+```
+
+### Test Data Management
+
+**Use fixtures for test data:**
+```python
+@pytest.fixture
+def sample_file_titles():
+    """Sample file titles for testing."""
+    return [
+        "File:Agriculture share gdp, 1997 to 2021, CAN.svg",
+        "File:GDP growth, 2000 to 2023, USA.svg",
+        "File:Life expectancy, France, 2019.svg",
+    ]
+
+@pytest.fixture
+def sample_country_data():
+    """Sample country JSON structure."""
+    return {
+        "iso3": "CAN",
+        "country": "Canada",
+        "graphs": [],
+        "maps": []
+    }
+```
+
+**Use temporary directories for file operations:**
+```python
+def test_write_json_files(tmp_path):
+    """Test JSON file writing using pytest's tmp_path."""
+    output_file = tmp_path / "test_output.json"
+    data = {"test": "data"}
+    
+    with open(output_file, "w") as f:
+        json.dump(data, f)
+    
+    assert output_file.exists()
+    with open(output_file, "r") as f:
+        loaded = json.load(f)
+    assert loaded == data
+```
+
+### Test Coverage Guidelines
+
+**Target coverage levels:**
+- **Overall**: Aim for 80%+ code coverage
+- **Critical paths**: 90%+ for core functions (classification, API calls, JSON generation)
+- **Error handling**: Cover exception paths and edge cases
+- **Documentation**: Don't aim for 100% - focus on meaningful tests
+
+**Coverage exclusions:**
+```python
+# In your code, mark sections to exclude from coverage
+def main():  # pragma: no cover
+    """Main entry point - tested manually."""
+    pass
+
+if __name__ == "__main__":  # pragma: no cover
+    main()
+```
+
+**Generate coverage reports:**
+```bash
+# HTML report (easy to browse)
+pytest --cov=src --cov-report=html
+open htmlcov/index.html
+
+# Terminal report with missing lines
+pytest --cov=src --cov-report=term-missing
+
+# Fail if coverage drops below threshold
+pytest --cov=src --cov-fail-under=80
+```
+
+### CI/CD Testing Considerations
+
+**For GitHub Actions or CI/CD pipelines:**
+
+```yaml
+# Example .github/workflows/test.yml
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      
+      - name: Run tests
+        run: |
+          pytest -v --cov=src --cov-report=xml
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v2
+        with:
+          files: ./coverage.xml
+```
+
+**CI-specific test practices:**
+- Skip tests requiring credentials: `pytest -m "not requires_credentials"`
+- Run quick tests first: `pytest -m smoke` before full suite
+- Use coverage reports to track quality trends
+- Set coverage thresholds to prevent regressions
+- Cache dependencies to speed up CI runs
+
+### Testing Best Practices
+
+**General guidelines:**
+1. **Test behavior, not implementation** - Focus on what functions do, not how
+2. **One assertion per test** (when possible) - Makes failures clearer
+3. **Use descriptive test names** - Test name should explain what's being tested
+4. **Keep tests independent** - Tests should not depend on execution order
+5. **Mock external dependencies** - Always mock API calls, file I/O can use temp dirs
+6. **Test edge cases** - Empty inputs, None values, invalid data
+7. **Test error handling** - Verify exceptions are raised appropriately
+
+**For this project specifically:**
+```python
+# Test file classification patterns
+def test_graph_pattern_matches_valid_filename():
+    title = "File:Agriculture share gdp, 1997 to 2021, CAN.svg"
+    file_type, data = classify_and_parse_file(title)
+    assert file_type == "graph"
+    assert data["iso3"] == "CAN"
+    assert data["start_year"] == 1997
+    assert data["end_year"] == 2021
+
+# Test country code mapping
+def test_country_code_mapping_handles_missing_code():
+    result = get_iso3_from_country("Nonexistent Country")
+    assert result is None
+
+# Test API pagination
+@pytest.mark.api
+def test_fetch_handles_pagination(mock_requests_get):
+    # Mock paginated response
+    mock_requests_get.side_effect = [
+        Mock(json=lambda: {"continue": {"cmcontinue": "token"}, "query": {"categorymembers": [{"pageid": 1}]}}),
+        Mock(json=lambda: {"query": {"categorymembers": [{"pageid": 2}]}})
+    ]
+    
+    results = fetch_all_category_members()
+    assert len(results) == 2
+
+# Test JSON structure validation
+def test_country_json_has_required_fields(sample_country_data):
+    required_fields = ["iso3", "country", "graphs", "maps"]
+    for field in required_fields:
+        assert field in sample_country_data
+```
+
+### Dry-Run Testing Approach
+
+In addition to automated tests:
+- **Implement `--dry-run` flags** in scripts for safe testing
+- **Log intended actions** instead of executing them
+- **Test with small datasets** before full runs (`--limit` parameter)
+- **Manually verify** output files after test runs
+- **Cross-check statistics** in summary files
+
+### Running Tests During Development
+
+**Recommended workflow:**
+```bash
+# 1. Run quick smoke tests during development
+pytest -m smoke -v
+
+# 2. Run specific test file you're working on
+pytest tests/test_fetch_commons.py -v
+
+# 3. Before committing, run all non-credential tests
+pytest -m "not requires_credentials" -v
+
+# 4. Periodically check coverage
+pytest --cov=src --cov-report=term-missing
+
+# 5. Before PR, run full test suite
+pytest -v --cov=src --cov-report=html
+```
+
+### Debugging Failed Tests
+
+```bash
+# Drop into debugger on failure
+pytest --pdb
+
+# Show local variables on failure
+pytest --showlocals
+
+# Run last failed tests only
+pytest --lf
+
+# Run failed tests first, then others
+pytest --ff
+
+# Verbose output with full diffs
+pytest -vv
+```
 
 ## Logging
 - Use Python's `logging` module
