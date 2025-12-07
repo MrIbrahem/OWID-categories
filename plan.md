@@ -541,3 +541,11 @@ Once the basic pipeline works, you can extend it with:
 
 4. **Support for regional JSONs**:
    - Add a similar mechanism for pure regional maps (e.g. Africa, Asia) that have no specific ISO3 code.
+
+**Important Note:**  
+Always include a clear and descriptive **User-Agent header** in every HTTP request to the MediaWiki API.  
+Requests without a proper User-Agent may be throttled or blocked by Wikimedia servers.  
+Use a format that identifies your script, version, and a contact method (e.g., email or wiki username).
+
+**Placeholder User-Agent Example:**  
+`User-Agent: OWID-Commons-Processor/1.0 (contact: your-email@example.com)`
