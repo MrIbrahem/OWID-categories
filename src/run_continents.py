@@ -197,9 +197,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_continent
     # Apply limit if specified
     if limit:
         continent_files = continent_files[:limit]
-        logging.info(f"Processing limited to first {limit} continents")
-
-    # Process each continent file
+        logging.info(f"Processing limited to first {limit} continents")    # Process each continent file
     total_stats = {
         "added": 0,
         "skipped": 0,
@@ -209,7 +207,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_continent
     }
 
     for file_path in continent_files:
-        stats = process_continent_file(site, file_path, dry_run, files_per_continent)
+        stats = process_continent_file(site, file_path, dry_run=dry_run, files_per_continent=files_per_continent)
 
         # If no files were added or skipped, the continent was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
