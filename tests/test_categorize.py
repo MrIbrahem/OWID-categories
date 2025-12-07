@@ -14,6 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from categorize_commons_files import (
     build_category_name,
+    normalize_country_name,
     category_exists_on_page,
     ensure_category_exists,
     load_country_json,
@@ -21,31 +22,115 @@ from categorize_commons_files import (
 )
 
 
+def test_normalize_country_name():
+    """Test country name normalization with 'the' prefix."""
+    print("Test 1: Normalizing Country Names")
+    print("=" * 80)
+    
+    # Countries that should have "the" prefix (complete list from user)
+    test_cases_with_the = [
+        ("Democratic Republic of Congo", "the Democratic Republic of Congo"),
+        ("Dominican Republic", "the Dominican Republic"),
+        ("Philippines", "the Philippines"),
+        ("Netherlands", "the Netherlands"),
+        ("United Arab Emirates", "the United Arab Emirates"),
+        ("United Kingdom", "the United Kingdom"),
+        ("United States", "the United States"),
+        ("Czech Republic", "the Czech Republic"),
+        ("Central African Republic", "the Central African Republic"),
+        ("Maldives", "the Maldives"),
+        ("Seychelles", "the Seychelles"),
+        ("Bahamas", "the Bahamas"),
+        ("Marshall Islands", "the Marshall Islands"),
+        ("Solomon Islands", "the Solomon Islands"),
+        ("Comoros", "the Comoros"),
+        ("Gambia", "the Gambia"),
+        ("Vatican City", "the Vatican City"),
+        ("Vatican", "the Vatican"),
+    ]
+    
+    # Countries that should NOT have "the" prefix
+    test_cases_without_the = [
+        ("Canada", "Canada"),
+        ("Brazil", "Brazil"),
+        ("Germany", "Germany"),
+        ("France", "France"),
+        ("India", "India"),
+        ("China", "China"),
+        ("Japan", "Japan"),
+        ("Australia", "Australia"),
+    ]
+    
+    print("\nCountries requiring 'the' prefix:")
+    all_passed = True
+    for country, expected in test_cases_with_the:
+        result = normalize_country_name(country)
+        status = "✓" if result == expected else "✗"
+        print(f"{status} {country} -> {result}")
+        if result != expected:
+            print(f"  Expected: {expected}")
+            all_passed = False
+    
+    print("\nCountries NOT requiring 'the' prefix:")
+    for country, expected in test_cases_without_the:
+        result = normalize_country_name(country)
+        status = "✓" if result == expected else "✗"
+        print(f"{status} {country} -> {result}")
+        if result != expected:
+            print(f"  Expected: {expected}")
+            all_passed = False
+    
+    if all_passed:
+        print("\n✓ All normalization tests passed!")
+    else:
+        print("\n✗ Some normalization tests failed!")
+    
+    print()
+
+
 def test_build_category_name():
-    """Test category name construction."""
-    print("Test 1: Building Category Names")
+    """Test category name construction with normalization."""
+    print("Test 2: Building Category Names with Normalization")
     print("=" * 80)
     
     test_cases = [
         ("Canada", "Category:Our World in Data graphs of Canada"),
-        ("United States", "Category:Our World in Data graphs of United States"),
         ("Brazil", "Category:Our World in Data graphs of Brazil"),
-        ("United Kingdom", "Category:Our World in Data graphs of United Kingdom"),
+        ("Germany", "Category:Our World in Data graphs of Germany"),
+        # Countries with "the" prefix (expanded list)
+        ("United Kingdom", "Category:Our World in Data graphs of the United Kingdom"),
+        ("United States", "Category:Our World in Data graphs of the United States"),
+        ("Philippines", "Category:Our World in Data graphs of the Philippines"),
+        ("Netherlands", "Category:Our World in Data graphs of the Netherlands"),
+        ("Dominican Republic", "Category:Our World in Data graphs of the Dominican Republic"),
+        ("United Arab Emirates", "Category:Our World in Data graphs of the United Arab Emirates"),
+        ("Czech Republic", "Category:Our World in Data graphs of the Czech Republic"),
+        ("Central African Republic", "Category:Our World in Data graphs of the Central African Republic"),
+        ("Bahamas", "Category:Our World in Data graphs of the Bahamas"),
+        ("Maldives", "Category:Our World in Data graphs of the Maldives"),
+        ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
     ]
     
+    all_passed = True
     for country, expected in test_cases:
         result = build_category_name(country)
         status = "✓" if result == expected else "✗"
         print(f"{status} {country} -> {result}")
         if result != expected:
             print(f"  Expected: {expected}")
+            all_passed = False
+    
+    if all_passed:
+        print("\n✓ All category name tests passed!")
+    else:
+        print("\n✗ Some category name tests failed!")
     
     print()
 
 
 def test_category_exists():
     """Test category existence checking."""
-    print("Test 2: Checking Category Existence")
+    print("Test 3: Checking Category Existence")
     print("=" * 80)
     
     page_text_with_cat = """
@@ -94,7 +179,7 @@ Some file description here.
 
 def test_load_country_json():
     """Test loading country JSON files."""
-    print("Test 3: Loading Country JSON Files")
+    print("Test 4: Loading Country JSON Files")
     print("=" * 80)
     
     if not COUNTRIES_DIR.exists():
@@ -135,7 +220,7 @@ def test_load_country_json():
 
 def test_mock_categorization():
     """Test the categorization workflow with mock objects."""
-    print("Test 4: Mock Categorization Workflow")
+    print("Test 5: Mock Categorization Workflow")
     print("=" * 80)
     
     # Create a mock page
@@ -161,7 +246,7 @@ def test_mock_categorization():
 
 def test_ensure_category_exists():
     """Test the ensure_category_exists function with mock objects."""
-    print("Test 5: Ensure Category Exists")
+    print("Test 6: Ensure Category Exists")
     print("=" * 80)
     
     # Test 1: Category already exists
@@ -174,8 +259,8 @@ def test_ensure_category_exists():
     result = ensure_category_exists(mock_site_1, "Canada", dry_run=True)
     print(f"✓ Result: {result} (expected True)")
     
-    # Test 2: Category doesn't exist (dry run)
-    print("\nTest case 2: Category doesn't exist (dry run)")
+    # Test 2: Category doesn't exist (dry run) - regular country
+    print("\nTest case 2: Category doesn't exist (dry run) - regular country")
     mock_site_2 = Mock()
     mock_page_not_exists = MagicMock()
     mock_page_not_exists.exists = False
@@ -186,12 +271,24 @@ def test_ensure_category_exists():
     print("✓ Would create: Category:Our World in Data graphs of Brazil")
     print("✓ With content: [[Category:Our World in Data graphs|Brazil]]")
     
+    # Test 3: Category doesn't exist (dry run) - country requiring "the"
+    print("\nTest case 3: Category doesn't exist (dry run) - country with 'the'")
+    mock_site_3 = Mock()
+    mock_page_not_exists_3 = MagicMock()
+    mock_page_not_exists_3.exists = False
+    mock_site_3.pages.__getitem__ = Mock(return_value=mock_page_not_exists_3)
+    
+    result = ensure_category_exists(mock_site_3, "United Kingdom", dry_run=True)
+    print(f"✓ Result: {result} (expected True)")
+    print("✓ Would create: Category:Our World in Data graphs of the United Kingdom")
+    print("✓ With content: [[Category:Our World in Data graphs|the United Kingdom]]")
+    
     print()
 
 
 def test_dry_run_simulation():
     """Simulate a dry-run on actual test data."""
-    print("Test 6: Dry-Run Simulation")
+    print("Test 7: Dry-Run Simulation")
     print("=" * 80)
     
     if not COUNTRIES_DIR.exists():
@@ -208,14 +305,18 @@ def test_dry_run_simulation():
     
     total_graphs = 0
     
-    for json_file in json_files[:3]:  # Process first 3 countries
+    # Sort to ensure consistent test order, and test all countries
+    for json_file in sorted(json_files):
         data = load_country_json(json_file)
         if data:
             country = data.get('country')
+            normalized_country = normalize_country_name(country)
             graphs = data.get('graphs', [])
             category = build_category_name(country)
             
-            print(f"\n{data.get('iso3')} ({country})")
+            print(f"\n{data.get('iso3')} ({normalized_country})")
+            print(f"  Original: {country}")
+            print(f"  Normalized: {normalized_country}")
             print(f"  Category: {category}")
             print(f"  Graphs to categorize: {len(graphs)}")
             
@@ -234,6 +335,7 @@ def main():
     print("=" * 80)
     print()
     
+    test_normalize_country_name()
     test_build_category_name()
     test_category_exists()
     test_load_country_json()

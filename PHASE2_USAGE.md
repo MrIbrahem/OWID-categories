@@ -80,18 +80,19 @@ python3 src/categorize_commons_files.py
 For each country in `output/countries/*.json`:
 
 1. **Load Data**: Reads the country's JSON file
-2. **Connect**: Logs into Wikimedia Commons with your bot credentials
-3. **Ensure Category Exists**:
-   - Checks if the category page `Category:Our World in Data graphs of {Country}` exists
-   - If not, creates it with content: `[[Category:Our World in Data graphs|{Country}]]`
-   - Saves with edit summary: `"Create category for {Country} OWID graphs (automated)"`
-4. **Process Graphs**: For each graph file:
+2. **Normalize Country Name**: Applies proper English grammar (adds "the" prefix where appropriate)
+3. **Connect**: Logs into Wikimedia Commons with your bot credentials
+4. **Ensure Category Exists**:
+   - Checks if the category page `Category:Our World in Data graphs of {NormalizedCountry}` exists
+   - If not, creates it with content: `[[Category:Our World in Data graphs|{NormalizedCountry}]]`
+   - Saves with edit summary: `"Create category for {NormalizedCountry} OWID graphs (automated)"`
+5. **Process Graphs**: For each graph file:
    - Fetches the current page content
    - Checks if category already exists
-   - If not, adds: `[[Category:Our World in Data graphs of {Country}]]`
-   - Saves with edit summary: `"Add Category:Our World in Data graphs of {Country} (automated)"`
-5. **Rate Limiting**: Waits 1.5 seconds between each edit
-6. **Logging**: Records all actions to console and log file
+   - If not, adds: `[[Category:Our World in Data graphs of {NormalizedCountry}]]`
+   - Saves with edit summary: `"Add Category:Our World in Data graphs of {NormalizedCountry} (automated)"`
+6. **Rate Limiting**: Waits 1.5 seconds between each edit
+7. **Logging**: Records all actions to console and log file
 
 ## Output and Logs
 
@@ -188,15 +189,42 @@ For large batches (thousands of files), the script may run for several hours.
 
 ## Category Format
 
-Categories are added in this exact format:
+Categories are added with proper English grammar. Country names are automatically normalized to include "the" where appropriate:
 
 ```
 [[Category:Our World in Data graphs of Canada]]
-[[Category:Our World in Data graphs of United States]]
 [[Category:Our World in Data graphs of Brazil]]
+[[Category:Our World in Data graphs of the United Kingdom]]
+[[Category:Our World in Data graphs of the United States]]
+[[Category:Our World in Data graphs of the Philippines]]
+[[Category:Our World in Data graphs of the Netherlands]]
+[[Category:Our World in Data graphs of the Dominican Republic]]
+[[Category:Our World in Data graphs of the United Arab Emirates]]
+[[Category:Our World in Data graphs of the Democratic Republic of Congo]]
+[[Category:Our World in Data graphs of the Czech Republic]]
+[[Category:Our World in Data graphs of the Bahamas]]
 ```
 
-The category name uses the full country name from the JSON file, not the ISO3 code.
+The category name uses the full country name from the JSON file (not the ISO3 code), with automatic normalization for countries that require "the" prefix according to English grammar rules. 
+
+**Countries that get "the" prefix:**
+- Democratic Republic of Congo
+- Dominican Republic
+- Philippines
+- Netherlands
+- United Arab Emirates
+- United Kingdom
+- United States
+- Czech Republic
+- Central African Republic
+- Maldives
+- Seychelles
+- Bahamas
+- Marshall Islands
+- Solomon Islands
+- Comoros
+- Gambia
+- Vatican City
 
 ## Safety Features
 
