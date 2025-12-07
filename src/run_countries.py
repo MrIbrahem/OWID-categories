@@ -190,9 +190,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: 
     # Apply limit if specified
     if limit:
         country_files = country_files[:limit]
-        logging.info(f"Processing limited to first {limit} countries")
-
-    # Process each country file
+        logging.info(f"Processing limited to first {limit} countries")    # Process each country file
     total_stats = {
         "added": 0,
         "skipped": 0,
@@ -202,7 +200,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: 
     }
 
     for file_path in country_files:
-        stats = process_country_file(site, file_path, dry_run, files_per_country)
+        stats = process_country_file(site, file_path, dry_run=dry_run, files_per_country=files_per_country)
 
         # If no files were added or skipped, the country was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
