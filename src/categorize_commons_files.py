@@ -108,6 +108,50 @@ def build_category_name(country: str) -> str:
     return f"Category:Our World in Data graphs of {country}"
 
 
+def ensure_category_exists(
+    site: mwclient.Site,
+    country: str,
+    dry_run: bool = False
+) -> bool:
+    """
+    Ensure the category page exists for a country. Create it if it doesn't.
+    
+    Args:
+        site: Connected mwclient Site
+        country: Country name (e.g., "Canada")
+        dry_run: If True, don't actually make the edit
+        
+    Returns:
+        True if category exists or was created, False on error
+    """
+    category_title = build_category_name(country)
+    
+    try:
+        category_page = site.pages[category_title]
+        
+        if category_page.exists:
+            logging.debug(f"Category already exists: {category_title}")
+            return True
+        
+        # Category doesn't exist, create it
+        category_content = f"[[Category:Our World in Data graphs|{country}]]"
+        
+        if dry_run:
+            logging.info(f"[DRY RUN] Would create category page: {category_title}")
+            return True
+        
+        # Create the category page
+        edit_summary = f"Create category for {country} OWID graphs (automated)"
+        category_page.save(category_content, summary=edit_summary)
+        
+        logging.info(f"Created category page: {category_title}")
+        return True
+        
+    except Exception as e:
+        logging.error(f"Error ensuring category exists for {country}: {e}")
+        return False
+
+
 def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
     """
     Get the current text content of a page.
@@ -270,6 +314,12 @@ def process_country_file(
     category = build_category_name(country)
     
     logging.info(f"\nProcessing {iso3} ({country}): {len(graphs)} graphs")
+    
+    # Ensure the category page exists before adding files to it
+    if not ensure_category_exists(site, country, dry_run):
+        logging.error(f"Failed to ensure category exists for {country}, skipping this country")
+        stats["errors"] += 1
+        return stats
     
     # Process graphs
     for graph in graphs:

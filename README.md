@@ -140,12 +140,16 @@ python3 src/categorize_commons_files.py
 For each country's graph files, the script:
 1. Loads the country JSON file from `output/countries/`
 2. Connects to Wikimedia Commons using your bot credentials
-3. For each graph file:
+3. Ensures the category page exists:
+   - Checks if `Category:Our World in Data graphs of {Country}` exists
+   - If not, creates it with content: `[[Category:Our World in Data graphs|{Country}]]`
+   - Saves with edit summary: `"Create category for {Country} OWID graphs (automated)"`
+4. For each graph file:
    - Checks if the country category already exists on the page
    - If not, adds: `[[Category:Our World in Data graphs of {Country}]]`
    - Saves with edit summary: `"Add Category:Our World in Data graphs of {Country} (automated)"`
-4. Respects rate limits with 1.5 second delays between edits
-5. Logs all actions to console and `logs/categorize_commons.log`
+5. Respects rate limits with 1.5 second delays between edits
+6. Logs all actions to console and `logs/categorize_commons.log`
 
 #### Testing
 

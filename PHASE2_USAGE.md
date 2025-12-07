@@ -81,13 +81,17 @@ For each country in `output/countries/*.json`:
 
 1. **Load Data**: Reads the country's JSON file
 2. **Connect**: Logs into Wikimedia Commons with your bot credentials
-3. **Process Graphs**: For each graph file:
+3. **Ensure Category Exists**:
+   - Checks if the category page `Category:Our World in Data graphs of {Country}` exists
+   - If not, creates it with content: `[[Category:Our World in Data graphs|{Country}]]`
+   - Saves with edit summary: `"Create category for {Country} OWID graphs (automated)"`
+4. **Process Graphs**: For each graph file:
    - Fetches the current page content
    - Checks if category already exists
    - If not, adds: `[[Category:Our World in Data graphs of {Country}]]`
    - Saves with edit summary: `"Add Category:Our World in Data graphs of {Country} (automated)"`
-4. **Rate Limiting**: Waits 1.5 seconds between each edit
-5. **Logging**: Records all actions to console and log file
+5. **Rate Limiting**: Waits 1.5 seconds between each edit
+6. **Logging**: Records all actions to console and log file
 
 ## Output and Logs
 

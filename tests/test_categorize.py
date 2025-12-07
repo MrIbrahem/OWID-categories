@@ -158,9 +158,42 @@ def test_mock_categorization():
     print()
 
 
+def test_ensure_category_exists():
+    """Test the ensure_category_exists function with mock objects."""
+    print("Test 5: Ensure Category Exists")
+    print("=" * 80)
+    
+    from categorize_commons_files import ensure_category_exists
+    
+    # Create a mock site
+    mock_site = Mock()
+    
+    # Test 1: Category already exists
+    mock_page_exists = MagicMock()
+    mock_page_exists.exists = True
+    mock_site.pages.__getitem__ = Mock(return_value=mock_page_exists)
+    
+    print("Test case 1: Category already exists")
+    result = ensure_category_exists(mock_site, "Canada", dry_run=True)
+    print(f"✓ Result: {result} (expected True)")
+    
+    # Test 2: Category doesn't exist (dry run)
+    mock_page_not_exists = MagicMock()
+    mock_page_not_exists.exists = False
+    mock_site.pages.__getitem__ = Mock(return_value=mock_page_not_exists)
+    
+    print("\nTest case 2: Category doesn't exist (dry run)")
+    result = ensure_category_exists(mock_site, "Brazil", dry_run=True)
+    print(f"✓ Result: {result} (expected True)")
+    print("✓ Would create: Category:Our World in Data graphs of Brazil")
+    print("✓ With content: [[Category:Our World in Data graphs|Brazil]]")
+    
+    print()
+
+
 def test_dry_run_simulation():
     """Simulate a dry-run on actual test data."""
-    print("Test 5: Dry-Run Simulation")
+    print("Test 6: Dry-Run Simulation")
     print("=" * 80)
     
     if not COUNTRIES_DIR.exists():
@@ -207,6 +240,7 @@ def main():
     test_category_exists()
     test_load_country_json()
     test_mock_categorization()
+    test_ensure_category_exists()
     test_dry_run_simulation()
     
     print("=" * 80)
