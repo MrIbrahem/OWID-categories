@@ -99,7 +99,7 @@ Category:Our World in Data graphs of Canada
    - Build category title: `Category:Our World in Data graphs of {Country}`
    - Check if category page exists using `site.pages[category_title].exists`
    - If category page does not exist:
-     - Create page with content: `[[Category:Our World in Data graphs|{Country}]]`
+     - Create page with content: `[[Category:Our World in Data graphs by country|{Country}]]`
      - Save with edit summary: `"Create category for {Country} OWID graphs (automated)"`
 3. For each graph:
    - Load Commons page.

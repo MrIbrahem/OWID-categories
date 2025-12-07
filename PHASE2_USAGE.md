@@ -141,7 +141,7 @@ For each country in `output/countries/*.json`:
 3. **Connect**: Logs into Wikimedia Commons with your bot credentials
 4. **Ensure Category Exists**:
    - Checks if the category page `Category:Our World in Data graphs of {NormalizedCountry}` exists
-   - If not, creates it with content: `[[Category:Our World in Data graphs|{NormalizedCountry}]]`
+   - If not, creates it with content: `[[Category:Our World in Data graphs by country|{NormalizedCountry}]]`
    - Saves with edit summary: `"Create category for {NormalizedCountry} OWID graphs (automated)"`
 5. **Process Graphs**: For each graph file:
    - Fetches the current page content

@@ -160,7 +160,7 @@ For each country's graph files, the script:
 2. Connects to Wikimedia Commons using your bot credentials
 3. Ensures the category page exists:
    - Checks if `Category:Our World in Data graphs of {Country}` exists
-   - If not, creates it with content: `[[Category:Our World in Data graphs|{Country}]]`
+   - If not, creates it with content: `[[Category:Our World in Data graphs by country|{Country}]]`
    - Saves with edit summary: `"Create category for {Country} OWID graphs (automated)"`
 4. For each graph file:
    - Checks if the country category already exists on the page
