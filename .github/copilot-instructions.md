@@ -57,7 +57,8 @@ Example: Access to clean fuels and technologies for cooking, Canada, 1990.svg
 
 ### API Interactions
 1. **Always include User-Agent headers** in MediaWiki API requests
-   - Format: `OWID-Commons-Processor/1.0 (contact: email@example.com)`
+   - Format: `OWID-Commons-Processor/1.0 (contact: your-username@wikimedia.org or GitHub: @your-username)`
+   - Replace with actual contact information before making real requests
    - Requests without User-Agent may be throttled or blocked
    
 2. **Handle pagination properly**
