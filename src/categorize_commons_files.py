@@ -175,7 +175,7 @@ def ensure_category_exists(
 
     # Category doesn't exist, create it
     # Use normalized country name for sorting in parent category
-    category_content = f"[[Category:Our World in Data graphs|{normalized_country}]]"
+    category_content = f"[[Category:Our World in Data graphs|{country}]]"
 
     if dry_run:
         logging.info(f"[DRY RUN] Would create category page: {category_title}")
