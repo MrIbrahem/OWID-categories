@@ -209,6 +209,10 @@ OWID_COUNTRY_CODES = {
 }
 
 
+# Create reverse mapping for O(1) lookups
+ISO3_TO_COUNTRY = {code: country for country, code in OWID_COUNTRY_CODES.items()}
+
+
 def get_iso3_from_country(country_name: str) -> str | None:
     """
     Get ISO3 code from country name.
@@ -232,7 +236,4 @@ def get_country_from_iso3(iso3: str) -> str | None:
     Returns:
         Country name if found, None otherwise
     """
-    for country, code in OWID_COUNTRY_CODES.items():
-        if code == iso3:
-            return country
-    return None
+    return ISO3_TO_COUNTRY.get(iso3)

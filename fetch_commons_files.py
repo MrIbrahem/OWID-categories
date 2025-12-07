@@ -32,7 +32,9 @@ USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-cate
 
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(r",\s*(\d{4})\s+to\s+(\d{4}),\s*([A-Z]{3})\.svg$")
-MAP_PATTERN = re.compile(r",\s*([A-Za-z \-\(\)]+),\s*(\d{4})\.svg$")
+# Map pattern: country/region name followed by a single year
+# The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
+MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \-\(\)]+),\s*(\d{4})\.svg$")
 
 
 def setup_logging():
@@ -212,7 +214,7 @@ def process_files(files: List[Dict]) -> Dict[str, Dict]:
         
         file_type, parsed_data = classify_and_parse_file(title)
         
-        if not file_type:
+        if not file_type or not parsed_data:
             stats["unknown_count"] += 1
             logging.debug(f"Unknown file type: {title}")
             continue
