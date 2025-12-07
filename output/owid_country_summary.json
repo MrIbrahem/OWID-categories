@@ -1,0 +1,32 @@
+[
+  {
+    "iso3": "BRA",
+    "country": "Brazil",
+    "graph_count": 1,
+    "map_count": 1
+  },
+  {
+    "iso3": "CAN",
+    "country": "Canada",
+    "graph_count": 1,
+    "map_count": 1
+  },
+  {
+    "iso3": "DEU",
+    "country": "Germany",
+    "graph_count": 1,
+    "map_count": 1
+  },
+  {
+    "iso3": "GBR",
+    "country": "United Kingdom",
+    "graph_count": 1,
+    "map_count": 1
+  },
+  {
+    "iso3": "USA",
+    "country": "United States",
+    "graph_count": 1,
+    "map_count": 1
+  }
+]

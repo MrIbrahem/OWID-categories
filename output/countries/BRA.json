@@ -1,0 +1,22 @@
+{
+  "iso3": "BRA",
+  "country": "Brazil",
+  "graphs": [
+    {
+      "title": "File:Life expectancy, 1950 to 2020, BRA.svg",
+      "indicator": "Life expectancy",
+      "start_year": 1950,
+      "end_year": 2020,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Life_expectancy,_1950_to_2020,_BRA.svg"
+    }
+  ],
+  "maps": [
+    {
+      "title": "File:Population density, Brazil, 2019.svg",
+      "indicator": "Population density",
+      "year": 2019,
+      "region": "Brazil",
+      "file_page": "https://commons.wikimedia.org/wiki/File:Population_density,_Brazil,_2019.svg"
+    }
+  ]
+}

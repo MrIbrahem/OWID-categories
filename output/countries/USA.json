@@ -1,0 +1,22 @@
+{
+  "iso3": "USA",
+  "country": "United States",
+  "graphs": [
+    {
+      "title": "File:Agriculture share gdp, 2000 to 2022, USA.svg",
+      "indicator": "Agriculture share gdp",
+      "start_year": 2000,
+      "end_year": 2022,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Agriculture_share_gdp,_2000_to_2022,_USA.svg"
+    }
+  ],
+  "maps": [
+    {
+      "title": "File:GDP per capita, United States, 2020.svg",
+      "indicator": "GDP per capita",
+      "year": 2020,
+      "region": "United States",
+      "file_page": "https://commons.wikimedia.org/wiki/File:GDP_per_capita,_United_States,_2020.svg"
+    }
+  ]
+}
