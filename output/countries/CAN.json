@@ -1,0 +1,22 @@
+{
+  "iso3": "CAN",
+  "country": "Canada",
+  "graphs": [
+    {
+      "title": "File:Agriculture share gdp, 1997 to 2021, CAN.svg",
+      "indicator": "Agriculture share gdp",
+      "start_year": 1997,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Agriculture_share_gdp,_1997_to_2021,_CAN.svg"
+    }
+  ],
+  "maps": [
+    {
+      "title": "File:Access to clean fuels and technologies for cooking, Canada, 1990.svg",
+      "indicator": "Access to clean fuels and technologies for cooking",
+      "year": 1990,
+      "region": "Canada",
+      "file_page": "https://commons.wikimedia.org/wiki/File:Access_to_clean_fuels_and_technologies_for_cooking,_Canada,_1990.svg"
+    }
+  ]
+}

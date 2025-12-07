@@ -1,0 +1,22 @@
+{
+  "iso3": "GBR",
+  "country": "United Kingdom",
+  "graphs": [
+    {
+      "title": "File:CO2 emissions, 1990 to 2021, GBR.svg",
+      "indicator": "CO2 emissions",
+      "start_year": 1990,
+      "end_year": 2021,
+      "file_page": "https://commons.wikimedia.org/wiki/File:CO2_emissions,_1990_to_2021,_GBR.svg"
+    }
+  ],
+  "maps": [
+    {
+      "title": "File:Renewable energy share, United Kingdom, 2021.svg",
+      "indicator": "Renewable energy share",
+      "year": 2021,
+      "region": "United Kingdom",
+      "file_page": "https://commons.wikimedia.org/wiki/File:Renewable_energy_share,_United_Kingdom,_2021.svg"
+    }
+  ]
+}

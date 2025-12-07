@@ -1,0 +1,22 @@
+{
+  "iso3": "DEU",
+  "country": "Germany",
+  "graphs": [
+    {
+      "title": "File:Income inequality, 1980 to 2020, DEU.svg",
+      "indicator": "Income inequality",
+      "start_year": 1980,
+      "end_year": 2020,
+      "file_page": "https://commons.wikimedia.org/wiki/File:Income_inequality,_1980_to_2020,_DEU.svg"
+    }
+  ],
+  "maps": [
+    {
+      "title": "File:Educational attainment, Germany, 2018.svg",
+      "indicator": "Educational attainment",
+      "year": 2018,
+      "region": "Germany",
+      "file_page": "https://commons.wikimedia.org/wiki/File:Educational_attainment,_Germany,_2018.svg"
+    }
+  ]
+}

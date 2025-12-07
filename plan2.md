@@ -95,9 +95,15 @@ Category:Our World in Data graphs of Canada
 ## 6. Editing Workflow
 
 1. Iterate through JSON files.
-2. For each graph:
+2. For each country:
+   - Build category title: `Category:Our World in Data graphs of {Country}`
+   - Check if category page exists using `site.pages[category_title].exists`
+   - If category page does not exist:
+     - Create page with content: `[[Category:Our World in Data graphs|{Country}]]`
+     - Save with edit summary: `"Create category for {Country} OWID graphs (automated)"`
+3. For each graph:
    - Load Commons page.
-   - Check if category already exists.
+   - Check if category already exists on the file page.
    - If not, append category.
    - Save edit with summary:
      `"Add Our World in Data graphs of {Country} (automated)"`
