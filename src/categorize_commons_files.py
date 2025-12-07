@@ -127,7 +127,9 @@ def normalize_country_name(country: str) -> str:
         "Comoros",
         "Gambia",
         "Vatican City",
-        "Vatican",  # Also handle "Vatican" from OWID codes
+        # Note: "Vatican" is included to handle the variant name used in OWID country codes,
+        # even though "Vatican City" is the standard form
+        "Vatican",
     }
     
     if country in countries_with_the:
