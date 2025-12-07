@@ -182,7 +182,7 @@ def ensure_category_exists(
         return True
 
     # Create the category page with normalized name in edit summary
-    edit_summary = f"Create category for {normalized_country} OWID graphs (automated)"
+    edit_summary = f"Create category for {normalized_country} OWID graphs"
     category_page.save(category_content, summary=edit_summary)
 
     logging.info(f"Created category page: {category_title}")
@@ -274,7 +274,7 @@ def add_category_to_page(
         return True
 
     # Make the edit
-    edit_summary = f"Add {category} (automated)"
+    edit_summary = f"Add {category}"
     page.save(new_text, summary=edit_summary)
 
     logging.info(f"Successfully added '{category}' to {title}")
@@ -303,7 +303,8 @@ def process_country_file(
     site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
-    graphs_only: bool = True
+    graphs_only: bool = True,
+    files_per_country: Optional[int] = None
 ) -> Dict[str, int]:
     """
     Process a single country JSON file and add categories to its files.
@@ -313,6 +314,7 @@ def process_country_file(
         file_path: Path to country JSON file
         dry_run: If True, don't actually make edits
         graphs_only: If True, only process graph files (not maps)
+        files_per_country: Optional limit on number of files to process per country
 
     Returns:
         Dictionary with statistics (added, skipped, errors)
@@ -337,6 +339,11 @@ def process_country_file(
         logging.error(f"No country name in {file_path}")
         stats["errors"] += 1
         return stats
+
+    # Apply per-country file limit if specified
+    if files_per_country:
+        graphs = graphs[:files_per_country]
+        logging.info(f"Limiting to {files_per_country} file(s) per country")
 
     # Normalize country name and build category name
     normalized_country = normalize_country_name(country)
@@ -371,7 +378,7 @@ def process_country_file(
     return stats
 
 
-def main(dry_run: bool = False, limit: Optional[int] = None):
+def main(dry_run: bool = False, limit: Optional[int] = None, files_per_country: Optional[int] = None):
     """
     Main execution function.
 
@@ -381,6 +388,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
     Args:
         dry_run: If True, don't actually make edits
         limit: Optional limit on number of countries to process
+        files_per_country: Optional limit on number of files to process per country
     """
     setup_logging()
 
@@ -390,6 +398,9 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
 
     if dry_run:
         logging.info("Running in DRY RUN mode - no actual edits will be made")
+
+    if files_per_country:
+        logging.info(f"Processing {files_per_country} file(s) per country")
 
     # Load credentials
     username, password = load_credentials()
@@ -433,7 +444,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
     }
 
     for file_path in country_files:
-        stats = process_country_file(site, file_path, dry_run)
+        stats = process_country_file(site, file_path, dry_run, files_per_country=files_per_country)
         total_stats["added"] += stats["added"]
         total_stats["skipped"] += stats["skipped"]
         total_stats["errors"] += stats["errors"]
@@ -470,7 +481,12 @@ if __name__ == "__main__":
         type=int,
         help="Limit processing to first N countries (for testing)"
     )
+    parser.add_argument(
+        "--files-per-country",
+        type=int,
+        help="Limit processing to N files per country (for testing)"
+    )
 
     args = parser.parse_args()
 
-    main(dry_run=args.dry_run, limit=args.limit)
+    main(dry_run=args.dry_run, limit=args.limit, files_per_country=args.files_per_country)
