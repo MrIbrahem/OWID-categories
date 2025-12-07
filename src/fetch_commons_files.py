@@ -13,14 +13,14 @@ Requirements:
 import json
 import logging
 import re
+import urllib
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-
 import requests
-
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
 
+logger = logging.getLogger(__name__)
 
 # Configuration
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
@@ -56,6 +56,48 @@ def setup_logging():
     )
 
 
+def get_category_members_petscan(category) -> list | list[str]:
+    """
+    Fetch all pages belonging to a given category from a Wikimedia project using the Petscan API.
+    """
+    # Build PetScan URL for the given category
+    base_url = "https://petscan.wmflabs.org/"
+
+    if category.lower().startswith("category:"):
+        category = category[9:]
+
+    params = {
+        "language": "commons",
+        "project": "wikimedia",
+        "categories": f"{category}",
+        "format": "plain",
+        "depth": 0,
+        "ns[10]": 1,
+        "doit": "Do it!"
+    }
+    url = f"{base_url}?{urllib.parse.urlencode(params)}"
+
+    logger.debug(f"petscan url: {url}")
+
+    headers = {}
+    headers["User-Agent"] = USER_AGENT
+    text = ""
+    try:
+        resp = requests.get(url, headers=headers, timeout=30)
+        resp.raise_for_status()
+        text = resp.text
+    except Exception as e:
+        logger.error(f"get_petscan_category_pages: request/json error: {e}")
+        return []
+
+    if not text:
+        return []
+
+    result = [x.strip() for x in text.splitlines()]
+
+    return result
+
+
 def fetch_category_members() -> List[Dict]:
     """
     Fetch all files from the OWID category using MediaWiki API with pagination.
@@ -67,7 +109,7 @@ def fetch_category_members() -> List[Dict]:
     cmcontinue = None
     page_count = 0
 
-    logging.info(f"Starting to fetch files from {CATEGORY_NAME}")
+    logger.info(f"Starting to fetch files from {CATEGORY_NAME}")
 
     while True:
         params = {
@@ -93,10 +135,10 @@ def fetch_category_members() -> List[Dict]:
             data = response.json()
 
             members = data.get("query", {}).get("categorymembers", [])
-            all_files.extend(members)
+            all_files.extend([x.get("title", "") for x in members])
             page_count += 1
 
-            logging.info(f"Fetched page {page_count}: {len(members)} files (total: {len(all_files)})")
+            logger.info(f"Fetched page {page_count}: {len(members)} files (total: {len(all_files)})")
 
             if "continue" in data:
                 cmcontinue = data["continue"].get("cmcontinue")
@@ -104,10 +146,10 @@ def fetch_category_members() -> List[Dict]:
                 break
 
         except requests.RequestException as e:
-            logging.error(f"API request failed: {e}")
+            logger.error(f"API request failed: {e}")
             raise
 
-    logging.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
+    logger.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
     return all_files
 
 
@@ -192,7 +234,7 @@ def build_file_page_url(title: str) -> str:
     return "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")
 
 
-def process_files(files: List[Dict]) -> Dict[str, Dict]:
+def process_files(files: List[str]) -> Dict[str, Dict]:
     """
     Process all files and aggregate them by country.
 
@@ -210,32 +252,29 @@ def process_files(files: List[Dict]) -> Dict[str, Dict]:
         "unresolved_region_count": 0
     }
 
-    logging.info("Starting file classification and aggregation")
+    logger.info("Starting file classification and aggregation")
 
-    for file_info in files:
-        title = file_info.get("title", "")
-        if not title:
-            continue
+    for title in files:
 
         file_type, parsed_data = classify_and_parse_file(title)
 
         if not file_type or not parsed_data:
             stats["unknown_count"] += 1
-            logging.debug(f"Unknown file type: {title}")
+            logger.debug(f"Unknown file type: {title}")
             continue
 
         iso3 = parsed_data.get("iso3")
 
         if not iso3:
             stats["unresolved_region_count"] += 1
-            logging.debug(f"Could not resolve region: {title}")
+            logger.debug(f"Could not resolve region: {title}")
             continue
 
         # Initialize country entry if needed
         if iso3 not in countries:
             country_name = get_country_from_iso3(iso3)
             if not country_name:
-                logging.warning(f"Unknown ISO3 code: {iso3}")
+                logger.warning(f"Unknown ISO3 code: {iso3}")
                 continue
 
             countries[iso3] = {
@@ -277,14 +316,14 @@ def process_files(files: List[Dict]) -> Dict[str, Dict]:
             }
             countries[iso3]["unknowns"].append(entry)
             stats["unknown_count"] += 1
-            logging.debug(f"Unhandled file type: {title}")
+            logger.debug(f"Unhandled file type: {title}")
 
-    logging.info("Classification complete:")
-    logging.info(f"  Graphs: {stats['graph_count']}")
-    logging.info(f"  Maps: {stats['map_count']}")
-    logging.info(f"  Unknown: {stats['unknown_count']}")
-    logging.info(f"  Unresolved regions: {stats['unresolved_region_count']}")
-    logging.info(f"  Countries with data: {len(countries)}")
+    logger.info("Classification complete:")
+    logger.info(f"  Graphs: {stats['graph_count']}")
+    logger.info(f"  Maps: {stats['map_count']}")
+    logger.info(f"  Unknown: {stats['unknown_count']}")
+    logger.info(f"  Unresolved regions: {stats['unresolved_region_count']}")
+    logger.info(f"  Countries with data: {len(countries)}")
 
     return countries
 
@@ -298,14 +337,14 @@ def write_country_json_files(countries: Dict[str, Dict]):
     """
     COUNTRIES_DIR.mkdir(parents=True, exist_ok=True)
 
-    logging.info(f"Writing {len(countries)} country JSON files")
+    logger.info(f"Writing {len(countries)} country JSON files")
 
     for iso3, data in countries.items():
         file_path = COUNTRIES_DIR / f"{iso3}.json"
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    logging.info(f"Country JSON files written to {COUNTRIES_DIR}")
+    logger.info(f"Country JSON files written to {COUNTRIES_DIR}")
 
 
 def write_summary_json(countries: Dict[str, Dict]):
@@ -330,15 +369,16 @@ def write_summary_json(countries: Dict[str, Dict]):
     with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2, ensure_ascii=False)
 
-    logging.info(f"Summary JSON written to {SUMMARY_FILE}")
+    logger.info(f"Summary JSON written to {SUMMARY_FILE}")
 
 
-def main():
+def main() -> None:
     """Main execution function."""
     setup_logging()
 
     # Fetch all files from the category
-    files = fetch_category_members()
+    # files = fetch_category_members()
+    files = get_category_members_petscan(CATEGORY_NAME)
 
     # Process and aggregate files by country
     countries = process_files(files)
@@ -347,7 +387,7 @@ def main():
     write_country_json_files(countries)
     write_summary_json(countries)
 
-    logging.info("Processing complete!")
+    logger.info("Processing complete!")
 
 
 if __name__ == "__main__":
