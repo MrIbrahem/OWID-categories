@@ -102,29 +102,20 @@ def normalize_country_name(country: str) -> str:
     According to proper English grammar, certain country names require "the" article.
     
     Args:
-        country: Country name (e.g., "United States", "Canada")
+        country: Country name (e.g., "United Kingdom", "Canada")
         
     Returns:
-        Normalized country name (e.g., "the United States", "Canada")
+        Normalized country name (e.g., "the United Kingdom", "Canada")
     """
     # Countries that require "the" prefix
+    # Based on proper English usage for country names
     countries_with_the = {
-        "United States",
-        "United Kingdom",
-        "United Arab Emirates",
-        "Czech Republic",
+        "Democratic Republic of Congo",
         "Dominican Republic",
-        "Central African Republic",
         "Philippines",
-        "Maldives",
-        "Seychelles",
-        "Bahamas",
-        "Marshall Islands",
-        "Solomon Islands",
-        "Comoros",
-        "Gambia",
-        "Vatican City",
-        "Vatican",  # Also handle "Vatican" from OWID codes
+        "Netherlands",
+        "United Arab Emirates",
+        "United Kingdom",
     }
     
     if country in countries_with_the:

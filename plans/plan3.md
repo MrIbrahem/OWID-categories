@@ -19,23 +19,14 @@ This plan documents the rules for normalizing country names and the implementati
 
 Add **"the"** only if the country name is one of:
 
-1. United States
-2. United Kingdom
-3. United Arab Emirates
-4. Czech Republic
-5. Dominican Republic
-6. Central African Republic
-7. Philippines
-8. Maldives
-9. Seychelles
-10. Bahamas
-11. Marshall Islands
-12. Solomon Islands
-13. Comoros
-14. Gambia
-15. Vatican City
+1. Democratic Republic of Congo
+2. Dominican Republic
+3. Philippines
+4. Netherlands
+5. United Arab Emirates
+6. United Kingdom
 
-**Note:** "Vatican" in the OWID country codes mapping should be treated as "Vatican City" for normalization purposes.
+**Note:** This is the definitive list based on proper English grammar conventions for country names as used in categorization.
 
 ### Rule 2 — Transformation
 
@@ -50,11 +41,15 @@ Category:Our World in Data graphs of {NormalizedCountry}
 ```
 
 **Examples:**
-- `Category:Our World in Data graphs of the United States`
-- `Category:Our World in Data graphs of the Philippines`
-- `Category:Our World in Data graphs of Brazil`
 - `Category:Our World in Data graphs of the United Kingdom`
+- `Category:Our World in Data graphs of the Philippines`
+- `Category:Our World in Data graphs of the Netherlands`
+- `Category:Our World in Data graphs of the Dominican Republic`
+- `Category:Our World in Data graphs of the United Arab Emirates`
+- `Category:Our World in Data graphs of the Democratic Republic of Congo`
+- `Category:Our World in Data graphs of Brazil`
 - `Category:Our World in Data graphs of Canada`
+- `Category:Our World in Data graphs of United States` (no "the")
 
 ### Rule 4 — Consistency
 
@@ -156,7 +151,7 @@ Test with actual country JSON files:
    - Ensure normalized names are used in log messages
 
 4. **Add unit tests**
-   - Test normalization function with all 15 special countries
+   - Test normalization function with all 6 countries requiring "the"
    - Test with regular countries
    - Test category name construction
 
@@ -173,37 +168,39 @@ Test with actual country JSON files:
 
 ## 5. Example Output
 
-### Before (Current):
+### Before (Without normalization):
 ```
-Category:Our World in Data graphs of United States
-Category:Our World in Data graphs of Philippines
 Category:Our World in Data graphs of United Kingdom
+Category:Our World in Data graphs of Philippines
+Category:Our World in Data graphs of Netherlands
+Category:Our World in Data graphs of Dominican Republic
 ```
 
 ### After (With normalization):
 ```
-Category:Our World in Data graphs of the United States
-Category:Our World in Data graphs of the Philippines
 Category:Our World in Data graphs of the United Kingdom
+Category:Our World in Data graphs of the Philippines
+Category:Our World in Data graphs of the Netherlands
+Category:Our World in Data graphs of the Dominican Republic
+Category:Our World in Data graphs of the United Arab Emirates
+Category:Our World in Data graphs of the Democratic Republic of Congo
 ```
 
-### Unchanged:
+### Unchanged (Countries not in the list):
 ```
 Category:Our World in Data graphs of Canada
 Category:Our World in Data graphs of Brazil
 Category:Our World in Data graphs of Germany
+Category:Our World in Data graphs of United States
 ```
 
 ---
 
 ## 6. Special Considerations
 
-### 6.1 Vatican Handling
+### 6.1 Democratic Republic of Congo
 
-The OWID country codes dictionary uses `"Vatican"`, but for proper English normalization, we should:
-1. Recognize "Vatican" as requiring "the"
-2. Potentially expand it to "the Vatican City" for consistency
-3. However, to maintain compatibility with existing data, we'll normalize "Vatican" to "the Vatican"
+The OWID country codes dictionary uses `"Democratic Republic of Congo"` (not "Democratic Republic of the Congo"). The normalization adds "the" prefix to this existing name.
 
 ### 6.2 Backward Compatibility
 
@@ -225,15 +222,15 @@ The normalization happens at categorization time (Phase 2), not during data fetc
 
 Before completing implementation:
 
-- [ ] Normalization function correctly handles all 15 special countries
-- [ ] Category names are correctly formatted with "the" prefix
-- [ ] Edit summaries use normalized names
-- [ ] Log messages use normalized names
-- [ ] Existing tests pass
-- [ ] New tests cover all special cases
-- [ ] Dry-run mode shows correct output
-- [ ] Documentation is updated if needed
-- [ ] No regressions in existing functionality
+- [x] Normalization function correctly handles all 6 countries requiring "the"
+- [x] Category names are correctly formatted with "the" prefix
+- [x] Edit summaries use normalized names
+- [x] Log messages use normalized names
+- [x] Existing tests pass
+- [x] New tests cover all special cases
+- [x] Dry-run mode shows correct output
+- [x] Documentation is updated
+- [x] No regressions in existing functionality
 
 ---
 
@@ -241,6 +238,6 @@ Before completing implementation:
 
 Potential future improvements:
 1. Add configuration file for normalization rules
-2. Support for regional variations (e.g., "the Netherlands" in some contexts)
-3. Automated migration tool to update existing categories
-4. Validation tool to check consistency across all categories
+2. Automated migration tool to update existing categories if the list changes
+3. Validation tool to check consistency across all categories
+4. Support for additional language-specific variations if needed

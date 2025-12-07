@@ -27,24 +27,14 @@ def test_normalize_country_name():
     print("Test 1: Normalizing Country Names")
     print("=" * 80)
     
-    # Countries that should have "the" prefix
+    # Countries that should have "the" prefix (updated list)
     test_cases_with_the = [
-        ("United States", "the United States"),
-        ("United Kingdom", "the United Kingdom"),
-        ("United Arab Emirates", "the United Arab Emirates"),
-        ("Czech Republic", "the Czech Republic"),
+        ("Democratic Republic of Congo", "the Democratic Republic of Congo"),
         ("Dominican Republic", "the Dominican Republic"),
-        ("Central African Republic", "the Central African Republic"),
         ("Philippines", "the Philippines"),
-        ("Maldives", "the Maldives"),
-        ("Seychelles", "the Seychelles"),
-        ("Bahamas", "the Bahamas"),
-        ("Marshall Islands", "the Marshall Islands"),
-        ("Solomon Islands", "the Solomon Islands"),
-        ("Comoros", "the Comoros"),
-        ("Gambia", "the Gambia"),
-        ("Vatican City", "the Vatican City"),
-        ("Vatican", "the Vatican"),
+        ("Netherlands", "the Netherlands"),
+        ("United Arab Emirates", "the United Arab Emirates"),
+        ("United Kingdom", "the United Kingdom"),
     ]
     
     # Countries that should NOT have "the" prefix
@@ -57,6 +47,9 @@ def test_normalize_country_name():
         ("China", "China"),
         ("Japan", "Japan"),
         ("Australia", "Australia"),
+        ("United States", "United States"),  # Not in the new list
+        ("Czech Republic", "Czech Republic"),  # Not in the new list
+        ("Bahamas", "Bahamas"),  # Not in the new list
     ]
     
     print("\nCountries requiring 'the' prefix:")
@@ -93,12 +86,18 @@ def test_build_category_name():
     
     test_cases = [
         ("Canada", "Category:Our World in Data graphs of Canada"),
-        ("United States", "Category:Our World in Data graphs of the United States"),
         ("Brazil", "Category:Our World in Data graphs of Brazil"),
+        ("Germany", "Category:Our World in Data graphs of Germany"),
+        # Countries with "the" prefix
         ("United Kingdom", "Category:Our World in Data graphs of the United Kingdom"),
         ("Philippines", "Category:Our World in Data graphs of the Philippines"),
-        ("Germany", "Category:Our World in Data graphs of Germany"),
-        ("Bahamas", "Category:Our World in Data graphs of the Bahamas"),
+        ("Netherlands", "Category:Our World in Data graphs of the Netherlands"),
+        ("Dominican Republic", "Category:Our World in Data graphs of the Dominican Republic"),
+        ("United Arab Emirates", "Category:Our World in Data graphs of the United Arab Emirates"),
+        ("Democratic Republic of Congo", "Category:Our World in Data graphs of the Democratic Republic of Congo"),
+        # Countries that should NOT have "the" anymore
+        ("United States", "Category:Our World in Data graphs of United States"),
+        ("Bahamas", "Category:Our World in Data graphs of Bahamas"),
     ]
     
     all_passed = True
@@ -268,10 +267,10 @@ def test_ensure_category_exists():
     mock_page_not_exists_3.exists = False
     mock_site_3.pages.__getitem__ = Mock(return_value=mock_page_not_exists_3)
     
-    result = ensure_category_exists(mock_site_3, "United States", dry_run=True)
+    result = ensure_category_exists(mock_site_3, "United Kingdom", dry_run=True)
     print(f"✓ Result: {result} (expected True)")
-    print("✓ Would create: Category:Our World in Data graphs of the United States")
-    print("✓ With content: [[Category:Our World in Data graphs|the United States]]")
+    print("✓ Would create: Category:Our World in Data graphs of the United Kingdom")
+    print("✓ With content: [[Category:Our World in Data graphs|the United Kingdom]]")
     
     print()
 
