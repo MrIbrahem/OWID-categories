@@ -317,7 +317,7 @@ def process_country_file(
     
     # Ensure the category page exists before adding files to it
     if not ensure_category_exists(site, country, dry_run):
-        logging.error(f"Failed to ensure category exists for {country}, skipping this country")
+        logging.error(f"Failed to ensure category '{category}' exists for {country}, skipping this country (see detailed error above)")
         stats["errors"] += 1
         return stats
     

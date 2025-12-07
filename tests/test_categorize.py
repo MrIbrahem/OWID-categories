@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from categorize_commons_files import (
     build_category_name,
     category_exists_on_page,
+    ensure_category_exists,
     load_country_json,
     COUNTRIES_DIR
 )
@@ -163,27 +164,24 @@ def test_ensure_category_exists():
     print("Test 5: Ensure Category Exists")
     print("=" * 80)
     
-    from categorize_commons_files import ensure_category_exists
-    
-    # Create a mock site
-    mock_site = Mock()
-    
     # Test 1: Category already exists
+    print("Test case 1: Category already exists")
+    mock_site_1 = Mock()
     mock_page_exists = MagicMock()
     mock_page_exists.exists = True
-    mock_site.pages.__getitem__ = Mock(return_value=mock_page_exists)
+    mock_site_1.pages.__getitem__ = Mock(return_value=mock_page_exists)
     
-    print("Test case 1: Category already exists")
-    result = ensure_category_exists(mock_site, "Canada", dry_run=True)
+    result = ensure_category_exists(mock_site_1, "Canada", dry_run=True)
     print(f"✓ Result: {result} (expected True)")
     
     # Test 2: Category doesn't exist (dry run)
+    print("\nTest case 2: Category doesn't exist (dry run)")
+    mock_site_2 = Mock()
     mock_page_not_exists = MagicMock()
     mock_page_not_exists.exists = False
-    mock_site.pages.__getitem__ = Mock(return_value=mock_page_not_exists)
+    mock_site_2.pages.__getitem__ = Mock(return_value=mock_page_not_exists)
     
-    print("\nTest case 2: Category doesn't exist (dry run)")
-    result = ensure_category_exists(mock_site, "Brazil", dry_run=True)
+    result = ensure_category_exists(mock_site_2, "Brazil", dry_run=True)
     print(f"✓ Result: {result} (expected True)")
     print("✓ Would create: Category:Our World in Data graphs of Brazil")
     print("✓ With content: [[Category:Our World in Data graphs|Brazil]]")
