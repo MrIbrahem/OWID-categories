@@ -73,10 +73,10 @@ def normalize_country_name(country: str) -> str:
     Normalize country name by adding "the" prefix where appropriate.
     
     Args:
-        country: Country name (e.g., "United States", "Canada")
+        country: Country name (e.g., "United Kingdom", "Canada")
         
     Returns:
-        Normalized country name (e.g., "the United States", "Canada")
+        Normalized country name (e.g., "the United Kingdom", "Canada")
     """
 ```
 
@@ -92,7 +92,7 @@ Update the following existing functions to use the normalized country name:
 
 1. **`build_category_name(country: str) -> str`**
    - Call `normalize_country_name()` before constructing the category name
-   - Example: `"United States"` → `"the United States"` → `"Category:Our World in Data graphs of the United States"`
+   - Example: `"United Kingdom"` → `"the United Kingdom"` → `"Category:Our World in Data graphs of the United Kingdom"`
 
 2. **`ensure_category_exists(site, country, dry_run)`**
    - The country parameter should already be normalized when passed to this function
@@ -105,9 +105,9 @@ Update the following existing functions to use the normalized country name:
 ### 2.3 Logging and Output
 
 All log messages should use the normalized country name:
-- `"Processing USA (the United States): 123 graphs"`
+- `"Processing GBR (the United Kingdom): 123 graphs"`
 - `"Created category page: Category:Our World in Data graphs of the Philippines"`
-- Edit summaries: `"Create category for the United States OWID graphs (automated)"`
+- Edit summaries: `"Create category for the United Kingdom OWID graphs (automated)"`
 
 ---
 
@@ -118,22 +118,22 @@ All log messages should use the normalized country name:
 Add tests to `tests/test_categorize.py`:
 
 1. **Test normalization function:**
-   - Countries requiring "the": United States, Philippines, Bahamas, etc.
-   - Countries not requiring "the": Canada, Brazil, Germany, etc.
-   - Edge cases: Vatican → Vatican City
+   - Countries requiring "the": United Kingdom, Philippines, Netherlands, etc.
+   - Countries not requiring "the": Canada, Brazil, Germany, United States, etc.
 
 2. **Test category name construction:**
    - Verify that `build_category_name()` produces correct output with normalized names
    - Examples:
-     - `"United States"` → `"Category:Our World in Data graphs of the United States"`
+     - `"United Kingdom"` → `"Category:Our World in Data graphs of the United Kingdom"`
      - `"Canada"` → `"Category:Our World in Data graphs of Canada"`
+     - `"United States"` → `"Category:Our World in Data graphs of United States"` (no "the")
 
 ### 3.2 Integration Tests
 
 Test with actual country JSON files:
-- Load country data for USA, UK, Philippines
+- Load country data for UK (United Kingdom), Philippines, Netherlands
 - Verify that category names are correctly generated with "the" prefix
-- Verify that other countries remain unchanged
+- Verify that other countries (like USA, Canada) remain unchanged (no "the")
 
 ---
 

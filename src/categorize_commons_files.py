@@ -128,12 +128,12 @@ def build_category_name(country: str) -> str:
     Build the category name for a country.
     
     Args:
-        country: Country name (e.g., "Canada", "United States")
+        country: Country name (e.g., "Canada", "United Kingdom")
         
     Returns:
         Category name with normalized country name
         (e.g., "Category:Our World in Data graphs of Canada",
-               "Category:Our World in Data graphs of the United States")
+               "Category:Our World in Data graphs of the United Kingdom")
     """
     normalized_country = normalize_country_name(country)
     return f"Category:Our World in Data graphs of {normalized_country}"
