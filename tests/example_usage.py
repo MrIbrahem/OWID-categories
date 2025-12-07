@@ -143,19 +143,4 @@ def example_build_urls():
     print("\n" + "=" * 80 + "\n")
 
 
-def main():
-    """Run all examples."""
-    print("\nOWID Commons Processing - Usage Examples")
-    print("=" * 80)
-    print()
-    
-    example_classify_files()
-    example_country_lookups()
-    example_read_output_files()
-    example_build_urls()
-    
-    print("Examples completed!")
 
-
-if __name__ == "__main__":
-    main()

@@ -8,6 +8,7 @@ This script tests the categorization logic without requiring real Commons creden
 import sys
 from pathlib import Path
 from unittest.mock import Mock, MagicMock
+import pytest
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -22,11 +23,9 @@ from categorize_commons_files import (
 )
 
 
+@pytest.mark.unit
 def test_normalize_country_name():
     """Test country name normalization with 'the' prefix."""
-    print("Test 1: Normalizing Country Names")
-    print("=" * 80)
-    
     # Countries that should have "the" prefix (complete list from user)
     test_cases_with_the = [
         ("Democratic Republic of Congo", "the Democratic Republic of Congo"),
@@ -61,38 +60,20 @@ def test_normalize_country_name():
         ("Australia", "Australia"),
     ]
     
-    print("\nCountries requiring 'the' prefix:")
-    all_passed = True
+    # Test countries requiring 'the' prefix
     for country, expected in test_cases_with_the:
         result = normalize_country_name(country)
-        status = "✓" if result == expected else "✗"
-        print(f"{status} {country} -> {result}")
-        if result != expected:
-            print(f"  Expected: {expected}")
-            all_passed = False
+        assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
     
-    print("\nCountries NOT requiring 'the' prefix:")
+    # Test countries NOT requiring 'the' prefix
     for country, expected in test_cases_without_the:
         result = normalize_country_name(country)
-        status = "✓" if result == expected else "✗"
-        print(f"{status} {country} -> {result}")
-        if result != expected:
-            print(f"  Expected: {expected}")
-            all_passed = False
-    
-    if all_passed:
-        print("\n✓ All normalization tests passed!")
-    else:
-        print("\n✗ Some normalization tests failed!")
-    
-    print()
+        assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
 
 
+@pytest.mark.unit
 def test_build_category_name():
     """Test category name construction with normalization."""
-    print("Test 2: Building Category Names with Normalization")
-    print("=" * 80)
-    
     test_cases = [
         ("Canada", "Category:Our World in Data graphs of Canada"),
         ("Brazil", "Category:Our World in Data graphs of Brazil"),
@@ -111,28 +92,14 @@ def test_build_category_name():
         ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
     ]
     
-    all_passed = True
     for country, expected in test_cases:
         result = build_category_name(country)
-        status = "✓" if result == expected else "✗"
-        print(f"{status} {country} -> {result}")
-        if result != expected:
-            print(f"  Expected: {expected}")
-            all_passed = False
-    
-    if all_passed:
-        print("\n✓ All category name tests passed!")
-    else:
-        print("\n✗ Some category name tests failed!")
-    
-    print()
+        assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
 
 
+@pytest.mark.unit
 def test_category_exists():
     """Test category existence checking."""
-    print("Test 3: Checking Category Existence")
-    print("=" * 80)
-    
     page_text_with_cat = """
 Some file description here.
 {{Information
@@ -157,14 +124,14 @@ Some file description here.
         page_text_with_cat, 
         "Category:Our World in Data graphs of Canada"
     )
-    print(f"✓ Category present: {result1} (expected True)")
+    assert result1 is True, "Category should be found when present"
     
     # Test with category absent
     result2 = category_exists_on_page(
         page_text_without_cat,
         "Category:Our World in Data graphs of Canada"
     )
-    print(f"✓ Category absent: {result2} (expected False)")
+    assert result2 is False, "Category should not be found when absent"
     
     # Test with lowercase variant
     page_text_lowercase = "[[category:Our World in Data graphs of Canada]]"
@@ -172,138 +139,108 @@ Some file description here.
         page_text_lowercase,
         "Category:Our World in Data graphs of Canada"
     )
-    print(f"✓ Lowercase variant: {result3} (expected True)")
-    
-    print()
+    assert result3 is True, "Category check should be case-insensitive"
 
 
+@pytest.mark.filesystem
 def test_load_country_json():
     """Test loading country JSON files."""
-    print("Test 4: Loading Country JSON Files")
-    print("=" * 80)
-    
     if not COUNTRIES_DIR.exists():
-        print("⚠ Country files directory not found. Run test_fetch_commons.py first.")
-        print()
-        return
+        pytest.skip('Country files directory not found. Run test_fetch_commons.py first.')
     
     json_files = list(COUNTRIES_DIR.glob("*.json"))
     
     if not json_files:
-        print("⚠ No JSON files found in output/countries/")
-        print()
-        return
-    
-    print(f"Found {len(json_files)} country JSON files")
+        pytest.skip('No JSON files found in output/countries/')
     
     # Test loading first file
     first_file = json_files[0]
     data = load_country_json(first_file)
     
-    if data:
-        print(f"✓ Successfully loaded {first_file.name}")
-        print(f"  Country: {data.get('country')} ({data.get('iso3')})")
-        print(f"  Graphs: {len(data.get('graphs', []))}")
-        print(f"  Maps: {len(data.get('maps', []))}")
-        
-        # Show first graph
-        graphs = data.get('graphs', [])
-        if graphs:
-            print(f"\n  First graph:")
-            print(f"    Title: {graphs[0].get('title')}")
-            print(f"    Indicator: {graphs[0].get('indicator')}")
-    else:
-        print(f"✗ Failed to load {first_file.name}")
+    # Assertions
+    assert data is not None, f"Failed to load {first_file.name}"
+    assert 'country' in data, "Country field missing from JSON"
+    assert 'iso3' in data, "ISO3 field missing from JSON"
+    assert 'graphs' in data, "Graphs field missing from JSON"
+    assert 'maps' in data, "Maps field missing from JSON"
+    assert isinstance(data['graphs'], list), "Graphs should be a list"
+    assert isinstance(data['maps'], list), "Maps should be a list"
     
-    print()
+    # If graphs exist, check structure
+    graphs = data.get('graphs', [])
+    if graphs:
+        first_graph = graphs[0]
+        assert 'title' in first_graph, "Graph should have a title"
+        assert 'indicator' in first_graph, "Graph should have an indicator"
 
 
+@pytest.mark.unit
 def test_mock_categorization():
     """Test the categorization workflow with mock objects."""
-    print("Test 5: Mock Categorization Workflow")
-    print("=" * 80)
-    
     # Create a mock page
     mock_page = MagicMock()
     mock_page.exists = True
     mock_page.text.return_value = "Some page text\n[[Category:Existing]]"
     
-    print("✓ Created mock Page object")
-    print("✓ Mock page exists: True")
-    print(f"✓ Mock page text: {mock_page.text()[:50]}...")
+    # Assertions
+    assert mock_page.exists is True, "Mock page should exist"
+    assert "Category:Existing" in mock_page.text(), "Mock page should contain existing category"
     
     # Simulate adding a category
     category = "Category:Our World in Data graphs of Canada"
     current_text = mock_page.text()
     new_text = current_text.rstrip() + f"\n[[{category}]]\n"
     
-    print(f"\n✓ Would add category: {category}")
-    print(f"✓ New text length: {len(new_text)} characters")
-    print("✓ Category would be added to end of page")
-    
-    print()
+    # Assertions
+    assert category in new_text, "New category should be in the updated text"
+    assert len(new_text) > len(current_text), "New text should be longer than current text"
+    assert new_text.endswith(f"[[{category}]]\n"), "Category should be added at the end"
 
 
+@pytest.mark.api
 def test_ensure_category_exists():
     """Test the ensure_category_exists function with mock objects."""
-    print("Test 6: Ensure Category Exists")
-    print("=" * 80)
-    
     # Test 1: Category already exists
-    print("Test case 1: Category already exists")
     mock_site_1 = Mock()
     mock_page_exists = MagicMock()
     mock_page_exists.exists = True
     mock_site_1.pages.__getitem__ = Mock(return_value=mock_page_exists)
     
     result = ensure_category_exists(mock_site_1, "Canada", dry_run=True)
-    print(f"✓ Result: {result} (expected True)")
+    assert result is True, "Should return True when category already exists"
     
     # Test 2: Category doesn't exist (dry run) - regular country
-    print("\nTest case 2: Category doesn't exist (dry run) - regular country")
     mock_site_2 = Mock()
     mock_page_not_exists = MagicMock()
     mock_page_not_exists.exists = False
     mock_site_2.pages.__getitem__ = Mock(return_value=mock_page_not_exists)
     
     result = ensure_category_exists(mock_site_2, "Brazil", dry_run=True)
-    print(f"✓ Result: {result} (expected True)")
-    print("✓ Would create: Category:Our World in Data graphs of Brazil")
-    print("✓ With content: [[Category:Our World in Data graphs|Brazil]]")
+    assert result is True, "Should return True in dry run mode"
     
     # Test 3: Category doesn't exist (dry run) - country requiring "the"
-    print("\nTest case 3: Category doesn't exist (dry run) - country with 'the'")
     mock_site_3 = Mock()
     mock_page_not_exists_3 = MagicMock()
     mock_page_not_exists_3.exists = False
     mock_site_3.pages.__getitem__ = Mock(return_value=mock_page_not_exists_3)
     
     result = ensure_category_exists(mock_site_3, "United Kingdom", dry_run=True)
-    print(f"✓ Result: {result} (expected True)")
-    print("✓ Would create: Category:Our World in Data graphs of the United Kingdom")
-    print("✓ With content: [[Category:Our World in Data graphs|the United Kingdom]]")
-    
-    print()
+    assert result is True, "Should return True for countries with 'the' prefix in dry run mode"
 
 
+@pytest.mark.integration
 def test_dry_run_simulation():
     """Simulate a dry-run on actual test data."""
-    print("Test 7: Dry-Run Simulation")
-    print("=" * 80)
-    
     if not COUNTRIES_DIR.exists():
-        print("⚠ Country files directory not found. Run test_fetch_commons.py first.")
-        print()
-        return
+        pytest.skip('Country files directory not found')
     
     json_files = list(COUNTRIES_DIR.glob("*.json"))
     
     if not json_files:
-        print("⚠ No JSON files found")
-        print()
-        return
+        pytest.skip('No JSON files found')
     
     total_graphs = 0
+    countries_processed = 0
     
     # Sort to ensure consistent test order, and test all countries
     for json_file in sorted(json_files):
@@ -314,41 +251,19 @@ def test_dry_run_simulation():
             graphs = data.get('graphs', [])
             category = build_category_name(country)
             
-            print(f"\n{data.get('iso3')} ({normalized_country})")
-            print(f"  Original: {country}")
-            print(f"  Normalized: {normalized_country}")
-            print(f"  Category: {category}")
-            print(f"  Graphs to categorize: {len(graphs)}")
-            
-            for graph in graphs[:2]:  # Show first 2 graphs
-                print(f"    - {graph.get('title')}")
+            # Assertions
+            assert country is not None, f"Country should not be None for {json_file.name}"
+            assert normalized_country is not None, f"Normalized country should not be None for {country}"
+            assert category.startswith("Category:Our World in Data graphs of"), \
+                f"Category should have correct prefix for {country}"
+            assert isinstance(graphs, list), f"Graphs should be a list for {country}"
             
             total_graphs += len(graphs)
+            countries_processed += 1
     
-    print(f"\n✓ Total graphs that would be processed: {total_graphs}")
-    print()
+    # Final assertions
+    assert countries_processed > 0, "Should have processed at least one country"
+    assert total_graphs >= 0, "Total graphs should be non-negative"
 
 
-def main():
-    """Run all tests."""
-    print("\nOWID Commons Categorization Test Suite")
-    print("=" * 80)
-    print()
-    
-    test_normalize_country_name()
-    test_build_category_name()
-    test_category_exists()
-    test_load_country_json()
-    test_mock_categorization()
-    test_ensure_category_exists()
-    test_dry_run_simulation()
-    
-    print("=" * 80)
-    print("All tests completed!")
-    print("\nTo test with actual Commons connection:")
-    print("1. Create a .env file with your bot credentials")
-    print("2. Run: python3 src/categorize_commons_files.py --dry-run --limit 2")
 
-
-if __name__ == "__main__":
-    main()
