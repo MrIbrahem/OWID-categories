@@ -34,6 +34,12 @@ LOG_FILE = LOG_DIR / "fetch_commons.log"
 # User-Agent header (required by Wikimedia)
 USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
+# List of continents for classification
+CONTINENTS = {
+    "Africa", "Antarctica", "Asia", "Europe", "North America",
+    "South America", "Oceania", "Americas"
+}
+
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 # Map pattern: country/region name followed by a single year
@@ -171,14 +177,14 @@ def normalize_title(title: str) -> str:
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
     """
-    Classify a file as graph, map, or unknown and extract relevant information.
+    Classify a file as graph, map, continent_map, or unknown and extract relevant information.
 
     Args:
         title: Full file title
 
     Returns:
         Tuple of (file_type, parsed_data) where:
-        - file_type is "graph", "map", or None
+        - file_type is "graph", "map", "continent_map", or None
         - parsed_data is a dict with extracted fields
     """
     # Try graph pattern first
@@ -209,6 +215,14 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         first_comma = base_name.find(",")
         indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
 
+        # Check if region is a continent
+        if region in CONTINENTS:
+            return "continent_map", {
+                "continent": region,
+                "indicator": indicator,
+                "year": int(year)
+            }
+
         # Try to resolve region to ISO3
         iso3 = get_iso3_from_country(region)
 
@@ -235,20 +249,25 @@ def build_file_page_url(title: str) -> str:
     return "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")
 
 
-def process_files(files: List[str]) -> Dict[str, Dict]:
+def process_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], List[str]]:
     """
-    Process all files and aggregate them by country.
+    Process all files and aggregate them by country and continent.
 
     Args:
         files: List of file dictionaries from API
 
     Returns:
-        Dictionary keyed by ISO3 code with country data
+        Tuple of (countries, continents, not_matched) where:
+        - countries: Dictionary keyed by ISO3 code with country data
+        - continents: Dictionary keyed by continent name with continent data
+        - not_matched: List of unmatched file titles
     """
     countries = {}
+    continents = {}
     stats = {
         "graph_count": 0,
         "map_count": 0,
+        "continent_map_count": 0,
         "unknown_count": 0,
         "unresolved_region_count": 0
     }
@@ -264,6 +283,29 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
             stats["unknown_count"] += 1
             logger.debug(f"Unknown file type: {title}")
             not_matched.append(title)
+            continue
+
+        # Handle continent maps separately
+        if file_type == "continent_map":
+            continent = parsed_data["continent"]
+
+            # Initialize continent entry if needed
+            if continent not in continents:
+                continents[continent] = {
+                    "continent": continent,
+                    "maps": []
+                }
+
+            # Build entry
+            file_page = build_file_page_url(title)
+            entry = {
+                "title": title,
+                "indicator": parsed_data["indicator"],
+                "year": parsed_data["year"],
+                "file_page": file_page
+            }
+            continents[continent]["maps"].append(entry)
+            stats["continent_map_count"] += 1
             continue
 
         iso3 = parsed_data.get("iso3")
@@ -316,11 +358,13 @@ def process_files(files: List[str]) -> Dict[str, Dict]:
     logger.info("Classification complete:")
     logger.info(f"  Graphs: {stats['graph_count']}")
     logger.info(f"  Maps: {stats['map_count']}")
+    logger.info(f"  Continent maps: {stats['continent_map_count']}")
     logger.info(f"  Unknown: {stats['unknown_count']}")
     logger.info(f"  Unresolved regions: {stats['unresolved_region_count']}")
     logger.info(f"  Countries with data: {len(countries)}")
+    logger.info(f"  Continents with data: {len(continents)}")
 
-    return countries, not_matched
+    return countries, continents, not_matched
 
 
 def write_country_json_files(countries: Dict[str, Dict]):
@@ -342,20 +386,52 @@ def write_country_json_files(countries: Dict[str, Dict]):
     logger.info(f"Country JSON files written to {COUNTRIES_DIR}")
 
 
-def write_summary_json(countries: Dict[str, Dict]):
+def write_continent_json_files(continents: Dict[str, Dict]):
     """
-    Write global summary JSON file.
+    Write individual JSON files for each continent.
+
+    Args:
+        continents: Dictionary of continent data keyed by continent name
+    """
+    CONTINENTS_DIR = OUTPUT_DIR / "continents"
+    CONTINENTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    logger.info(f"Writing {len(continents)} continent JSON files")
+
+    for continent, data in continents.items():
+        # Use continent name as filename (replace spaces with underscores)
+        safe_name = continent.replace(" ", "_")
+        file_path = CONTINENTS_DIR / f"{safe_name}.json"
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    logger.info(f"Continent JSON files written to {CONTINENTS_DIR}")
+
+
+def write_summary_json(countries: Dict[str, Dict], continents: Dict[str, Dict]):
+    """
+    Write global summary JSON file including countries and continents.
 
     Args:
         countries: Dictionary of country data keyed by ISO3
+        continents: Dictionary of continent data keyed by continent name
     """
-    summary = []
+    summary = {
+        "countries": [],
+        "continents": []
+    }
 
     for iso3, data in sorted(countries.items()):
-        summary.append({
+        summary["countries"].append({
             "iso3": iso3,
             "country": data["country"],
             "graph_count": len(data["graphs"]),
+            "map_count": len(data["maps"])
+        })
+
+    for continent, data in sorted(continents.items()):
+        summary["continents"].append({
+            "continent": continent,
             "map_count": len(data["maps"])
         })
 
@@ -396,12 +472,13 @@ def main() -> None:
     # files = fetch_category_members()
     files = get_category_members_petscan(CATEGORY_NAME)
 
-    # Process and aggregate files by country
-    countries, not_matched = process_files(files)
+    # Process and aggregate files by country and continent
+    countries, continents, not_matched = process_files(files)
 
     # Write output files
     write_country_json_files(countries)
-    write_summary_json(countries)
+    write_continent_json_files(continents)
+    write_summary_json(countries, continents)
     write_not_matched_files(not_matched)
 
     logger.info("Processing complete!")
