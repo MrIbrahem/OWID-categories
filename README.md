@@ -45,6 +45,22 @@ This will:
 3. Extract country codes and metadata
 4. Generate output files in the `output/` directory
 
+### Testing with Sample Data
+
+To test the functionality without network access:
+
+```bash
+python3 test_fetch_commons.py
+```
+
+### Example Usage
+
+To see examples of how to use the various functions:
+
+```bash
+python3 example_usage.py
+```
+
 ### Output Structure
 
 ```
