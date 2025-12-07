@@ -2,12 +2,12 @@
 
 ## 0. Overview
 
-This stage builds on the output JSON files generated in **Phase 1** (`output/countries/*.json`)  
+This stage builds on the output JSON files generated in **Phase 1** (`output/countries/*.json`)
 and programmatically adds the correct **country graph categories** to corresponding files on Wikimedia Commons.
 
 Each country's graph files will be categorized as follows:
 
-- Example:  
+- Example:
   - `"CAN"` → `Category:Our World in Data graphs of Canada`
   - `"BRA"` → `Category:Our World in Data graphs of Brazil`
   - `"EGY"` → `Category:Our World in Data graphs of Egypt`
@@ -40,7 +40,7 @@ pip install mwclient python-dotenv
 Create a `.env` file:
 
 ```bash
-USERNAME=YourBotUsername
+WM_USERNAME=YourBotUsername
 PASSWORD=YourSecurePassword
 ```
 
@@ -57,7 +57,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-USERNAME = os.getenv("USERNAME")
+WM_USERNAME = os.getenv("WM_USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 ```
 
@@ -67,7 +67,7 @@ PASSWORD = os.getenv("PASSWORD")
 import mwclient
 
 site = mwclient.Site("commons.wikimedia.org")
-site.login(USERNAME, PASSWORD)
+site.login(WM_USERNAME, PASSWORD)
 ```
 
 ---

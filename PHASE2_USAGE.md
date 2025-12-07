@@ -29,13 +29,13 @@ If you don't have a bot account yet:
 cp .env.example .env
 
 # Edit .env and add your credentials
-# USERNAME should be in format: YourUsername@BotName
+# WM_USERNAME should be in format: YourUsername@BotName
 # PASSWORD is the generated bot password
 ```
 
 Example `.env` file:
 ```
-USERNAME=JohnDoe@owid-categorizer
+WM_USERNAME=JohnDoe@owid-categorizer
 PASSWORD=abcd1234efgh5678ijkl9012
 ```
 
@@ -106,7 +106,7 @@ Real-time progress is displayed on the console:
 2025-12-07 12:00:01,000 - INFO - Connecting to Wikimedia Commons...
 2025-12-07 12:00:02,000 - INFO - Successfully connected and logged in
 2025-12-07 12:00:03,000 - INFO - Found 150 country files
-2025-12-07 12:00:04,000 - INFO - 
+2025-12-07 12:00:04,000 - INFO -
 Processing CAN (Canada): 45 graphs
 2025-12-07 12:00:05,000 - INFO - Successfully added 'Category:Our World in Data graphs of Canada' to File:...
 ```
@@ -144,7 +144,7 @@ Errors: 5
 
 ## Troubleshooting
 
-### "USERNAME and/or PASSWORD not found in .env file"
+### "WM_USERNAME and/or PASSWORD not found in .env file"
 
 Solution: Create a `.env` file with your bot credentials (see Setup section)
 
@@ -205,7 +205,7 @@ Categories are added with proper English grammar. Country names are automaticall
 [[Category:Our World in Data graphs of the Bahamas]]
 ```
 
-The category name uses the full country name from the JSON file (not the ISO3 code), with automatic normalization for countries that require "the" prefix according to English grammar rules. 
+The category name uses the full country name from the JSON file (not the ISO3 code), with automatic normalization for countries that require "the" prefix according to English grammar rules.
 
 **Countries that get "the" prefix:**
 - Democratic Republic of Congo
