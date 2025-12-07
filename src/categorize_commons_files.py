@@ -19,7 +19,7 @@ import os
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import mwclient
 from dotenv import load_dotenv
@@ -40,7 +40,7 @@ EDIT_DELAY = 1.5
 def setup_logging():
     """Set up logging configuration."""
     LOG_DIR.mkdir(exist_ok=True)
-    
+
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -54,42 +54,42 @@ def setup_logging():
 def load_credentials() -> tuple[Optional[str], Optional[str]]:
     """
     Load credentials from .env file.
-    
+
     Returns:
         Tuple of (username, password) or (None, None) if not found
     """
     load_dotenv()
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
-    
+
     if not username or not password:
         logging.error("USERNAME and/or PASSWORD not found in .env file")
         return None, None
-    
+
     return username, password
 
 
 def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
     """
     Connect to Wikimedia Commons using mwclient.
-    
+
     Args:
         username: Bot username
         password: Bot password
-        
+
     Returns:
         Connected Site object or None on failure
     """
     try:
         logging.info("Connecting to Wikimedia Commons...")
         site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
-        
+
         logging.info(f"Logging in as {username}...")
         site.login(username, password)
-        
+
         logging.info("Successfully connected and logged in")
         return site
-        
+
     except Exception as e:
         logging.error(f"Failed to connect to Commons: {e}")
         return None
@@ -98,12 +98,12 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
 def normalize_country_name(country: str) -> str:
     """
     Normalize country name by adding "the" prefix where appropriate.
-    
+
     According to proper English grammar, certain country names require "the" article.
-    
+
     Args:
         country: Country name (e.g., "United Kingdom", "Canada")
-        
+
     Returns:
         Normalized country name (e.g., "the United Kingdom", "Canada")
     """
@@ -131,7 +131,7 @@ def normalize_country_name(country: str) -> str:
         # even though "Vatican City" is the standard form
         "Vatican",
     }
-    
+
     if country in countries_with_the:
         return f"the {country}"
     return country
@@ -140,10 +140,10 @@ def normalize_country_name(country: str) -> str:
 def build_category_name(country: str) -> str:
     """
     Build the category name for a country.
-    
+
     Args:
         country: Country name (e.g., "Canada", "United Kingdom")
-        
+
     Returns:
         Category name with normalized country name
         (e.g., "Category:Our World in Data graphs of Canada",
@@ -160,40 +160,40 @@ def ensure_category_exists(
 ) -> bool:
     """
     Ensure the category page exists for a country. Create it if it doesn't.
-    
+
     Args:
         site: Connected mwclient Site
         country: Country name (e.g., "Canada", "United States")
         dry_run: If True, don't actually make the edit
-        
+
     Returns:
         True if category exists or was created, False on error
     """
     normalized_country = normalize_country_name(country)
     category_title = build_category_name(country)
-    
+
     try:
         category_page = site.pages[category_title]
-        
+
         if category_page.exists:
             logging.debug(f"Category already exists: {category_title}")
             return True
-        
+
         # Category doesn't exist, create it
         # Use normalized country name for sorting in parent category
         category_content = f"[[Category:Our World in Data graphs|{normalized_country}]]"
-        
+
         if dry_run:
             logging.info(f"[DRY RUN] Would create category page: {category_title}")
             return True
-        
+
         # Create the category page with normalized name in edit summary
         edit_summary = f"Create category for {normalized_country} OWID graphs (automated)"
         category_page.save(category_content, summary=edit_summary)
-        
+
         logging.info(f"Created category page: {category_title}")
         return True
-        
+
     except Exception as e:
         logging.error(f"Error ensuring category exists for {country}: {e}")
         return False
@@ -202,11 +202,11 @@ def ensure_category_exists(
 def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
     """
     Get the current text content of a page.
-    
+
     Args:
         site: Connected mwclient Site
         title: Page title
-        
+
     Returns:
         Page text or None if page doesn't exist
     """
@@ -223,28 +223,28 @@ def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
 def category_exists_on_page(page_text: str, category: str) -> bool:
     """
     Check if a category already exists on a page.
-    
+
     Args:
         page_text: Current page text
         category: Category name to check (e.g., "Category:Our World in Data graphs of Canada")
-        
+
     Returns:
         True if category exists, False otherwise
     """
     if not page_text:
         return False
-    
+
     # Check for various category formats
     # [[Category:Name]] or [[category:Name]]
     category_simple = category.replace("Category:", "")
-    
+
     checks = [
         f"[[{category}]]",
         f"[[{category.lower()}]]",
         f"[[Category:{category_simple}]]",
         f"[[category:{category_simple}]]",
     ]
-    
+
     return any(check in page_text for check in checks)
 
 
@@ -256,45 +256,45 @@ def add_category_to_page(
 ) -> bool:
     """
     Add a category to a page on Commons.
-    
+
     Args:
         site: Connected mwclient Site
         title: Page title (e.g., "File:Agriculture share gdp, 1997 to 2021, CAN.svg")
         category: Category to add (e.g., "Category:Our World in Data graphs of Canada")
         dry_run: If True, don't actually make the edit
-        
+
     Returns:
         True if category was added (or would be added in dry-run), False otherwise
     """
     try:
         page = site.pages[title]
-        
+
         if not page.exists:
             logging.warning(f"Page does not exist: {title}")
             return False
-        
+
         # Get current page text
         current_text = page.text()
-        
+
         # Check if category already exists
         if category_exists_on_page(current_text, category):
             logging.info(f"Category already exists on {title}")
             return False
-        
+
         # Add category at the end of the page
         new_text = current_text.rstrip() + f"\n[[{category}]]\n"
-        
+
         if dry_run:
             logging.info(f"[DRY RUN] Would add '{category}' to {title}")
             return True
-        
+
         # Make the edit
         edit_summary = f"Add {category} (automated)"
         page.save(new_text, summary=edit_summary)
-        
+
         logging.info(f"Successfully added '{category}' to {title}")
         return True
-        
+
     except Exception as e:
         logging.error(f"Error adding category to {title}: {e}")
         return False
@@ -303,10 +303,10 @@ def add_category_to_page(
 def load_country_json(file_path: Path) -> Optional[Dict]:
     """
     Load a country JSON file.
-    
+
     Args:
         file_path: Path to the JSON file
-        
+
     Returns:
         Parsed JSON data or None on error
     """
@@ -326,13 +326,13 @@ def process_country_file(
 ) -> Dict[str, int]:
     """
     Process a single country JSON file and add categories to its files.
-    
+
     Args:
         site: Connected mwclient Site
         file_path: Path to country JSON file
         dry_run: If True, don't actually make edits
         graphs_only: If True, only process graph files (not maps)
-        
+
     Returns:
         Dictionary with statistics (added, skipped, errors)
     """
@@ -341,34 +341,34 @@ def process_country_file(
         "skipped": 0,
         "errors": 0
     }
-    
+
     # Load country data
     data = load_country_json(file_path)
     if not data:
         stats["errors"] += 1
         return stats
-    
+
     iso3 = data.get("iso3")
     country = data.get("country")
     graphs = data.get("graphs", [])
-    
+
     if not country:
         logging.error(f"No country name in {file_path}")
         stats["errors"] += 1
         return stats
-    
+
     # Normalize country name and build category name
     normalized_country = normalize_country_name(country)
     category = build_category_name(country)
-    
+
     logging.info(f"\nProcessing {iso3} ({normalized_country}): {len(graphs)} graphs")
-    
+
     # Ensure the category page exists before adding files to it
     if not ensure_category_exists(site, country, dry_run):
         logging.error(f"Failed to ensure category '{category}' exists for {normalized_country}, skipping this country (see detailed error above)")
         stats["errors"] += 1
         return stats
-    
+
     # Process graphs
     for graph in graphs:
         title = graph.get("title")
@@ -376,73 +376,73 @@ def process_country_file(
             logging.warning(f"Graph missing title in {file_path}")
             stats["errors"] += 1
             continue
-        
+
         # Add category
         if add_category_to_page(site, title, category, dry_run):
             stats["added"] += 1
         else:
             stats["skipped"] += 1
-        
+
         # Rate limiting
         if not dry_run:
             time.sleep(EDIT_DELAY)
-    
+
     return stats
 
 
 def main(dry_run: bool = False, limit: Optional[int] = None):
     """
     Main execution function.
-    
+
     Processes graph files (not maps) from country JSON files and adds country-specific
     categories to them on Wikimedia Commons.
-    
+
     Args:
         dry_run: If True, don't actually make edits
         limit: Optional limit on number of countries to process
     """
     setup_logging()
-    
+
     logging.info("=" * 80)
     logging.info("OWID Commons File Categorizer")
     logging.info("=" * 80)
-    
+
     if dry_run:
         logging.info("Running in DRY RUN mode - no actual edits will be made")
-    
+
     # Load credentials
     username, password = load_credentials()
     if not username or not password:
         logging.error("Failed to load credentials from .env file")
         logging.error("Please create a .env file with USERNAME and PASSWORD")
         sys.exit(1)
-    
+
     # Connect to Commons
     site = connect_to_commons(username, password)
     if not site:
         logging.error("Failed to connect to Wikimedia Commons")
         sys.exit(1)
-    
+
     # Check if countries directory exists
     if not COUNTRIES_DIR.exists():
         logging.error(f"Countries directory not found: {COUNTRIES_DIR}")
         logging.error("Please run Phase 1 (fetch_commons_files.py) first")
         sys.exit(1)
-    
+
     # Get all country JSON files
     country_files = sorted(COUNTRIES_DIR.glob("*.json"))
-    
+
     if not country_files:
         logging.error(f"No country JSON files found in {COUNTRIES_DIR}")
         sys.exit(1)
-    
+
     logging.info(f"Found {len(country_files)} country files")
-    
+
     # Apply limit if specified
     if limit:
         country_files = country_files[:limit]
         logging.info(f"Processing limited to first {limit} countries")
-    
+
     # Process each country file
     total_stats = {
         "added": 0,
@@ -450,14 +450,14 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
         "errors": 0,
         "countries_processed": 0
     }
-    
+
     for file_path in country_files:
         stats = process_country_file(site, file_path, dry_run)
         total_stats["added"] += stats["added"]
         total_stats["skipped"] += stats["skipped"]
         total_stats["errors"] += stats["errors"]
         total_stats["countries_processed"] += 1
-    
+
     # Final summary
     logging.info("\n" + "=" * 80)
     logging.info("FINAL SUMMARY")
@@ -467,7 +467,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
     logging.info(f"Already had category (skipped): {total_stats['skipped']}")
     logging.info(f"Errors: {total_stats['errors']}")
     logging.info("=" * 80)
-    
+
     if dry_run:
         logging.info("\nThis was a DRY RUN - no actual edits were made")
         logging.info("Run without --dry-run flag to make actual edits")
@@ -475,7 +475,7 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description="Add country categories to OWID graph files on Wikimedia Commons"
     )
@@ -489,9 +489,9 @@ if __name__ == "__main__":
         type=int,
         help="Limit processing to first N countries (for testing)"
     )
-    
+
     args = parser.parse_args()
-    
+
     try:
         main(dry_run=args.dry_run, limit=args.limit)
     except KeyboardInterrupt:

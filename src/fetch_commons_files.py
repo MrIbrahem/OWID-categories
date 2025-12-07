@@ -25,10 +25,10 @@ logger = logging.getLogger(__name__)
 # Configuration
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
-OUTPUT_DIR = Path(__file__).parent.parent / "output"
+OUTPUT_DIR = Path("output")
 COUNTRIES_DIR = OUTPUT_DIR / "countries"
 SUMMARY_FILE = OUTPUT_DIR / "owid_country_summary.json"
-LOG_DIR = Path(__file__).parent.parent / "logs"
+LOG_DIR = Path("output")
 LOG_FILE = LOG_DIR / "fetch_commons.log"
 
 # User-Agent header (required by Wikimedia)
