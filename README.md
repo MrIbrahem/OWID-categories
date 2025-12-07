@@ -14,14 +14,18 @@ The tools fetch, classify, and organize OWID visualizations (graphs and maps) fr
   - Extracts country ISO3 codes
   - Generates JSON output per country and a global summary
 
-- **Phase 2** (planned): Automated categorization
-  - Adds country-specific categories to files on Commons
+- **Phase 2**: Automated categorization
+  - Adds country-specific categories to graph files on Commons
   - Uses the output from Phase 1
+  - Includes dry-run mode for safe testing
+  - Respects Wikimedia rate limits with configurable delays
 
 ## Requirements
 
 - Python 3.10+
 - `requests` library
+- `mwclient` library (for Phase 2)
+- `python-dotenv` library (for Phase 2)
 
 Install dependencies:
 
@@ -33,16 +37,20 @@ pip install -r requirements.txt
 
 ```
 OWID-categories/
-├── src/                        # Main source code
-│   ├── fetch_commons_files.py  # Main processing script
-│   └── owid_country_codes.py   # Country code mappings
-├── tests/                      # Test files
-│   ├── test_fetch_commons.py   # Test suite with sample data
-│   └── example_usage.py        # Usage examples
-├── output/                     # Generated output (gitignored)
-│   ├── countries/              # Per-country JSON files
+├── src/                             # Main source code
+│   ├── fetch_commons_files.py       # Phase 1: Fetch and classify files
+│   ├── categorize_commons_files.py  # Phase 2: Add categories
+│   └── owid_country_codes.py        # Country code mappings
+├── tests/                           # Test files
+│   ├── test_fetch_commons.py        # Test suite for Phase 1
+│   ├── test_categorize.py           # Test suite for Phase 2
+│   └── example_usage.py             # Usage examples
+├── output/                          # Generated output (gitignored)
+│   ├── countries/                   # Per-country JSON files
 │   └── owid_country_summary.json
-└── logs/                       # Log files (gitignored)
+├── logs/                            # Log files (gitignored)
+├── .env.example                     # Example environment file
+└── requirements.txt                 # Python dependencies
 ```
 
 ## Usage
@@ -76,6 +84,91 @@ To see examples of how to use the various functions:
 ```bash
 python3 tests/example_usage.py
 ```
+
+### Phase 2: Automated Categorization
+
+Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
+
+#### Setup
+
+1. **Copy the example environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit `.env` and add your Wikimedia Commons bot credentials:**
+   ```
+   USERNAME=YourBotUsername
+   PASSWORD=YourBotPassword
+   ```
+
+   To create bot credentials:
+   - Go to https://commons.wikimedia.org/wiki/Special:BotPasswords
+   - Create a new bot password with "Edit existing pages" permission
+   - Use the generated credentials in your `.env` file
+
+3. **Ensure Phase 1 output exists:**
+   ```bash
+   # Either run Phase 1 to generate real data:
+   python3 src/fetch_commons_files.py
+   
+   # Or generate test data:
+   python3 tests/test_fetch_commons.py
+   ```
+
+#### Running the Categorizer
+
+**Test with dry-run mode first (recommended):**
+```bash
+# Test on first 2 countries without making actual edits
+python3 src/categorize_commons_files.py --dry-run --limit 2
+```
+
+**Run on limited set of countries:**
+```bash
+# Process first 5 countries
+python3 src/categorize_commons_files.py --limit 5
+```
+
+**Run on all countries:**
+```bash
+python3 src/categorize_commons_files.py
+```
+
+#### What it Does
+
+For each country's graph files, the script:
+1. Loads the country JSON file from `output/countries/`
+2. Connects to Wikimedia Commons using your bot credentials
+3. For each graph file:
+   - Checks if the country category already exists on the page
+   - If not, adds: `[[Category:Our World in Data graphs of {Country}]]`
+   - Saves with edit summary: `"Add Category:Our World in Data graphs of {Country} (automated)"`
+4. Respects rate limits with 1.5 second delays between edits
+5. Logs all actions to console and `logs/categorize_commons.log`
+
+#### Testing
+
+Test the categorization logic without Commons credentials:
+```bash
+python3 tests/test_categorize.py
+```
+
+#### Category Format
+
+Categories are added in this format:
+- Canada: `Category:Our World in Data graphs of Canada`
+- United States: `Category:Our World in Data graphs of United States`
+- Brazil: `Category:Our World in Data graphs of Brazil`
+
+#### Safety Features
+
+- **Dry-run mode**: Test without making actual edits
+- **Limit option**: Process only a subset of countries for testing
+- **Duplicate detection**: Skips files that already have the category
+- **Rate limiting**: 1.5 second delay between edits
+- **Comprehensive logging**: All actions logged to file and console
+- **Error handling**: Continues processing if individual files fail
 
 ### Output Structure
 
@@ -148,7 +241,10 @@ Files matching this pattern are classified as maps:
 
 ## Logging
 
-Logs are written to `logs/fetch_commons.log` and also displayed on the console.
+- Phase 1 logs: `logs/fetch_commons.log`
+- Phase 2 logs: `logs/categorize_commons.log`
+
+All logs are also displayed on the console in real-time.
 
 ## Country Codes
 
