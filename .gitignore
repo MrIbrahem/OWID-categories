@@ -1,18 +1,38 @@
-# Output directories
-output/
-logs/
+# Environment variables and credentials
+.env
+.env.local
+.env.*.local
 
-# Python cache
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Virtual environment
+# Virtual environments
 venv/
-env/
 ENV/
+env/
+.venv
 
 # IDE
 .vscode/
@@ -20,10 +40,18 @@ ENV/
 *.swp
 *.swo
 *~
-
-# OS files
 .DS_Store
-Thumbs.db
 
-# Environment variables
-.env
+# Logs
+logs/
+*.log
+
+# Output files (optional - uncomment if you don't want to track output)
+# output/
+# output/countries/
+# output/*.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp
