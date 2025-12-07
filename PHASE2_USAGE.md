@@ -195,11 +195,14 @@ Categories are added with proper English grammar. Country names are automaticall
 [[Category:Our World in Data graphs of Canada]]
 [[Category:Our World in Data graphs of Brazil]]
 [[Category:Our World in Data graphs of the United Kingdom]]
+[[Category:Our World in Data graphs of the United States]]
 [[Category:Our World in Data graphs of the Philippines]]
 [[Category:Our World in Data graphs of the Netherlands]]
 [[Category:Our World in Data graphs of the Dominican Republic]]
 [[Category:Our World in Data graphs of the United Arab Emirates]]
 [[Category:Our World in Data graphs of the Democratic Republic of Congo]]
+[[Category:Our World in Data graphs of the Czech Republic]]
+[[Category:Our World in Data graphs of the Bahamas]]
 ```
 
 The category name uses the full country name from the JSON file (not the ISO3 code), with automatic normalization for countries that require "the" prefix according to English grammar rules. 
@@ -211,6 +214,17 @@ The category name uses the full country name from the JSON file (not the ISO3 co
 - Netherlands
 - United Arab Emirates
 - United Kingdom
+- United States
+- Czech Republic
+- Central African Republic
+- Maldives
+- Seychelles
+- Bahamas
+- Marshall Islands
+- Solomon Islands
+- Comoros
+- Gambia
+- Vatican City
 
 ## Safety Features
 

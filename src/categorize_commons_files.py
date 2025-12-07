@@ -116,6 +116,18 @@ def normalize_country_name(country: str) -> str:
         "Netherlands",
         "United Arab Emirates",
         "United Kingdom",
+        "United States",
+        "Czech Republic",
+        "Central African Republic",
+        "Maldives",
+        "Seychelles",
+        "Bahamas",
+        "Marshall Islands",
+        "Solomon Islands",
+        "Comoros",
+        "Gambia",
+        "Vatican City",
+        "Vatican",  # Also handle "Vatican" from OWID codes
     }
     
     if country in countries_with_the:

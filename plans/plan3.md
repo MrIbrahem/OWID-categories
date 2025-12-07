@@ -25,6 +25,17 @@ Add **"the"** only if the country name is one of:
 4. Netherlands
 5. United Arab Emirates
 6. United Kingdom
+7. United States
+8. Czech Republic
+9. Central African Republic
+10. Maldives
+11. Seychelles
+12. Bahamas
+13. Marshall Islands
+14. Solomon Islands
+15. Comoros
+16. Gambia
+17. Vatican City
 
 **Note:** This is the definitive list based on proper English grammar conventions for country names as used in categorization.
 
@@ -42,14 +53,16 @@ Category:Our World in Data graphs of {NormalizedCountry}
 
 **Examples:**
 - `Category:Our World in Data graphs of the United Kingdom`
+- `Category:Our World in Data graphs of the United States`
 - `Category:Our World in Data graphs of the Philippines`
 - `Category:Our World in Data graphs of the Netherlands`
 - `Category:Our World in Data graphs of the Dominican Republic`
 - `Category:Our World in Data graphs of the United Arab Emirates`
 - `Category:Our World in Data graphs of the Democratic Republic of Congo`
-- `Category:Our World in Data graphs of Brazil`
-- `Category:Our World in Data graphs of Canada`
-- `Category:Our World in Data graphs of United States` (no "the")
+- `Category:Our World in Data graphs of the Czech Republic`
+- `Category:Our World in Data graphs of the Bahamas`
+- `Category:Our World in Data graphs of Brazil` (no "the")
+- `Category:Our World in Data graphs of Canada` (no "the")
 
 ### Rule 4 — Consistency
 
@@ -106,6 +119,7 @@ Update the following existing functions to use the normalized country name:
 
 All log messages should use the normalized country name:
 - `"Processing GBR (the United Kingdom): 123 graphs"`
+- `"Processing USA (the United States): 45 graphs"`
 - `"Created category page: Category:Our World in Data graphs of the Philippines"`
 - Edit summaries: `"Create category for the United Kingdom OWID graphs (automated)"`
 
@@ -118,22 +132,22 @@ All log messages should use the normalized country name:
 Add tests to `tests/test_categorize.py`:
 
 1. **Test normalization function:**
-   - Countries requiring "the": United Kingdom, Philippines, Netherlands, etc.
-   - Countries not requiring "the": Canada, Brazil, Germany, United States, etc.
+   - Countries requiring "the": United Kingdom, United States, Philippines, Netherlands, Bahamas, etc.
+   - Countries not requiring "the": Canada, Brazil, Germany, France, etc.
 
 2. **Test category name construction:**
    - Verify that `build_category_name()` produces correct output with normalized names
    - Examples:
      - `"United Kingdom"` → `"Category:Our World in Data graphs of the United Kingdom"`
+     - `"United States"` → `"Category:Our World in Data graphs of the United States"`
      - `"Canada"` → `"Category:Our World in Data graphs of Canada"`
-     - `"United States"` → `"Category:Our World in Data graphs of United States"` (no "the")
 
 ### 3.2 Integration Tests
 
 Test with actual country JSON files:
-- Load country data for UK (United Kingdom), Philippines, Netherlands
+- Load country data for UK (United Kingdom), USA (United States), Philippines, Netherlands
 - Verify that category names are correctly generated with "the" prefix
-- Verify that other countries (like USA, Canada) remain unchanged (no "the")
+- Verify that other countries (like Canada, Brazil) remain unchanged (no "the")
 
 ---
 
@@ -151,7 +165,7 @@ Test with actual country JSON files:
    - Ensure normalized names are used in log messages
 
 4. **Add unit tests**
-   - Test normalization function with all 6 countries requiring "the"
+   - Test normalization function with all 17 countries requiring "the"
    - Test with regular countries
    - Test category name construction
 
@@ -171,6 +185,7 @@ Test with actual country JSON files:
 ### Before (Without normalization):
 ```
 Category:Our World in Data graphs of United Kingdom
+Category:Our World in Data graphs of United States
 Category:Our World in Data graphs of Philippines
 Category:Our World in Data graphs of Netherlands
 Category:Our World in Data graphs of Dominican Republic
@@ -179,11 +194,14 @@ Category:Our World in Data graphs of Dominican Republic
 ### After (With normalization):
 ```
 Category:Our World in Data graphs of the United Kingdom
+Category:Our World in Data graphs of the United States
 Category:Our World in Data graphs of the Philippines
 Category:Our World in Data graphs of the Netherlands
 Category:Our World in Data graphs of the Dominican Republic
 Category:Our World in Data graphs of the United Arab Emirates
 Category:Our World in Data graphs of the Democratic Republic of Congo
+Category:Our World in Data graphs of the Czech Republic
+Category:Our World in Data graphs of the Bahamas
 ```
 
 ### Unchanged (Countries not in the list):
@@ -191,7 +209,7 @@ Category:Our World in Data graphs of the Democratic Republic of Congo
 Category:Our World in Data graphs of Canada
 Category:Our World in Data graphs of Brazil
 Category:Our World in Data graphs of Germany
-Category:Our World in Data graphs of United States
+Category:Our World in Data graphs of France
 ```
 
 ---
@@ -222,7 +240,7 @@ The normalization happens at categorization time (Phase 2), not during data fetc
 
 Before completing implementation:
 
-- [x] Normalization function correctly handles all 6 countries requiring "the"
+- [x] Normalization function correctly handles all 17 countries requiring "the"
 - [x] Category names are correctly formatted with "the" prefix
 - [x] Edit summaries use normalized names
 - [x] Log messages use normalized names

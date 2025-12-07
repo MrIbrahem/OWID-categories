@@ -164,11 +164,12 @@ Categories are added in this format with proper English grammar:
 - Canada: `Category:Our World in Data graphs of Canada`
 - Brazil: `Category:Our World in Data graphs of Brazil`
 - United Kingdom: `Category:Our World in Data graphs of the United Kingdom`
+- United States: `Category:Our World in Data graphs of the United States`
 - Philippines: `Category:Our World in Data graphs of the Philippines`
 - Netherlands: `Category:Our World in Data graphs of the Netherlands`
 - Dominican Republic: `Category:Our World in Data graphs of the Dominican Republic`
 
-**Note:** Certain countries require "the" prefix according to proper English grammar rules. The script automatically normalizes country names to include "the" for: **Democratic Republic of Congo**, **Dominican Republic**, **Philippines**, **Netherlands**, **United Arab Emirates**, and **United Kingdom**.
+**Note:** Certain countries require "the" prefix according to proper English grammar rules. The script automatically normalizes country names to include "the" for: **Democratic Republic of Congo**, **Dominican Republic**, **Philippines**, **Netherlands**, **United Arab Emirates**, **United Kingdom**, **United States**, **Czech Republic**, **Central African Republic**, **Maldives**, **Seychelles**, **Bahamas**, **Marshall Islands**, **Solomon Islands**, **Comoros**, **Gambia**, and **Vatican City**.
 
 #### Safety Features
 

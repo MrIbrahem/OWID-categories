@@ -27,7 +27,7 @@ def test_normalize_country_name():
     print("Test 1: Normalizing Country Names")
     print("=" * 80)
     
-    # Countries that should have "the" prefix (updated list)
+    # Countries that should have "the" prefix (complete list from user)
     test_cases_with_the = [
         ("Democratic Republic of Congo", "the Democratic Republic of Congo"),
         ("Dominican Republic", "the Dominican Republic"),
@@ -35,6 +35,18 @@ def test_normalize_country_name():
         ("Netherlands", "the Netherlands"),
         ("United Arab Emirates", "the United Arab Emirates"),
         ("United Kingdom", "the United Kingdom"),
+        ("United States", "the United States"),
+        ("Czech Republic", "the Czech Republic"),
+        ("Central African Republic", "the Central African Republic"),
+        ("Maldives", "the Maldives"),
+        ("Seychelles", "the Seychelles"),
+        ("Bahamas", "the Bahamas"),
+        ("Marshall Islands", "the Marshall Islands"),
+        ("Solomon Islands", "the Solomon Islands"),
+        ("Comoros", "the Comoros"),
+        ("Gambia", "the Gambia"),
+        ("Vatican City", "the Vatican City"),
+        ("Vatican", "the Vatican"),
     ]
     
     # Countries that should NOT have "the" prefix
@@ -47,9 +59,6 @@ def test_normalize_country_name():
         ("China", "China"),
         ("Japan", "Japan"),
         ("Australia", "Australia"),
-        ("United States", "United States"),  # Not in the new list
-        ("Czech Republic", "Czech Republic"),  # Not in the new list
-        ("Bahamas", "Bahamas"),  # Not in the new list
     ]
     
     print("\nCountries requiring 'the' prefix:")
@@ -88,16 +97,18 @@ def test_build_category_name():
         ("Canada", "Category:Our World in Data graphs of Canada"),
         ("Brazil", "Category:Our World in Data graphs of Brazil"),
         ("Germany", "Category:Our World in Data graphs of Germany"),
-        # Countries with "the" prefix
+        # Countries with "the" prefix (expanded list)
         ("United Kingdom", "Category:Our World in Data graphs of the United Kingdom"),
+        ("United States", "Category:Our World in Data graphs of the United States"),
         ("Philippines", "Category:Our World in Data graphs of the Philippines"),
         ("Netherlands", "Category:Our World in Data graphs of the Netherlands"),
         ("Dominican Republic", "Category:Our World in Data graphs of the Dominican Republic"),
         ("United Arab Emirates", "Category:Our World in Data graphs of the United Arab Emirates"),
-        ("Democratic Republic of Congo", "Category:Our World in Data graphs of the Democratic Republic of Congo"),
-        # Countries that should NOT have "the" anymore
-        ("United States", "Category:Our World in Data graphs of United States"),
-        ("Bahamas", "Category:Our World in Data graphs of Bahamas"),
+        ("Czech Republic", "Category:Our World in Data graphs of the Czech Republic"),
+        ("Central African Republic", "Category:Our World in Data graphs of the Central African Republic"),
+        ("Bahamas", "Category:Our World in Data graphs of the Bahamas"),
+        ("Maldives", "Category:Our World in Data graphs of the Maldives"),
+        ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
     ]
     
     all_passed = True
