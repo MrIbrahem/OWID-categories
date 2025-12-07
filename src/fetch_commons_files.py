@@ -37,7 +37,7 @@ USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-cate
 # List of continents for classification
 CONTINENTS = {
     "Africa", "Antarctica", "Asia", "Europe", "North America",
-    "South America", "Oceania", "Americas"
+    "South America", "Oceania", "Americas", "World"
 }
 
 # Regex patterns for classification
