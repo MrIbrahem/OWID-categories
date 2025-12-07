@@ -296,6 +296,9 @@ def main(dry_run: bool = False, limit: Optional[int] = None):
     """
     Main execution function.
     
+    Processes graph files (not maps) from country JSON files and adds country-specific
+    categories to them on Wikimedia Commons.
+    
     Args:
         dry_run: If True, don't actually make edits
         limit: Optional limit on number of countries to process
