@@ -13,23 +13,22 @@ Requirements:
 import json
 import logging
 import re
-import urllib
-import sys
 from typing import Dict, List, Optional, Tuple
-import requests
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
 from owid_config import OUTPUT_DIR, LOG_DIR, COUNTRIES_DIR
+
+from categorize import (
+    get_category_members_petscan,
+    # fetch_category_members,
+)
+from utils import normalize_title, setup_logging
 
 logger = logging.getLogger(__name__)
 
 # Configuration
-API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
-SUMMARY_FILE = OUTPUT_DIR / "owid_country_summary.json"
+SUMMARY_FILE = OUTPUT_DIR / "owid_summary.json"
 LOG_FILE = LOG_DIR / "fetch_commons.log"
-
-# User-Agent header (required by Wikimedia)
-USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
 # List of continents for classification
 CONTINENTS = {
@@ -43,133 +42,6 @@ GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
 # Note: Hyphen is at the end of character class to avoid being interpreted as a range
 MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)\.svg$")
-
-
-def setup_logging():
-    """Set up logging configuration."""
-    LOG_DIR.mkdir(exist_ok=True)
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.FileHandler(LOG_FILE),
-            logging.StreamHandler(sys.stdout)
-        ]
-    )
-
-
-def get_category_members_petscan(category) -> list | list[str]:
-    """
-    Fetch all pages belonging to a given category from a Wikimedia project using the Petscan API.
-    """
-    # Build PetScan URL for the given category
-    base_url = "https://petscan.wmflabs.org/"
-
-    if category.lower().startswith("category:"):
-        category = category[9:]
-
-    params = {
-        "language": "commons",
-        "project": "wikimedia",
-        "categories": f"{category}",
-        "format": "plain",
-        "depth": 0,
-        "ns[6]": 1,
-        "doit": "Do it!"
-    }
-    url = f"{base_url}?{urllib.parse.urlencode(params)}"
-
-    logger.info(f"petscan url: {url}")
-
-    headers = {}
-    headers["User-Agent"] = USER_AGENT
-    text = ""
-    try:
-        resp = requests.get(url, headers=headers, timeout=30)
-        resp.raise_for_status()
-        text = resp.text
-    except Exception as e:
-        logger.error(f"get_petscan_category_pages: request/json error: {e}")
-        return []
-
-    if not text:
-        logger.warning("get_petscan_category_pages: empty response")
-        return []
-
-    result = [x.strip() for x in text.splitlines()]
-    logger.debug(f"get_petscan_category_pages: found {len(result)} members")
-    return result
-
-
-def fetch_category_members() -> List[Dict]:
-    """
-    Fetch all files from the OWID category using MediaWiki API with pagination.
-
-    Returns:
-        List of file dictionaries with 'pageid', 'title', etc.
-    """
-    all_files = []
-    cmcontinue = None
-    page_count = 0
-
-    logger.info(f"Starting to fetch files from {CATEGORY_NAME}")
-
-    while True:
-        params = {
-            "action": "query",
-            "format": "json",
-            "list": "categorymembers",
-            "cmtitle": CATEGORY_NAME,
-            "cmtype": "file",
-            "cmlimit": "max"
-        }
-
-        if cmcontinue:
-            params["cmcontinue"] = cmcontinue
-
-        try:
-            response = requests.get(
-                API_ENDPOINT,
-                params=params,
-                headers={"User-Agent": USER_AGENT},
-                timeout=30
-            )
-            response.raise_for_status()
-            data = response.json()
-
-            members = data.get("query", {}).get("categorymembers", [])
-            all_files.extend([x.get("title", "") for x in members])
-            page_count += 1
-
-            logger.info(f"Fetched page {page_count}: {len(members)} files (total: {len(all_files)})")
-
-            if "continue" in data:
-                cmcontinue = data["continue"].get("cmcontinue")
-            else:
-                break
-
-        except requests.RequestException as e:
-            logger.error(f"API request failed: {e}")
-            raise
-
-    logger.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
-    return all_files
-
-
-def normalize_title(title: str) -> str:
-    """
-    Remove 'File:' prefix and return base name.
-
-    Args:
-        title: Full file title like "File:Something.svg"
-
-    Returns:
-        Base name without prefix
-    """
-    if title.startswith("File:"):
-        return title[5:]
-    return title
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
@@ -465,10 +337,10 @@ def write_not_matched_files(not_matched: List[str]) -> None:
 
 def main() -> None:
     """Main execution function."""
-    setup_logging()
+    setup_logging(LOG_FILE)
 
     # Fetch all files from the category
-    # files = fetch_category_members()
+    # files = fetch_category_members(CATEGORY_NAME)
     files = get_category_members_petscan(CATEGORY_NAME)
 
     # Process and aggregate files by country and continent

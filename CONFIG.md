@@ -122,7 +122,7 @@ When you run any script that imports `owid_config`, the following directories ar
 ```
 {MAIN_DIR}/
 ├── output/                          # All generated JSON files
-│   ├── owid_country_summary.json    # Summary statistics
+│   ├── owid_summary.json    # Summary statistics
 │   ├── countries/                   # Per-country files
 │   │   ├── CAN.json
 │   │   ├── USA.json
@@ -245,7 +245,7 @@ from pathlib import Path
 from owid_config import OUTPUT_DIR
 
 # Read the global summary file
-summary_file = OUTPUT_DIR / "owid_country_summary.json"
+summary_file = OUTPUT_DIR / "owid_summary.json"
 
 if summary_file.exists():
     with open(summary_file, "r", encoding="utf-8") as f:

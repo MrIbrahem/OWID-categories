@@ -119,10 +119,10 @@ def test_processing():
 
     # Verify output files were created
     assert COUNTRIES_DIR.exists(), "Countries directory should be created"
-    assert (OUTPUT_DIR / 'owid_country_summary.json').exists(), "Summary file should be created"
+    assert (OUTPUT_DIR / 'owid_summary.json').exists(), "Summary file should be created"
 
     # Verify summary content
-    summary_file = OUTPUT_DIR / "owid_country_summary.json"
+    summary_file = OUTPUT_DIR / "owid_summary.json"
     with open(summary_file, "r") as f:
         summary = json.load(f)
 

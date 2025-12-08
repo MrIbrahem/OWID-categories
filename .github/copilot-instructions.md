@@ -591,7 +591,7 @@ pytest -vv
 }
 ```
 
-### Global Summary (`output/owid_country_summary.json`)
+### Global Summary (`output/owid_summary.json`)
 ```json
 [
   {

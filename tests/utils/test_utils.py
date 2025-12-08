@@ -1,5 +1,5 @@
 """
-Tests for categorize.utils module.
+Tests for utils module.
 
 Tests utility functions for country name normalization, category building,
 and JSON file loading.
@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 import pytest
 import json
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import patch, mock_open
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-from categorize.utils import (
+from utils import (
     normalize_country_name,
     build_category_name,
     get_parent_category,

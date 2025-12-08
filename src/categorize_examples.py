@@ -9,7 +9,7 @@ programmatically without running the full scripts.
 from categorize.wiki import (
     load_credentials,
 )
-from categorize.utils import (
+from utils.utils import (
     load_json_file,
     normalize_country_name,
     build_category_name,
@@ -137,7 +137,7 @@ def main():
     print()
     print("To use in your code:")
     print("  from categorize.wiki import connect_to_commons")
-    print("  from categorize.utils import normalize_country_name")
+    print("  from utils import normalize_country_name")
     print()
 
 

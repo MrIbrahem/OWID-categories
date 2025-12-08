@@ -30,7 +30,7 @@ import time
 from pathlib import Path
 from typing import Dict, Optional
 
-from categorize.wiki import (
+from categorize import (
     connect_to_commons,
     load_credentials,
     add_category_to_page,
@@ -38,7 +38,7 @@ from categorize.wiki import (
     get_category_member_count,
     get_edit_delay,
 )
-from categorize.utils import (
+from utils import (
     setup_logging,
     load_json_file,
     normalize_country_name,
@@ -147,7 +147,7 @@ def process_files(
         logging.info(f"Limiting to {remaining_slots} file(s) for this country")
 
     # Ensure the category page exists before adding files to it
-    parent_category = get_parent_category(category_type=country_or_continent)
+    parent_category = get_parent_category(category_type=country_or_continent, files_type=files_type)
     if not ensure_category_exists(site, category, parent_category, entity, dry_run):
         logging.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
         stats["errors"] += 1

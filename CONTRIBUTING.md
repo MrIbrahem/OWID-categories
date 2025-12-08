@@ -29,7 +29,7 @@ OWID-categories/
 │   │   ├── CAN.json
 │   │   ├── USA.json
 │   │   └── ...
-│   └── owid_country_summary.json
+│   └── owid_summary.json
 └── logs/                       # Log files (gitignored)
     └── fetch_commons.log
 ```

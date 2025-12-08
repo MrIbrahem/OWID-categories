@@ -60,7 +60,7 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("categorize.utils.load_json_file", return_value=test_data):
+        with patch("utils.utils.load_json_file", return_value=test_data):
             with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
@@ -101,7 +101,7 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("categorize.utils.load_json_file", return_value=test_data):
+        with patch("utils.utils.load_json_file", return_value=test_data):
             with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
@@ -123,7 +123,7 @@ class TestProcessFiles:
             "graphs": []
         }
 
-        with patch("categorize.utils.load_json_file", return_value=test_data):
+        with patch("utils.utils.load_json_file", return_value=test_data):
             stats = process_files(
                 mock_site,
                 COUNTRIES_DIR / "XXX.json",
@@ -136,7 +136,7 @@ class TestProcessFiles:
         """Test processing invalid JSON file."""
         mock_site = Mock()
 
-        with patch("categorize.utils.load_json_file", return_value=None):
+        with patch("utils.utils.load_json_file", return_value=None):
             stats = process_files(
                 mock_site,
                 COUNTRIES_DIR / "invalid.json",

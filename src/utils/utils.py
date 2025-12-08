@@ -152,3 +152,18 @@ def get_parent_category(category_type: str = "country", files_type: str = "graph
         return f"Our World in Data {files_type} by continent"
 
     return f"Our World in Data {files_type} by country"
+
+
+def normalize_title(title: str) -> str:
+    """
+    Remove 'File:' prefix and return base name.
+
+    Args:
+        title: Full file title like "File:Something.svg"
+
+    Returns:
+        Base name without prefix
+    """
+    if title.startswith("File:"):
+        return title[5:]
+    return title

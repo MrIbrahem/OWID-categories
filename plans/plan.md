@@ -104,13 +104,13 @@ project_root/
 │  │  ├─ CAN.json
 │  │  ├─ BRA.json
 │  │  ├─ ...
-│  └─ owid_country_summary.json
+│  └─ owid_summary.json
 └─ logs/
    └─ fetch_commons.log
 ```
 
 - `output/countries/ISO3.json`: One JSON per country code.
-- `output/owid_country_summary.json`: Aggregated statistics over all countries.
+- `output/owid_summary.json`: Aggregated statistics over all countries.
 - `logs/fetch_commons.log`: Optional log file for debugging.
 
 ---
@@ -154,7 +154,7 @@ Notes:
 
 ### 3.2 Global summary JSON structure
 
-File path: `output/owid_country_summary.json`
+File path: `output/owid_summary.json`
 
 ```json
 [
@@ -204,7 +204,7 @@ The category contains tens of thousands of files, so you must:
 1. Initialize `cmcontinue` to `None`.
 2. Request:
 
-   - If `cmcontinue` is not `None`, add to params:  
+   - If `cmcontinue` is not `None`, add to params:
      `params["cmcontinue"] = cmcontinue`
 
 3. After each response:
@@ -453,7 +453,7 @@ for iso3, data in countries.items():
 Write `summary` to:
 
 ```text
-output/owid_country_summary.json
+output/owid_summary.json
 ```
 
 with indentation.
@@ -542,10 +542,10 @@ Once the basic pipeline works, you can extend it with:
 4. **Support for regional JSONs**:
    - Add a similar mechanism for pure regional maps (e.g. Africa, Asia) that have no specific ISO3 code.
 
-**Important Note:**  
-Always include a clear and descriptive **User-Agent header** in every HTTP request to the MediaWiki API.  
-Requests without a proper User-Agent may be throttled or blocked by Wikimedia servers.  
+**Important Note:**
+Always include a clear and descriptive **User-Agent header** in every HTTP request to the MediaWiki API.
+Requests without a proper User-Agent may be throttled or blocked by Wikimedia servers.
 Use a format that identifies your script, version, and a contact method (e.g., email or wiki username).
 
-**Placeholder User-Agent Example:**  
+**Placeholder User-Agent Example:**
 `User-Agent: OWID-Commons-Processor/1.0 (contact: your-email@example.com)`

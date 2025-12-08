@@ -218,6 +218,10 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
             logging.debug(f"Category doesn't exist yet: {category}")
             return 0
 
+        # Use categoryinfo for an efficient count of files
+        # 'Category' object has no attribute 'categoryinfo'
+        # member_count = category_page.categoryinfo.get('files', 0)
+
         # Count members in the category
         member_count = sum(1 for _ in category_page.members())
 
