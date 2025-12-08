@@ -6,20 +6,16 @@ This demonstrates how to use the categorize module functions
 programmatically without running the full scripts.
 """
 
-from pathlib import Path
 from categorize.wiki import (
     load_credentials,
-    connect_to_commons,
-    add_category_to_page,
-    ensure_category_exists,
 )
 from categorize.utils import (
-    setup_logging,
     load_json_file,
     normalize_country_name,
     build_category_name,
     get_parent_category,
 )
+from owid_config import COUNTRIES_DIR
 
 
 def example_normalize_countries():
@@ -84,7 +80,7 @@ def example_load_json():
     print("=" * 60)
 
     # Try to load a sample country file
-    sample_file = Path("output/countries/CAN.json")
+    sample_file = COUNTRIES_DIR / "CAN.json"
 
     if sample_file.exists():
         data = load_json_file(sample_file)

@@ -15,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from fetch_commons_files import (
     classify_and_parse_file,
-    build_file_page_url,
     fetch_files,
     write_country_json_files,
     write_summary_json,

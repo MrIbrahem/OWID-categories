@@ -43,16 +43,12 @@ from categorize.utils import (
     build_category_name,
     get_parent_category,
 )
-
-
-# Configuration
-CONTINENTS_DIR = Path("output/continents")
-COUNTRIES_DIR = Path("output/countries")
-
-LOG_FILE_COUNTRIES = Path("logs/categorize_countries.log")
-LOG_FILE_CONTINENTS = Path("logs/categorize_continents.log")
-
-
+from owid_config import (
+    LOG_FILE_COUNTRIES,
+    LOG_FILE_CONTINENTS,
+    COUNTRIES_DIR,
+    CONTINENTS_DIR,
+)
 # List of continents to process
 CONTINENTS = [
     "Africa",

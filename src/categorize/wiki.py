@@ -10,9 +10,7 @@ import logging
 import re
 import os
 from typing import Optional
-
 import mwclient
-from dotenv import load_dotenv
 
 
 # User-Agent header (required by Wikimedia)
@@ -29,7 +27,6 @@ def load_credentials() -> tuple[Optional[str], Optional[str]]:
     Returns:
         Tuple of (username, password) or (None, None) if not found
     """
-    load_dotenv()
     username = os.getenv("WM_USERNAME")
     password = os.getenv("PASSWORD")
 

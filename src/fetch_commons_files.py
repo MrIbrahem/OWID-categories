@@ -15,20 +15,17 @@ import logging
 import re
 import urllib
 import sys
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 import requests
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
+from owid_config import OUTPUT_DIR, LOG_DIR, COUNTRIES_DIR
 
 logger = logging.getLogger(__name__)
 
 # Configuration
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
-OUTPUT_DIR = Path("output")
-COUNTRIES_DIR = OUTPUT_DIR / "countries"
 SUMMARY_FILE = OUTPUT_DIR / "owid_country_summary.json"
-LOG_DIR = Path("output")
 LOG_FILE = LOG_DIR / "fetch_commons.log"
 
 # User-Agent header (required by Wikimedia)

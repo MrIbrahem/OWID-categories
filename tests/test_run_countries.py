@@ -15,6 +15,7 @@ import json
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from run_categorize import process_files
+from owid_config import COUNTRIES_DIR
 
 
 @pytest.mark.unit
@@ -63,7 +64,7 @@ class TestProcessFiles:
             with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
-                    Path("output/countries/CAN.json"),
+                    COUNTRIES_DIR / "CAN.json",
                     dry_run=True
                 )
 
@@ -104,9 +105,9 @@ class TestProcessFiles:
             with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
-                    Path("output/countries/USA.json"),
+                    COUNTRIES_DIR / "USA.json",
                     dry_run=True,
-                    files_per_country=3
+                    files_per_one=3
                 )
 
         # Should only process 3 files
@@ -125,7 +126,7 @@ class TestProcessFiles:
         with patch("categorize.utils.load_json_file", return_value=test_data):
             stats = process_files(
                 mock_site,
-                Path("output/countries/XXX.json"),
+                COUNTRIES_DIR / "XXX.json",
                 dry_run=True
             )
 
@@ -138,7 +139,7 @@ class TestProcessFiles:
         with patch("categorize.utils.load_json_file", return_value=None):
             stats = process_files(
                 mock_site,
-                Path("output/countries/invalid.json"),
+                COUNTRIES_DIR / "invalid.json",
                 dry_run=True
             )
 
@@ -151,7 +152,7 @@ class TestCountryFilesExist:
 
     def test_countries_directory_exists(self):
         """Test that countries directory exists."""
-        countries_dir = Path("output/countries")
+        countries_dir = COUNTRIES_DIR
         if not countries_dir.exists():
             pytest.skip("Countries directory not found. Run fetch_commons_files.py first.")
 
@@ -159,7 +160,7 @@ class TestCountryFilesExist:
 
     def test_country_json_structure(self):
         """Test structure of country JSON files."""
-        countries_dir = Path("output/countries")
+        countries_dir = COUNTRIES_DIR
 
         if not countries_dir.exists():
             pytest.skip("Countries directory not found")
@@ -189,7 +190,7 @@ class TestDryRunSimulation:
 
     def test_dry_run_with_sample_data(self):
         """Test dry-run processing with sample data."""
-        countries_dir = Path("output/countries")
+        countries_dir = COUNTRIES_DIR
 
         if not countries_dir.exists():
             pytest.skip("Countries directory not found")

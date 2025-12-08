@@ -13,10 +13,6 @@ from pathlib import Path
 from typing import Dict, Optional
 
 
-# Configuration
-LOG_DIR = Path("logs")
-
-
 def setup_logging(log_file: Path):
     """
     Set up logging configuration.
@@ -24,7 +20,6 @@ def setup_logging(log_file: Path):
     Args:
         log_file: Path to log file
     """
-    LOG_DIR.mkdir(exist_ok=True)
 
     logging.basicConfig(
         level=logging.INFO,
