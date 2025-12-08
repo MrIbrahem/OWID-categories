@@ -50,14 +50,21 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
     Returns:
         Connected Site object or None on failure
     """
-    logging.info("Connecting to Wikimedia Commons...")
-    site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
+    try:
+        logging.info("Connecting to Wikimedia Commons...")
+        site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
 
-    logging.info(f"Logging in as {username}...")
-    site.login(username, password)
+        logging.info(f"Logging in as {username}...")
+        site.login(username, password)
 
-    logging.info("Successfully connected and logged in")
-    return site
+        logging.info("Successfully connected and logged in")
+        return site
+    except mwclient.errors.LoginError as e:
+        logging.error(f"Login failed: {e}")
+        return None
+    except Exception as e:
+        logging.exception(f"Failed to connect to Commons: {e}")
+        return None
 
 
 def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
@@ -176,7 +183,7 @@ def ensure_category_exists(
 
     if category_page.exists:
         logging.debug(f"Category already exists: {category_title}")
-        return True    # Category doesn't exist, create it
+        return True    # Category already exists
     category_content = f"[[Category:{parent_category}|{sort_key}]]"
 
     if dry_run:
