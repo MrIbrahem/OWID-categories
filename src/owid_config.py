@@ -1,11 +1,17 @@
 
+import os
 from dotenv import load_dotenv
 from pathlib import Path
 
 load_dotenv()
 
-OUTPUT_DIR = Path("output")
-LOG_DIR = Path("logs")
+MAIN_DIR = Path(os.getenv("MAIN_DIR", "."))
+
+WM_USERNAME = os.getenv("WM_USERNAME")
+PASSWORD = os.getenv("PASSWORD")
+
+OUTPUT_DIR = MAIN_DIR / "output"
+LOG_DIR = MAIN_DIR / "logs"
 
 LOG_DIR.mkdir(exist_ok=True)
 OUTPUT_DIR.mkdir(exist_ok=True)

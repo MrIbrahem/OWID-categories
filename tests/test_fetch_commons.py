@@ -23,7 +23,7 @@ from fetch_commons_files import (
 )
 
 
-def create_sample_data():
+def create_sample_data() -> list[str]:
     """Create sample file data for testing."""
     return [
         "File:Agriculture share gdp, 1997 to 2021, CAN.svg",
