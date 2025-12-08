@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+"""
+OWID Configuration Module
+
+Centralized configuration for OWID Commons categorization scripts.
+Defines output directories, log file paths, and loads environment variables.
+"""
 
 import logging
 import os

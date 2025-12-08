@@ -123,7 +123,7 @@ def test_processing():
 
     # Verify summary content
     summary_file = OUTPUT_DIR / "owid_summary.json"
-    with open(summary_file, "r") as f:
+    with open(summary_file, "r", encoding="utf-8") as f:
         summary = json.load(f)
 
     assert isinstance(summary, dict), "Summary should be a dict"

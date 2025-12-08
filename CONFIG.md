@@ -250,7 +250,7 @@ summary_file = OUTPUT_DIR / "owid_summary.json"
 if summary_file.exists():
     with open(summary_file, "r", encoding="utf-8") as f:
         summary = json.load(f)
-    print(f"Loaded {len(summary)} countries")
+    print(f"Loaded {len(summary['countries'])} countries")
 else:
     print("Summary file not found. Run fetch_commons_files.py first.")
 ```

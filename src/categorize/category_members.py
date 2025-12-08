@@ -3,9 +3,10 @@
 OWID Commons File Fetcher and Processor
 """
 
+import time
 import logging
 import urllib
-from typing import Dict, List
+from typing import List
 import requests
 
 logger = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
 
-def get_category_members_petscan(category) -> list | list[str]:
+def get_category_members_petscan(category: str) -> list | list[str]:
     """
     Fetch all pages belonging to a given category from a Wikimedia project using the Petscan API.
     """
@@ -40,15 +41,15 @@ def get_category_members_petscan(category) -> list | list[str]:
 
     logger.info(f"petscan url: {url}")
 
-    headers = {}
-    headers["User-Agent"] = USER_AGENT
+    headers = {"User-Agent": USER_AGENT}
+
     text = ""
     try:
         resp = requests.get(url, headers=headers, timeout=30)
         resp.raise_for_status()
         text = resp.text
-    except Exception as e:
-        logger.error(f"get_petscan_category_pages: request/json error: {e}")
+    except requests.RequestException:
+        logger.exception("get_petscan_category_pages: request error")
         return []
 
     if not text:
@@ -60,16 +61,18 @@ def get_category_members_petscan(category) -> list | list[str]:
     return result
 
 
-def fetch_category_members(category_name) -> List[Dict]:
+def fetch_category_members(category_name: str) -> List[str]:
     """
-    Fetch all files from the OWID category using MediaWiki API with pagination.
+    Fetch all file titles from the OWID category using MediaWiki API with pagination.
 
     Returns:
-        List of file dictionaries with 'pageid', 'title', etc.
+        List of file titles (strings).
     """
     all_files = []
     cmcontinue = None
     page_count = 0
+    delay = 1.0  # seconds
+    max_delay = 8.0
 
     logger.info(f"Starting to fetch files from {category_name}")
 
@@ -104,11 +107,16 @@ def fetch_category_members(category_name) -> List[Dict]:
 
             if "continue" in data:
                 cmcontinue = data["continue"].get("cmcontinue")
+                time.sleep(delay)
             else:
                 break
 
-        except requests.RequestException as e:
-            logger.error(f"API request failed: {e}")
+        except requests.RequestException:
+            logger.exception("API request failed")
+            if delay < max_delay:
+                delay = min(delay * 2, max_delay)
+                time.sleep(delay)
+                continue
             raise
 
     logger.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
