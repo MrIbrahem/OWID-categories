@@ -41,7 +41,7 @@ GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 # Map pattern: country/region name followed by a single year
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
 # Note: Hyphen is at the end of character class to avoid being interpreted as a range
-MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)\.svg$")
+MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\.svg$")
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
