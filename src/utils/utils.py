@@ -20,6 +20,11 @@ def setup_logging(log_file: Path):
     Args:
         log_file: Path to log file
     """
+    if not log_file.parent.exists():
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+
+    if not log_file.exists():
+        log_file.touch()
 
     logging.basicConfig(
         level=logging.INFO,
