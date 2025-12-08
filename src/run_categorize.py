@@ -84,6 +84,9 @@ def process_files(
     Returns:
         Dictionary with statistics (added, skipped, errors)
     """
+    logging.info("-" * 20)
+    logging.info(f"process_files: {files_type}")
+
     stats = {
         "added": 0,
         "skipped": 0,
@@ -125,6 +128,8 @@ def process_files(
     else:
         log_line = f"{entity}"
 
+    logging.info(f"\nProcessing {log_line}: {len(files)} files")
+
     # Check if category already has enough files when files_per_one is set
     if files_per_one:
         current_member_count = get_category_member_count(site, category)
@@ -134,8 +139,6 @@ def process_files(
 
         remaining_slots = files_per_one - current_member_count
         logging.info(f"\nProcessing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
-    else:
-        logging.info(f"\nProcessing {log_line}: {len(files)} files")
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
@@ -195,6 +198,8 @@ def main(
     }
 
     work_dir = work_dirs.get(work_path)
+
+    country_or_continent = "country" if work_path == "countries" else "continent"
 
     if not work_dir:
         logging.error(f"Invalid work_path: {work_path}")
@@ -258,7 +263,8 @@ def main(
             file_path,
             dry_run=dry_run,
             files_type=files_type,
-            files_per_one=files_per_one
+            files_per_one=files_per_one,
+            country_or_continent=country_or_continent
         )
 
         # If no files were added or skipped, the item was skipped entirely
