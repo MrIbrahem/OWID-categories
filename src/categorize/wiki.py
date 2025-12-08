@@ -7,6 +7,7 @@ including authentication, page editing, and category management.
 """
 
 import logging
+import re
 import os
 from typing import Optional
 
@@ -98,18 +99,11 @@ def category_exists_on_page(page_text: str, category: str) -> bool:
     if not page_text:
         return False
 
-    # Check for various category formats
-    # [[Category:Name]] or [[category:Name]]
     category_simple = category.replace("Category:", "")
 
-    checks = [
-        f"[[{category}]]",
-        f"[[{category.lower()}]]",
-        f"[[Category:{category_simple}]]",
-        f"[[category:{category_simple}]]",
-    ]
-
-    return any(check in page_text for check in checks)
+    # Match [[Category:Name]] or [[Category:Name|sortkey]] with case-insensitive "Category:"
+    pattern = rf"\[\[\s*[Cc]ategory\s*:\s*{re.escape(category_simple)}\s*(?:\|[^\]]*)?]]"
+    return bool(re.search(pattern, page_text))
 
 
 def add_category_to_page(
@@ -153,10 +147,14 @@ def add_category_to_page(
 
     # Make the edit
     edit_summary = f"Add {category}"
-    page.save(new_text, summary=edit_summary)
+    try:
+        page.save(new_text, summary=edit_summary)
+        logging.info(f"Successfully added '{category}' to {title}")
+        return True
 
-    logging.info(f"Successfully added '{category}' to {title}")
-    return True
+    except Exception as e:
+        logging.error(f"Failed to save category to {title}: {e}")
+        return False
 
 
 def ensure_category_exists(
