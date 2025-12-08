@@ -11,7 +11,7 @@ OWID-categories/
 │   │   ├── wiki.py
 │   │   ├── utils.py
 │   │   └── __init__.py
-│   ├── run_countries.py
+│   ├── run_categorize.py
 │   ├── fetch_commons_files.py  # Main script for fetching and processing
 │   └── owid_country_codes.py   # Country code mappings and lookup functions
 ├── tests/                      # Test files

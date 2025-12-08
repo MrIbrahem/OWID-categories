@@ -14,10 +14,10 @@ Requirements:
 - Valid Wikimedia Commons bot credentials in .env file
 
 Usage:
-    python run_countries.py                              # Process all countries
-    python run_countries.py --dry-run                    # Test without making edits
-    python run_countries.py --limit 5                    # Process first 5 countries only
-    python run_countries.py --files-per-item 10       # Process 10 files per country
+    python run_categorize.py                              # Process all countries
+    python run_categorize.py --dry-run                    # Test without making edits
+    python run_categorize.py --limit 5                    # Process first 5 countries only
+    python run_categorize.py --files-per-item 10       # Process 10 files per country
 """
 
 import argparse

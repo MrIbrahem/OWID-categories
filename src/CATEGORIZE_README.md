@@ -10,7 +10,7 @@ src/
 │   ├── __init__.py               # Module exports
 │   ├── wiki.py                   # Wiki API interactions
 │   └── utils.py                  # Helper utilities
-├── run_countries.py              # Script for categorizing country files
+├── run_categorize.py              # Script for categorizing country files
 ```
 
 ## Module Organization
@@ -35,21 +35,21 @@ Contains helper functions:
 
 ## Usage Scripts
 
-### run_countries.py
+### run_categorize.py
 Processes country-specific categorization:
 
 ```bash
 # Process all countries
-python run_countries.py
+python run_categorize.py
 
 # Dry run (no actual edits)
-python run_countries.py --dry-run
+python run_categorize.py --dry-run
 
 # Process first 5 countries only
-python run_countries.py --limit 5
+python run_categorize.py --limit 5
 
 # Process 10 files per country
-python run_countries.py --files-per-item 10
+python run_categorize.py --files-per-item 10
 ```
 
 ### run continents
@@ -57,16 +57,16 @@ Processes continent-specific categorization:
 
 ```bash
 # Process all continents
-python run_countries.py --work-path continents
+python run_categorize.py --work-path continents
 
 # Dry run (no actual edits)
-python run_countries.py --work-path continents --dry-run
+python run_categorize.py --work-path continents --dry-run
 
 # Process first 2 continents only
-python run_countries.py --work-path continents --limit 2
+python run_categorize.py --work-path continents --limit 2
 
 # Process 10 files per continent
-python run_countries.py --work-path continents --files-per-item 10
+python run_categorize.py --work-path continents --files-per-item 10
 ```
 
 ## Categories Created
@@ -164,7 +164,7 @@ The scripts handle various error conditions:
 The original `categorize_commons_files.py` has been refactored into:
 1. **wiki.py** - API interaction functions
 2. **utils.py** - Helper functions
-3. **run_countries.py** - Country processing script
+3. **run_categorize.py** - Country processing script
 
 Benefits:
 - ✅ Cleaner code organization
@@ -181,13 +181,13 @@ Benefits:
 python -c "from categorize import wiki, utils; print('✓ OK')"
 
 # Check syntax
-python -m py_compile run_countries.py
+python -m py_compile run_categorize.py
 ```
 
 ### Adding New Features
 1. Add core logic to `wiki.py` or `utils.py`
 2. Update exports in `__init__.py`
-3. Use in scripts `run_countries.py`
+3. Use in scripts `run_categorize.py`
 
 ## Prerequisites
 

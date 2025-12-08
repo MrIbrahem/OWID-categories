@@ -1,5 +1,5 @@
 """
-Tests for run_countries.py module.
+Tests for run_categorize.py module.
 
 Tests the country categorization script functionality including
 processing country files and adding categories to graph files.
@@ -14,7 +14,7 @@ import json
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from run_countries import process_files
+from run_categorize import process_files
 
 
 @pytest.mark.unit
