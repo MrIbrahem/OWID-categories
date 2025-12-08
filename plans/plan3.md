@@ -78,7 +78,7 @@ Apply the same normalized name in:
 
 ### 2.1 New Function
 
-Create a new function `normalize_country_name(country: str) -> str` in `src/categorize_commons_files.py`:
+Create a new function `normalize_country_name(country: str) -> str` in `src/run_countries.py`:
 
 ```python
 def normalize_country_name(country: str) -> str:
@@ -153,7 +153,7 @@ Test with actual country JSON files:
 
 ## 4. Implementation Steps
 
-1. **Add normalization function** to `src/categorize_commons_files.py`
+1. **Add normalization function** to `src/run_countries.py`
    - Define the list of countries requiring "the"
    - Implement the normalization logic
 

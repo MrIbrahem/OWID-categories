@@ -38,9 +38,14 @@ pip install -r requirements.txt
 ```
 OWID-categories/
 ├── src/                             # Main source code
+│   ├── categorize/
+│   │   ├── wiki.py
+│   │   ├── utils.py
+│   │   └── __init__.py
 │   ├── fetch_commons_files.py       # Phase 1: Fetch and classify files
-│   ├── categorize_commons_files.py  # Phase 2: Add categories
-│   └── owid_country_codes.py        # Country code mappings
+│   ├── owid_country_codes.py        # Country code mappings
+│   ├── run_countries.py             # Phase 2: Add categories
+│   └── run_continents.py
 ├── tests/                           # Test files
 │   ├── test_fetch_commons.py        # Test suite for Phase 1
 │   ├── test_categorize.py           # Test suite for Phase 2
@@ -121,31 +126,31 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
 **Test with dry-run mode first (recommended):**
 ```bash
 # Test on first 2 countries without making actual edits
-python3 src/categorize_commons_files.py --dry-run --limit 2
+python3 src/run_countries.py --dry-run --limit 2
 
 # Test with just 1 file per country
-python3 src/categorize_commons_files.py --dry-run --files-per-country 1
+python3 src/run_countries.py --dry-run --files-per-country 1
 
 # Test on 2 countries, 1 file each
-python3 src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+python3 src/run_countries.py --dry-run --limit 2 --files-per-country 1
 ```
 
 **Run on limited set of countries:**
 ```bash
 # Process first 5 countries
-python3 src/categorize_commons_files.py --limit 5
+python3 src/run_countries.py --limit 5
 
 # Process first 5 countries, 2 files per country
-python3 src/categorize_commons_files.py --limit 5 --files-per-country 2
+python3 src/run_countries.py --limit 5 --files-per-country 2
 ```
 
 **Run on all countries:**
 ```bash
 # Process all countries, all files
-python3 src/categorize_commons_files.py
+python3 src/run_countries.py
 
 # Process all countries, but only 1 file per country (conservative approach)
-python3 src/categorize_commons_files.py --files-per-country 1
+python3 src/run_countries.py --files-per-country 1
 ```
 
 **Available options:**

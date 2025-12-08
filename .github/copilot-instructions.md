@@ -60,7 +60,7 @@ Example: Access to clean fuels and technologies for cooking, Canada, 1990.svg
    - Format: `OWID-Commons-Processor/1.0 (contact: your-email@example.com or https://github.com/your-username)`
    - Replace placeholder with actual contact information before making real requests
    - Requests without User-Agent may be throttled or blocked
-   
+
 2. **Handle pagination properly**
    - Use `cmcontinue` for category member pagination
    - Process responses in batches
@@ -170,10 +170,15 @@ pytest --cov=src --cov-report=html --cov-report=term --cov-report=xml
 
 ```
 OWID-categories/
-├── src/                          # Source code
-│   ├── fetch_commons_files.py
-│   ├── categorize_commons_files.py
-│   └── owid_country_codes.py
+├── src/                             # Main source code
+│   ├── categorize/
+│   │   ├── wiki.py
+│   │   ├── utils.py
+│   │   └── __init__.py
+│   ├── fetch_commons_files.py       # Phase 1: Fetch and classify files
+│   ├── owid_country_codes.py        # Country code mappings
+│   ├── run_countries.py             # Phase 2: Add categories
+│   └── run_continents.py
 ├── tests/                        # Test directory
 │   ├── test_fetch_commons.py    # Tests for fetch module
 │   ├── test_categorize.py       # Tests for categorize module
@@ -215,10 +220,10 @@ def test_iso3_to_country_conversion(iso3, expected):
 ```python
 class TestFileClassification:
     """Group related tests together."""
-    
+
     def test_graph_pattern_matching(self):
         pass
-    
+
     def test_map_pattern_matching(self):
         pass
 ```
@@ -295,7 +300,7 @@ def mock_requests_get(monkeypatch):
     mock_response = Mock()
     mock_response.json.return_value = {"query": {"categorymembers": []}}
     mock_response.status_code = 200
-    
+
     mock_get = Mock(return_value=mock_response)
     monkeypatch.setattr("requests.get", mock_get)
     return mock_get
@@ -316,16 +321,16 @@ def mock_mwclient_site():
 def test_fetch_files_from_api(mock_requests_get, mock_mediawiki_response):
     """Test fetching files with mocked API."""
     mock_requests_get.return_value.json.return_value = mock_mediawiki_response
-    
+
     result = fetch_category_members()
-    
+
     assert len(result) > 0
     mock_requests_get.assert_called_once()
 
 def test_add_category_to_page(mock_mwclient_site):
     """Test adding category with mocked site."""
     page = mock_mwclient_site.pages["File:Test.svg"]
-    
+
     # Test categorization logic
     assert page.exists
     assert "Category:Existing" in page.text()
@@ -337,7 +342,7 @@ def test_with_pytest_mock(mocker):
     """Using pytest-mock plugin."""
     mock_get = mocker.patch("requests.get")
     mock_get.return_value.json.return_value = {"data": "test"}
-    
+
     # Your test code
     result = fetch_data()
     assert result == {"data": "test"}
@@ -373,10 +378,10 @@ def test_write_json_files(tmp_path):
     """Test JSON file writing using pytest's tmp_path."""
     output_file = tmp_path / "test_output.json"
     data = {"test": "data"}
-    
+
     with open(output_file, "w") as f:
         json.dump(data, f)
-    
+
     assert output_file.exists()
     with open(output_file, "r") as f:
         loaded = json.load(f)
@@ -433,16 +438,16 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.10'
-      
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
           pip install pytest pytest-cov
-      
+
       - name: Run tests
         run: |
           pytest -v --cov=src --cov-report=xml
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v2
         with:
@@ -491,7 +496,7 @@ def test_fetch_handles_pagination(mock_requests_get):
         Mock(json=lambda: {"continue": {"cmcontinue": "token"}, "query": {"categorymembers": [{"pageid": 1}]}}),
         Mock(json=lambda: {"query": {"categorymembers": [{"pageid": 2}]}})
     ]
-    
+
     results = fetch_all_category_members()
     assert len(results) == 2
 

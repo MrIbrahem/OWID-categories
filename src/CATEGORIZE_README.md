@@ -12,7 +12,6 @@ src/
 │   └── utils.py                  # Helper utilities
 ├── run_countries.py              # Script for categorizing country files
 ├── run_continents.py             # Script for categorizing continent files
-└── categorize_commons_files.py   # (Legacy - being replaced)
 ```
 
 ## Module Organization

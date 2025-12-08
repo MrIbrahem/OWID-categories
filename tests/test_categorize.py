@@ -47,7 +47,7 @@ def test_normalize_country_name():
         ("Vatican City", "the Vatican City"),
         ("Vatican", "the Vatican"),
     ]
-    
+
     # Countries that should NOT have "the" prefix
     test_cases_without_the = [
         ("Canada", "Canada"),
@@ -59,12 +59,12 @@ def test_normalize_country_name():
         ("Japan", "Japan"),
         ("Australia", "Australia"),
     ]
-    
+
     # Test countries requiring 'the' prefix
     for country, expected in test_cases_with_the:
         result = normalize_country_name(country)
         assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
-    
+
     # Test countries NOT requiring 'the' prefix
     for country, expected in test_cases_without_the:
         result = normalize_country_name(country)
@@ -91,7 +91,7 @@ def test_build_category_name():
         ("Maldives", "Category:Our World in Data graphs of the Maldives"),
         ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
     ]
-    
+
     for country, expected in test_cases:
         result = build_category_name(country)
         assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
@@ -109,7 +109,7 @@ Some file description here.
 [[Category:Our World in Data graphs of Canada]]
 [[Category:Economic indicators]]
 """
-    
+
     page_text_without_cat = """
 Some file description here.
 {{Information
@@ -118,21 +118,21 @@ Some file description here.
 
 [[Category:Economic indicators]]
 """
-    
+
     # Test with category present
     result1 = category_exists_on_page(
-        page_text_with_cat, 
+        page_text_with_cat,
         "Category:Our World in Data graphs of Canada"
     )
     assert result1 is True, "Category should be found when present"
-    
+
     # Test with category absent
     result2 = category_exists_on_page(
         page_text_without_cat,
         "Category:Our World in Data graphs of Canada"
     )
     assert result2 is False, "Category should not be found when absent"
-    
+
     # Test with lowercase variant
     page_text_lowercase = "[[category:Our World in Data graphs of Canada]]"
     result3 = category_exists_on_page(
@@ -147,16 +147,16 @@ def test_load_country_json():
     """Test loading country JSON files."""
     if not COUNTRIES_DIR.exists():
         pytest.skip('Country files directory not found. Run test_fetch_commons.py first.')
-    
+
     json_files = list(COUNTRIES_DIR.glob("*.json"))
-    
+
     if not json_files:
         pytest.skip('No JSON files found in output/countries/')
-    
+
     # Test loading first file
     first_file = json_files[0]
     data = load_country_json(first_file)
-    
+
     # Assertions
     assert data is not None, f"Failed to load {first_file.name}"
     assert 'country' in data, "Country field missing from JSON"
@@ -165,7 +165,7 @@ def test_load_country_json():
     assert 'maps' in data, "Maps field missing from JSON"
     assert isinstance(data['graphs'], list), "Graphs should be a list"
     assert isinstance(data['maps'], list), "Maps should be a list"
-    
+
     # If graphs exist, check structure
     graphs = data.get('graphs', [])
     if graphs:
@@ -181,16 +181,16 @@ def test_mock_categorization():
     mock_page = MagicMock()
     mock_page.exists = True
     mock_page.text.return_value = "Some page text\n[[Category:Existing]]"
-    
+
     # Assertions
     assert mock_page.exists is True, "Mock page should exist"
     assert "Category:Existing" in mock_page.text(), "Mock page should contain existing category"
-    
+
     # Simulate adding a category
     category = "Category:Our World in Data graphs of Canada"
     current_text = mock_page.text()
     new_text = current_text.rstrip() + f"\n[[{category}]]\n"
-    
+
     # Assertions
     assert category in new_text, "New category should be in the updated text"
     assert len(new_text) > len(current_text), "New text should be longer than current text"
@@ -205,25 +205,25 @@ def test_ensure_category_exists():
     mock_page_exists = MagicMock()
     mock_page_exists.exists = True
     mock_site_1.pages.__getitem__ = Mock(return_value=mock_page_exists)
-    
+
     result = ensure_category_exists(mock_site_1, "Canada", dry_run=True)
     assert result is True, "Should return True when category already exists"
-    
+
     # Test 2: Category doesn't exist (dry run) - regular country
     mock_site_2 = Mock()
     mock_page_not_exists = MagicMock()
     mock_page_not_exists.exists = False
     mock_site_2.pages.__getitem__ = Mock(return_value=mock_page_not_exists)
-    
+
     result = ensure_category_exists(mock_site_2, "Brazil", dry_run=True)
     assert result is True, "Should return True in dry run mode"
-    
+
     # Test 3: Category doesn't exist (dry run) - country requiring "the"
     mock_site_3 = Mock()
     mock_page_not_exists_3 = MagicMock()
     mock_page_not_exists_3.exists = False
     mock_site_3.pages.__getitem__ = Mock(return_value=mock_page_not_exists_3)
-    
+
     result = ensure_category_exists(mock_site_3, "United Kingdom", dry_run=True)
     assert result is True, "Should return True for countries with 'the' prefix in dry run mode"
 
@@ -233,15 +233,15 @@ def test_dry_run_simulation():
     """Simulate a dry-run on actual test data."""
     if not COUNTRIES_DIR.exists():
         pytest.skip('Country files directory not found')
-    
+
     json_files = list(COUNTRIES_DIR.glob("*.json"))
-    
+
     if not json_files:
         pytest.skip('No JSON files found')
-    
+
     total_graphs = 0
     countries_processed = 0
-    
+
     # Sort to ensure consistent test order, and test all countries
     for json_file in sorted(json_files):
         data = load_country_json(json_file)
@@ -250,17 +250,17 @@ def test_dry_run_simulation():
             normalized_country = normalize_country_name(country)
             graphs = data.get('graphs', [])
             category = build_category_name(country)
-            
+
             # Assertions
             assert country is not None, f"Country should not be None for {json_file.name}"
             assert normalized_country is not None, f"Normalized country should not be None for {country}"
             assert category.startswith("Category:Our World in Data graphs of"), \
                 f"Category should have correct prefix for {country}"
             assert isinstance(graphs, list), f"Graphs should be a list for {country}"
-            
+
             total_graphs += len(graphs)
             countries_processed += 1
-    
+
     # Final assertions
     assert countries_processed > 0, "Should have processed at least one country"
     assert total_graphs >= 0, "Total graphs should be non-negative"

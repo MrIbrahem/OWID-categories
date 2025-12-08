@@ -7,6 +7,12 @@ This document provides technical details for developers contributing to the proj
 ```
 OWID-categories/
 ├── src/                        # Main source code
+│   ├── categorize/
+│   │   ├── wiki.py
+│   │   ├── utils.py
+│   │   └── __init__.py
+│   ├── run_countries.py
+│   └── run_continents.py
 │   ├── fetch_commons_files.py  # Main script for fetching and processing
 │   └── owid_country_codes.py   # Country code mappings and lookup functions
 ├── tests/                      # Test files
@@ -15,8 +21,9 @@ OWID-categories/
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # User-facing documentation
 ├── CONTRIBUTING.md             # Developer documentation
-├── plan.md                     # Phase 1 implementation plan
-├── plan2.md                    # Phase 2 implementation plan
+├── plans/                      # Plans files
+│   ├── plan.md                 # Phase 1 implementation plan
+│   └── plan2.md                # Phase 2 implementation plan
 ├── .gitignore                  # Git exclusions
 ├── output/                     # Generated JSON files (gitignored)
 │   ├── countries/              # Per-country JSON files
