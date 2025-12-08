@@ -14,10 +14,12 @@ Requirements:
 - Valid Wikimedia Commons bot credentials in .env file
 
 Usage:
-    python run_categorize.py                              # Process all countries
-    python run_categorize.py --dry-run                    # Test without making edits
-    python run_categorize.py --limit 5                    # Process first 5 countries only
-    python run_categorize.py --files-per-item 10          # Process 10 files per country
+    python run_categorize.py                                            # Process all countries
+    python run_categorize.py --dry-run                                  # Test without making edits
+    python run_categorize.py --limit 5                                  # Process first 5 countries only
+    python run_categorize.py --files-per-item 10                        # Process 10 files per country
+    python run_categorize.py --work-path continents --files-type maps   # Process continents and maps
+    python run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
 """
 
 import argparse
@@ -64,7 +66,7 @@ def process_files(
     site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
-    graphs_or_maps: str = "graphs",
+    files_type: str = "graphs",
     files_per_one: Optional[int] = None,
     country_or_continent: str = "country",
 ) -> Dict[str, int]:
@@ -75,7 +77,7 @@ def process_files(
         site: Connected mwclient Site
         file_path: Path to country/continent JSON file
         dry_run: If True, don't actually make edits
-        graphs_or_maps: Whether to process 'graphs' or 'maps'
+        files_type: Whether to process 'graphs' or 'maps'
         files_per_one: Optional limit on number of files to process per country/continent
         country_or_continent: Specify whether processing 'country' or 'continent'
 
@@ -88,8 +90,8 @@ def process_files(
         "errors": 0
     }
 
-    if graphs_or_maps not in ["graphs", "maps"]:
-        logging.error(f"Invalid graphs_or_maps value: {graphs_or_maps}")
+    if files_type not in ["graphs", "maps"]:
+        logging.error(f"Invalid files_type value: {files_type}")
         stats["errors"] += 1
         return stats
 
@@ -105,7 +107,7 @@ def process_files(
         return stats
 
     entity = data.get(country_or_continent)
-    files = data.get(graphs_or_maps, [])
+    files = data.get(files_type, [])
 
     if not entity:
         logging.error(f"No country/continent name in {file_path}")
@@ -113,7 +115,7 @@ def process_files(
         return stats
 
     # Build category name
-    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=graphs_or_maps)
+    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=files_type)
 
     if country_or_continent == "country":
         iso3 = data.get("iso3")
@@ -174,6 +176,7 @@ def main(
     limit: Optional[int] = None,
     files_per_one: Optional[int] = None,
     work_path: str = "countries",
+    files_type: str = "graphs",
 ):
     """
     Main execution function for countries/continents categorization.
@@ -183,6 +186,7 @@ def main(
         limit: Optional limit on number of countries/continents to process
         files_per_one: Optional limit on number of files to process per country/continent
         work_path: Specify whether processing 'countries' or 'continents'
+        files_type: Specify whether processing 'graphs' or 'maps'
     """
 
     work_dirs = {
@@ -249,7 +253,13 @@ def main(
     }
 
     for file_path in files:
-        stats = process_files(site, file_path, dry_run=dry_run, files_per_one=files_per_one)
+        stats = process_files(
+            site,
+            file_path,
+            dry_run=dry_run,
+            files_type=files_type,
+            files_per_one=files_per_one
+        )
 
         # If no files were added or skipped, the item was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
@@ -302,11 +312,19 @@ if __name__ == "__main__":
         default="countries",
         help="Specify whether to process 'countries' or 'continents' (default: countries)"
     )
+    # add files_type argument
+    parser.add_argument(
+        "--files-type",
+        choices=["graphs", "maps"],
+        default="graphs",
+        help="Specify whether to process 'graphs' or 'maps' (default: graphs)"
+    )
     args = parser.parse_args()
 
     main(
         dry_run=args.dry_run,
         limit=args.limit,
         files_per_one=args.files_per_item,
-        work_path=args.work_path
+        work_path=args.work_path,
+        files_type=args.files_type
     )
