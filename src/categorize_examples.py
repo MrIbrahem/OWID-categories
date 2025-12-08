@@ -110,7 +110,7 @@ def example_connect_dry_run():
     username, password = load_credentials()
 
     if username and password:
-        print(f"✓ Credentials loaded")
+        print("✓ Credentials loaded")
         print(f"  Username: {username}")
         print(f"  Password: {'*' * len(password)}")
         print("\n  Note: Use connect_to_commons() to actually connect")

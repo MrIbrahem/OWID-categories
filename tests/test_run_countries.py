@@ -59,8 +59,8 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("run_countries.load_json_file", return_value=test_data):
-            with patch("run_countries.get_category_member_count", return_value=0):
+        with patch("categorize.utils.load_json_file", return_value=test_data):
+            with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
                     Path("output/countries/CAN.json"),
@@ -100,8 +100,8 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("run_countries.load_json_file", return_value=test_data):
-            with patch("run_countries.get_category_member_count", return_value=0):
+        with patch("categorize.utils.load_json_file", return_value=test_data):
+            with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
                     Path("output/countries/USA.json"),
@@ -122,7 +122,7 @@ class TestProcessFiles:
             "graphs": []
         }
 
-        with patch("run_countries.load_json_file", return_value=test_data):
+        with patch("categorize.utils.load_json_file", return_value=test_data):
             stats = process_files(
                 mock_site,
                 Path("output/countries/XXX.json"),
@@ -135,7 +135,7 @@ class TestProcessFiles:
         """Test processing invalid JSON file."""
         mock_site = Mock()
 
-        with patch("run_countries.load_json_file", return_value=None):
+        with patch("categorize.utils.load_json_file", return_value=None):
             stats = process_files(
                 mock_site,
                 Path("output/countries/invalid.json"),
@@ -217,7 +217,7 @@ class TestDryRunSimulation:
 
         # Process first 3 countries in dry-run
         for json_file in sorted(json_files)[:3]:
-            with patch("run_countries.get_category_member_count", return_value=0):
+            with patch("categorize.wiki.get_category_member_count", return_value=0):
                 stats = process_files(
                     mock_site,
                     json_file,
