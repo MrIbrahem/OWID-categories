@@ -203,24 +203,25 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
         Number of members in the category (0 if category doesn't exist)
     """
     try:
-        # Remove "Category:" prefix if present for the API call
-        category_name = category.replace("Category:", "")
-
-        # Get the category page
-        category_page = site.pages[f"Category:{category_name}"]
+        # mwclient handles the "Category:" prefix automatically.
+        category_page = site.pages[category]
 
         if not category_page.exists:
             logging.debug(f"Category doesn't exist yet: {category}")
             return 0
 
-        # Count members in the category
-        member_count = sum(1 for _ in category_page.members())
+        # Use categoryinfo for an efficient count
+        info = category_page.categoryinfo
+        member_count = info.get('files', 0)
 
         logging.debug(f"Category '{category}' has {member_count} members")
         return member_count
 
+    except mwclient.errors.MwClientError as e:
+        logging.error(f"API error counting members in category '{category}': {e}")
+        return 0
     except Exception as e:
-        logging.error(f"Error counting members in category '{category}': {e}")
+        logging.error(f"An unexpected error occurred counting members in category '{category}': {e}")
         return 0
 
 
