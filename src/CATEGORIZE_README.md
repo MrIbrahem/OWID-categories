@@ -11,7 +11,6 @@ src/
 │   ├── wiki.py                   # Wiki API interactions
 │   └── utils.py                  # Helper utilities
 ├── run_countries.py              # Script for categorizing country files
-├── run_continents.py             # Script for categorizing continent files
 ```
 
 ## Module Organization
@@ -50,24 +49,24 @@ python run_countries.py --dry-run
 python run_countries.py --limit 5
 
 # Process 10 files per country
-python run_countries.py --files-per-country 10
+python run_countries.py --files-per-item 10
 ```
 
-### run_continents.py
+### run continents
 Processes continent-specific categorization:
 
 ```bash
 # Process all continents
-python run_continents.py
+python run_countries.py --work-path continents
 
 # Dry run (no actual edits)
-python run_continents.py --dry-run
+python run_countries.py --work-path continents --dry-run
 
 # Process first 2 continents only
-python run_continents.py --limit 2
+python run_countries.py --work-path continents --limit 2
 
 # Process 10 files per continent
-python run_continents.py --files-per-continent 10
+python run_countries.py --work-path continents --files-per-item 10
 ```
 
 ## Categories Created
@@ -166,7 +165,6 @@ The original `categorize_commons_files.py` has been refactored into:
 1. **wiki.py** - API interaction functions
 2. **utils.py** - Helper functions
 3. **run_countries.py** - Country processing script
-4. **run_continents.py** - Continent processing script (new)
 
 Benefits:
 - ✅ Cleaner code organization
@@ -184,13 +182,12 @@ python -c "from categorize import wiki, utils; print('✓ OK')"
 
 # Check syntax
 python -m py_compile run_countries.py
-python -m py_compile run_continents.py
 ```
 
 ### Adding New Features
 1. Add core logic to `wiki.py` or `utils.py`
 2. Update exports in `__init__.py`
-3. Use in scripts (`run_countries.py` or `run_continents.py`)
+3. Use in scripts `run_countries.py`
 
 ## Prerequisites
 

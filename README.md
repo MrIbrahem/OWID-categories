@@ -45,7 +45,6 @@ OWID-categories/
 │   ├── fetch_commons_files.py       # Phase 1: Fetch and classify files
 │   ├── owid_country_codes.py        # Country code mappings
 │   ├── run_countries.py             # Phase 2: Add categories
-│   └── run_continents.py
 ├── tests/                           # Test files
 │   ├── test_fetch_commons.py        # Test suite for Phase 1
 │   ├── test_categorize.py           # Test suite for Phase 2
@@ -129,10 +128,10 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
 python3 src/run_countries.py --dry-run --limit 2
 
 # Test with just 1 file per country
-python3 src/run_countries.py --dry-run --files-per-country 1
+python3 src/run_countries.py --dry-run --files-per-item 1
 
 # Test on 2 countries, 1 file each
-python3 src/run_countries.py --dry-run --limit 2 --files-per-country 1
+python3 src/run_countries.py --dry-run --limit 2 --files-per-item 1
 ```
 
 **Run on limited set of countries:**
@@ -141,7 +140,7 @@ python3 src/run_countries.py --dry-run --limit 2 --files-per-country 1
 python3 src/run_countries.py --limit 5
 
 # Process first 5 countries, 2 files per country
-python3 src/run_countries.py --limit 5 --files-per-country 2
+python3 src/run_countries.py --limit 5 --files-per-item 2
 ```
 
 **Run on all countries:**
@@ -150,13 +149,13 @@ python3 src/run_countries.py --limit 5 --files-per-country 2
 python3 src/run_countries.py
 
 # Process all countries, but only 1 file per country (conservative approach)
-python3 src/run_countries.py --files-per-country 1
+python3 src/run_countries.py --files-per-item 1
 ```
 
 **Available options:**
 - `--dry-run`: Test mode without making actual edits
 - `--limit N`: Process only first N countries
-- `--files-per-country N`: Process only N files per country
+- `--files-per-item N`: Process only N files per country
 
 #### What it Does
 
