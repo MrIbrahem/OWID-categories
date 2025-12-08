@@ -17,7 +17,7 @@ Usage:
     python run_categorize.py                              # Process all countries
     python run_categorize.py --dry-run                    # Test without making edits
     python run_categorize.py --limit 5                    # Process first 5 countries only
-    python run_categorize.py --files-per-item 10       # Process 10 files per country
+    python run_categorize.py --files-per-item 10          # Process 10 files per country
 """
 
 import argparse

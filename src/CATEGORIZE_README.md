@@ -52,7 +52,7 @@ python run_categorize.py --limit 5
 python run_categorize.py --files-per-item 10
 ```
 
-### run continents
+### Processing Continents
 Processes continent-specific categorization:
 
 ```bash
