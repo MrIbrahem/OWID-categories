@@ -32,7 +32,6 @@ from typing import Dict, Optional
 
 from categorize import (
     connect_to_commons,
-    load_credentials,
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
@@ -46,6 +45,7 @@ from utils import (
     get_parent_category,
 )
 from owid_config import (
+    load_credentials,
     LOG_FILE_COUNTRIES,
     LOG_FILE_CONTINENTS,
     COUNTRIES_DIR,

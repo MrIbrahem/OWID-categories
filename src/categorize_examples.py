@@ -6,9 +6,7 @@ This demonstrates how to use the categorize module functions
 programmatically without running the full scripts.
 """
 
-from categorize.wiki import (
-    load_credentials,
-)
+from owid_config import load_credentials
 from utils.utils import (
     load_json_file,
     normalize_country_name,

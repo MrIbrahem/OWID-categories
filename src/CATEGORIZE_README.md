@@ -6,10 +6,12 @@ This directory contains the refactored categorization system for adding categori
 
 ```
 src/
-├── categorize/                    # Core categorization module
+├── categorize/                   # Core categorization module
 │   ├── __init__.py               # Module exports
 │   ├── wiki.py                   # Wiki API interactions
-│   └── utils.py                  # Helper utilities
+├── utils/
+│   ├── __init__.py               # Module exports
+│   └── utils.py
 ├── run_categorize.py              # Script for categorizing country files
 ```
 
@@ -17,7 +19,6 @@ src/
 
 ### categorize/wiki.py
 Contains all functions related to Wikimedia Commons API interactions:
-- `load_credentials()` - Load bot credentials from .env
 - `connect_to_commons()` - Connect and authenticate to Commons
 - `add_category_to_page()` - Add a category to a file page
 - `ensure_category_exists()` - Create category page if needed
@@ -25,13 +26,16 @@ Contains all functions related to Wikimedia Commons API interactions:
 - `get_page_text()` - Retrieve page content
 - `category_exists_on_page()` - Check if category is already added
 
-### categorize/utils.py
+### utils/utils.py
 Contains helper functions:
 - `setup_logging()` - Configure logging system
 - `load_json_file()` - Load and parse JSON files
 - `normalize_country_name()` - Add "the" prefix to country names
 - `build_category_name()` - Generate category names
 - `get_parent_category()` - Get parent category for countries/continents
+
+### owid_config.py
+- `load_credentials()` - Load bot credentials from .env
 
 ## Usage Scripts
 

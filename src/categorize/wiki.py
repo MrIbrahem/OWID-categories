@@ -8,7 +8,6 @@ including authentication, page editing, and category management.
 
 import logging
 import re
-import os
 from typing import Optional
 import mwclient
 
@@ -18,23 +17,6 @@ USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-ca
 
 # Rate limiting: delay between edits in seconds
 EDIT_DELAY = 0.1
-
-
-def load_credentials() -> tuple[Optional[str], Optional[str]]:
-    """
-    Load credentials from .env file.
-
-    Returns:
-        Tuple of (username, password) or (None, None) if not found
-    """
-    username = os.getenv("WM_USERNAME")
-    password = os.getenv("PASSWORD")
-
-    if not username or not password:
-        logging.error("WM_USERNAME and/or PASSWORD not found in .env file")
-        return None, None
-
-    return username, password
 
 
 def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:

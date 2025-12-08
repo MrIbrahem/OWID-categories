@@ -6,7 +6,6 @@ This package contains modules for adding categories to OWID files on Wikimedia C
 
 from .wiki import (
     connect_to_commons,
-    load_credentials,
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
@@ -22,7 +21,6 @@ from .category_members import (
 __all__ = [
     # Wiki functions
     "connect_to_commons",
-    "load_credentials",
     "add_category_to_page",
     "ensure_category_exists",
     "get_category_member_count",
