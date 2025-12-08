@@ -134,14 +134,16 @@ def process_files(
             logging.info(f"\nSkipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
             return stats
 
-        logging.info(f"\nProcessing {log_line}: Category has {current_member_count} files, will add up to {files_per_one} files")
+        remaining_slots = files_per_one - current_member_count
+        logging.info(f"\nProcessing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
     else:
         logging.info(f"\nProcessing {log_line}: {len(files)} files")
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
-        files = files[:files_per_one]
-        logging.info(f"Limiting to {files_per_one} file(s) per country/continent")
+        remaining_slots = files_per_one - current_member_count
+        files = files[:remaining_slots]
+        logging.info(f"Limiting to {remaining_slots} file(s) for this country")
 
     # Ensure the category page exists before adding files to it
     parent_category = get_parent_category(category_type=country_or_continent)

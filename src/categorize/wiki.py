@@ -182,6 +182,8 @@ def ensure_category_exists(
     if category_page.exists:
         logging.debug(f"Category already exists: {category_title}")
         return True    # Category already exists
+
+    # Category doesn't exist, create it
     category_content = f"[[Category:{parent_category}|{sort_key}]]"
 
     if dry_run:
@@ -190,10 +192,14 @@ def ensure_category_exists(
 
     # Create the category page
     edit_summary = "Create category for OWID graphs"
-    category_page.save(category_content, summary=edit_summary)
 
-    logging.info(f"Created category page: {category_title}")
-    return True
+    try:
+        category_page.save(category_content, summary=edit_summary)
+        logging.info(f"Created category page: {category_title}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to create category page '{category_title}': {e}")
+        return False
 
 
 def get_category_member_count(site: mwclient.Site, category: str) -> int:
