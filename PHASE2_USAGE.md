@@ -49,19 +49,19 @@ Always test with dry-run mode first to see what would happen without making actu
 
 ```bash
 # Test on first 2 countries
-python3 src/categorize_commons_files.py --dry-run --limit 2
+python3 src/run_countries.py --dry-run --limit 2
 
 # Test on first 5 countries
-python3 src/categorize_commons_files.py --dry-run --limit 5
+python3 src/run_countries.py --dry-run --limit 5
 
 # Test on first 2 countries, 1 file per country
-python3 src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+python3 src/run_countries.py --dry-run --limit 2 --files-per-country 1
 
 # Test on all countries, but only 1 file per country
-python3 src/categorize_commons_files.py --dry-run --files-per-country 1
+python3 src/run_countries.py --dry-run --files-per-country 1
 
 # Test on all countries (no edits)
-python3 src/categorize_commons_files.py --dry-run
+python3 src/run_countries.py --dry-run
 ```
 
 The dry-run output will show:
@@ -75,16 +75,16 @@ After verifying with dry-run, remove the `--dry-run` flag:
 
 ```bash
 # Process first 5 countries
-python3 src/categorize_commons_files.py --limit 5
+python3 src/run_countries.py --limit 5
 
 # Process first 5 countries, 2 files per country
-python3 src/categorize_commons_files.py --limit 5 --files-per-country 2
+python3 src/run_countries.py --limit 5 --files-per-country 2
 
 # Process all countries, 1 file per country (conservative approach)
-python3 src/categorize_commons_files.py --files-per-country 1
+python3 src/run_countries.py --files-per-country 1
 
 # Process all countries
-python3 src/categorize_commons_files.py
+python3 src/run_countries.py
 ```
 
 ## Command-Line Options
@@ -96,7 +96,7 @@ Run in dry-run mode without making any actual edits. The script will log what it
 
 **Example:**
 ```bash
-python3 src/categorize_commons_files.py --dry-run
+python3 src/run_countries.py --dry-run
 ```
 
 ### `--limit N`
@@ -105,7 +105,7 @@ Limit processing to the first N countries (alphabetically by ISO3 code). Useful 
 **Example:**
 ```bash
 # Process only the first 5 countries
-python3 src/categorize_commons_files.py --limit 5
+python3 src/run_countries.py --limit 5
 ```
 
 ### `--files-per-country N`
@@ -114,10 +114,10 @@ Limit processing to N files per country. Useful for testing or conservative incr
 **Example:**
 ```bash
 # Process only 1 file per country
-python3 src/categorize_commons_files.py --files-per-country 1
+python3 src/run_countries.py --files-per-country 1
 
 # Process 3 files per country from the first 10 countries
-python3 src/categorize_commons_files.py --limit 10 --files-per-country 3
+python3 src/run_countries.py --limit 10 --files-per-country 3
 ```
 
 ### Combining Options
@@ -126,10 +126,10 @@ You can combine multiple options for fine-grained control:
 
 ```bash
 # Dry-run test: first 2 countries, 1 file each
-python3 src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+python3 src/run_countries.py --dry-run --limit 2 --files-per-country 1
 
 # Real run: first 10 countries, 2 files each
-python3 src/categorize_commons_files.py --limit 10 --files-per-country 2
+python3 src/run_countries.py --limit 10 --files-per-country 2
 ```
 
 ## What Happens
@@ -141,7 +141,7 @@ For each country in `output/countries/*.json`:
 3. **Connect**: Logs into Wikimedia Commons with your bot credentials
 4. **Ensure Category Exists**:
    - Checks if the category page `Category:Our World in Data graphs of {NormalizedCountry}` exists
-   - If not, creates it with content: `[[Category:Our World in Data graphs|{NormalizedCountry}]]`
+   - If not, creates it with content: `[[Category:Our World in Data graphs by country|{NormalizedCountry}]]`
    - Saves with edit summary: `"Create category for {NormalizedCountry} OWID graphs (automated)"`
 5. **Process Graphs**: For each graph file:
    - Fetches the current page content
@@ -322,14 +322,14 @@ cp .env.example .env
 # Edit .env with your credentials
 
 # 3. Test with dry-run
-python3 src/categorize_commons_files.py --dry-run --limit 2
+python3 src/run_countries.py --dry-run --limit 2
 
 # 4. Review the output, then run for real
-python3 src/categorize_commons_files.py --limit 2
+python3 src/run_countries.py --limit 2
 
 # 5. If successful, process more countries
-python3 src/categorize_commons_files.py --limit 10
+python3 src/run_countries.py --limit 10
 
 # 6. Finally, process all
-python3 src/categorize_commons_files.py
+python3 src/run_countries.py
 ```

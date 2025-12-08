@@ -37,29 +37,29 @@ Add country-specific categories to graph files on Wikimedia Commons.
 
 ```
 # Test with 2 countries only
-python src/categorize_commons_files.py --dry-run --limit 2
+python src/run_countries.py --dry-run --limit 2
 
 # Test with 1 file per country
-python src/categorize_commons_files.py --dry-run --files-per-country 1
+python src/run_countries.py --dry-run --files-per-country 1
 
 # Test with 2 countries, 1 file each
-python src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+python src/run_countries.py --dry-run --limit 2 --files-per-country 1
 ```
 
 ### Production Run
 
 ```
 # Process first 5 countries
-python src/categorize_commons_files.py --limit 5
+python src/run_countries.py --limit 5
 
 # Process first 10 countries, 2 files per country
-python src/categorize_commons_files.py --limit 10 --files-per-country 2
+python src/run_countries.py --limit 10 --files-per-country 2
 
 # Process all countries, 1 file per country (conservative)
-python src/categorize_commons_files.py --files-per-country 1
+python src/run_countries.py --files-per-country 1
 
 # Process all countries, all files
-python src/categorize_commons_files.py
+python src/run_countries.py
 ```
 
 ---
@@ -80,7 +80,7 @@ All options can be combined for fine-grained control:
 
 ```
 # Test: 3 countries, 2 files each
-python src/categorize_commons_files.py --dry-run --limit 3 --files-per-country 2
+python src/run_countries.py --dry-run --limit 3 --files-per-country 2
 ```
 
 ---
@@ -93,7 +93,7 @@ python src/categorize_commons_files.py --dry-run --limit 3 --files-per-country 2
 python src/fetch_commons_files.py
 
 # 2. Dry-run test with minimal data
-python src/categorize_commons_files.py --dry-run --limit 1 --files-per-country 1
+python src/run_countries.py --dry-run --limit 1 --files-per-country 1
 
 # 3. Check the log output
 type logs\categorize_commons.log
@@ -102,16 +102,16 @@ type logs\categorize_commons.log
 ### 2. Conservative Production Run
 ```
 # Process 1 file per country to verify everything works
-python src/categorize_commons_files.py --files-per-country 1
+python src/run_countries.py --files-per-country 1
 
 # If successful, process remaining files
-python src/categorize_commons_files.py
+python src/run_countries.py
 ```
 
 ### 3. Batch Processing
 ```
 # Process countries in batches of 10
-python src/categorize_commons_files.py --limit 10
+python src/run_countries.py --limit 10
 # ... check results ...
 # Modify JSON files to mark processed countries, then continue
 ```
@@ -175,13 +175,13 @@ The script includes built-in rate limiting (1.5s between edits). If you still hi
 python src/fetch_commons_files.py
 
 # Phase 2: Safe testing
-python src/categorize_commons_files.py --dry-run --limit 2 --files-per-country 1
+python src/run_countries.py --dry-run --limit 2 --files-per-country 1
 
 # Phase 2: Conservative real run
-python src/categorize_commons_files.py --limit 5 --files-per-country 1
+python src/run_countries.py --limit 5 --files-per-country 1
 
 # Phase 2: Full run
-python src/categorize_commons_files.py
+python src/run_countries.py
 ```
 
 ---

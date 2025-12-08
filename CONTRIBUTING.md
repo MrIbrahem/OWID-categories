@@ -7,6 +7,12 @@ This document provides technical details for developers contributing to the proj
 ```
 OWID-categories/
 ├── src/                        # Main source code
+│   ├── categorize/
+│   │   ├── wiki.py
+│   │   ├── utils.py
+│   │   └── __init__.py
+│   ├── run_countries.py
+│   └── run_continents.py
 │   ├── fetch_commons_files.py  # Main script for fetching and processing
 │   └── owid_country_codes.py   # Country code mappings and lookup functions
 ├── tests/                      # Test files
@@ -15,8 +21,9 @@ OWID-categories/
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # User-facing documentation
 ├── CONTRIBUTING.md             # Developer documentation
-├── plan.md                     # Phase 1 implementation plan
-├── plan2.md                    # Phase 2 implementation plan
+├── plans/                      # Plans files
+│   ├── plan.md                 # Phase 1 implementation plan
+│   └── plan2.md                # Phase 2 implementation plan
 ├── .gitignore                  # Git exclusions
 ├── output/                     # Generated JSON files (gitignored)
 │   ├── countries/              # Per-country JSON files
@@ -55,7 +62,7 @@ Key functions:
   - Uses regex patterns for classification
 
 #### Data Processing
-- `process_files(files)`: Aggregates files by country
+- `fetch_files(files)`: Aggregates files by country
   - Classifies each file
   - Resolves country codes
   - Builds in-memory data structure
@@ -110,7 +117,7 @@ Matches: `Life expectancy, Canada, 2020.svg`
 
 1. Add regex pattern to `src/fetch_commons_files.py`
 2. Update `classify_and_parse_file()` to handle new pattern
-3. Update `process_files()` to handle new file type
+3. Update `fetch_files()` to handle new file type
 4. Update output JSON structure in `write_country_json_files()`
 5. Add tests in `tests/test_fetch_commons.py`
 

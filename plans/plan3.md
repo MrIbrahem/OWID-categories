@@ -78,16 +78,16 @@ Apply the same normalized name in:
 
 ### 2.1 New Function
 
-Create a new function `normalize_country_name(country: str) -> str` in `src/categorize_commons_files.py`:
+Create a new function `normalize_country_name(country: str) -> str` in `src/run_countries.py`:
 
 ```python
 def normalize_country_name(country: str) -> str:
     """
     Normalize country name by adding "the" prefix where appropriate.
-    
+
     Args:
         country: Country name (e.g., "United Kingdom", "Canada")
-        
+
     Returns:
         Normalized country name (e.g., "the United Kingdom", "Canada")
     """
@@ -111,7 +111,7 @@ Update the following existing functions to use the normalized country name:
    - The country parameter should already be normalized when passed to this function
    - The function will use the normalized name in edit summaries
 
-3. **`process_country_file(site, file_path, dry_run, graphs_only)`**
+3. **`process_files(site, file_path, dry_run, graphs_only)`**
    - Normalize the country name after loading from JSON
    - Use the normalized name throughout the function
 
@@ -153,7 +153,7 @@ Test with actual country JSON files:
 
 ## 4. Implementation Steps
 
-1. **Add normalization function** to `src/categorize_commons_files.py`
+1. **Add normalization function** to `src/run_countries.py`
    - Define the list of countries requiring "the"
    - Implement the normalization logic
 
