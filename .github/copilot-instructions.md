@@ -177,8 +177,7 @@ OWID-categories/
 │   │   └── __init__.py
 │   ├── fetch_commons_files.py       # Phase 1: Fetch and classify files
 │   ├── owid_country_codes.py        # Country code mappings
-│   ├── run_countries.py             # Phase 2: Add categories
-│   └── run_continents.py
+│   ├── run_categorize.py             # Phase 2: Add categories
 ├── tests/                        # Test directory
 │   ├── test_fetch_commons.py    # Tests for fetch module
 │   ├── test_categorize.py       # Tests for categorize module

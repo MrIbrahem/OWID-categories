@@ -118,7 +118,7 @@ def test_processing():
     assert len(sample_files) == 10, "Should have 10 sample files"
 
     # Process files
-    countries = fetch_files(sample_files)
+    countries, continents, not_matched = fetch_files(sample_files)
 
     # Assertions on processed data
     assert len(countries) > 0, "Should process at least one country"
@@ -136,7 +136,7 @@ def test_processing():
         assert 'maps' in data, f"Country data for {iso3} should have 'maps' field"
         assert isinstance(data['graphs'], list), f"Graphs for {iso3} should be a list"
         assert isinstance(data['maps'], list), f"Maps for {iso3} should be a list"
-        assert data['iso3'] == iso3, f"ISO3 code should match key"
+        assert data['iso3'] == iso3, "ISO3 code should match key"
 
     # Check specific country data
     can_data = countries["CAN"]
@@ -167,6 +167,3 @@ def test_processing():
         assert 'map_count' in entry, "Summary entry should have map_count"
         assert isinstance(entry['graph_count'], int), "graph_count should be integer"
         assert isinstance(entry['map_count'], int), "map_count should be integer"
-
-
-

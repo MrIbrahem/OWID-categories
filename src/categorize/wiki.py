@@ -7,6 +7,7 @@ including authentication, page editing, and category management.
 """
 
 import logging
+import re
 import os
 from typing import Optional
 
@@ -50,14 +51,21 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
     Returns:
         Connected Site object or None on failure
     """
-    logging.info("Connecting to Wikimedia Commons...")
-    site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
+    try:
+        logging.info("Connecting to Wikimedia Commons...")
+        site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
 
-    logging.info(f"Logging in as {username}...")
-    site.login(username, password)
+        logging.info(f"Logging in as {username}...")
+        site.login(username, password)
 
-    logging.info("Successfully connected and logged in")
-    return site
+        logging.info("Successfully connected and logged in")
+        return site
+    except mwclient.errors.LoginError as e:
+        logging.error(f"Login failed: {e}")
+        return None
+    except Exception as e:
+        logging.exception(f"Failed to connect to Commons: {e}")
+        return None
 
 
 def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
@@ -91,18 +99,11 @@ def category_exists_on_page(page_text: str, category: str) -> bool:
     if not page_text:
         return False
 
-    # Check for various category formats
-    # [[Category:Name]] or [[category:Name]]
     category_simple = category.replace("Category:", "")
 
-    checks = [
-        f"[[{category}]]",
-        f"[[{category.lower()}]]",
-        f"[[Category:{category_simple}]]",
-        f"[[category:{category_simple}]]",
-    ]
-
-    return any(check in page_text for check in checks)
+    # Match [[Category:Name]] or [[Category:Name|sortkey]] with case-insensitive "Category:"
+    pattern = rf"\[\[\s*[Cc]ategory\s*:\s*{re.escape(category_simple)}\s*(?:\|[^\]]*)?]]"
+    return bool(re.search(pattern, page_text))
 
 
 def add_category_to_page(
@@ -146,10 +147,14 @@ def add_category_to_page(
 
     # Make the edit
     edit_summary = f"Add {category}"
-    page.save(new_text, summary=edit_summary)
+    try:
+        page.save(new_text, summary=edit_summary)
+        logging.info(f"Successfully added '{category}' to {title}")
+        return True
 
-    logging.info(f"Successfully added '{category}' to {title}")
-    return True
+    except Exception as e:
+        logging.error(f"Failed to save category to {title}: {e}")
+        return False
 
 
 def ensure_category_exists(
@@ -176,7 +181,9 @@ def ensure_category_exists(
 
     if category_page.exists:
         logging.debug(f"Category already exists: {category_title}")
-        return True    # Category doesn't exist, create it
+        return True    # Category already exists
+
+    # Category doesn't exist, create it
     category_content = f"[[Category:{parent_category}|{sort_key}]]"
 
     if dry_run:
@@ -185,10 +192,14 @@ def ensure_category_exists(
 
     # Create the category page
     edit_summary = "Create category for OWID graphs"
-    category_page.save(category_content, summary=edit_summary)
 
-    logging.info(f"Created category page: {category_title}")
-    return True
+    try:
+        category_page.save(category_content, summary=edit_summary)
+        logging.info(f"Created category page: {category_title}")
+        return True
+    except Exception as e:
+        logging.error(f"Failed to create category page '{category_title}': {e}")
+        return False
 
 
 def get_category_member_count(site: mwclient.Site, category: str) -> int:
@@ -203,24 +214,25 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
         Number of members in the category (0 if category doesn't exist)
     """
     try:
-        # Remove "Category:" prefix if present for the API call
-        category_name = category.replace("Category:", "")
-
-        # Get the category page
-        category_page = site.pages[f"Category:{category_name}"]
+        # mwclient handles the "Category:" prefix automatically.
+        category_page = site.pages[category]
 
         if not category_page.exists:
             logging.debug(f"Category doesn't exist yet: {category}")
             return 0
 
-        # Count members in the category
-        member_count = sum(1 for _ in category_page.members())
+        # Use categoryinfo for an efficient count
+        info = category_page.categoryinfo
+        member_count = info.get('files', 0)
 
         logging.debug(f"Category '{category}' has {member_count} members")
         return member_count
 
+    except mwclient.errors.MwClientError as e:
+        logging.error(f"API error counting members in category '{category}': {e}")
+        return 0
     except Exception as e:
-        logging.error(f"Error counting members in category '{category}': {e}")
+        logging.error(f"An unexpected error occurred counting members in category '{category}': {e}")
         return 0
 
 

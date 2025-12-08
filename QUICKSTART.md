@@ -37,29 +37,29 @@ Add country-specific categories to graph files on Wikimedia Commons.
 
 ```
 # Test with 2 countries only
-python src/run_countries.py --dry-run --limit 2
+python src/run_categorize.py --dry-run --limit 2
 
 # Test with 1 file per country
-python src/run_countries.py --dry-run --files-per-country 1
+python src/run_categorize.py --dry-run --files-per-item 1
 
 # Test with 2 countries, 1 file each
-python src/run_countries.py --dry-run --limit 2 --files-per-country 1
+python src/run_categorize.py --dry-run --limit 2 --files-per-item 1
 ```
 
 ### Production Run
 
 ```
 # Process first 5 countries
-python src/run_countries.py --limit 5
+python src/run_categorize.py --limit 5
 
 # Process first 10 countries, 2 files per country
-python src/run_countries.py --limit 10 --files-per-country 2
+python src/run_categorize.py --limit 10 --files-per-item 2
 
 # Process all countries, 1 file per country (conservative)
-python src/run_countries.py --files-per-country 1
+python src/run_categorize.py --files-per-item 1
 
 # Process all countries, all files
-python src/run_countries.py
+python src/run_categorize.py
 ```
 
 ---
@@ -72,7 +72,7 @@ python src/run_countries.py
 |--------|-------------|---------|
 | `--dry-run` | Test mode without making actual edits | `--dry-run` |
 | `--limit N` | Process only first N countries | `--limit 5` |
-| `--files-per-country N` | Process only N files per country | `--files-per-country 1` |
+| `--files-per-item N` | Process only N files per country | `--files-per-item 1` |
 
 ### Combining Options
 
@@ -80,7 +80,7 @@ All options can be combined for fine-grained control:
 
 ```
 # Test: 3 countries, 2 files each
-python src/run_countries.py --dry-run --limit 3 --files-per-country 2
+python src/run_categorize.py --dry-run --limit 3 --files-per-item 2
 ```
 
 ---
@@ -93,7 +93,7 @@ python src/run_countries.py --dry-run --limit 3 --files-per-country 2
 python src/fetch_commons_files.py
 
 # 2. Dry-run test with minimal data
-python src/run_countries.py --dry-run --limit 1 --files-per-country 1
+python src/run_categorize.py --dry-run --limit 1 --files-per-item 1
 
 # 3. Check the log output
 type logs\categorize_commons.log
@@ -102,16 +102,16 @@ type logs\categorize_commons.log
 ### 2. Conservative Production Run
 ```
 # Process 1 file per country to verify everything works
-python src/run_countries.py --files-per-country 1
+python src/run_categorize.py --files-per-item 1
 
 # If successful, process remaining files
-python src/run_countries.py
+python src/run_categorize.py
 ```
 
 ### 3. Batch Processing
 ```
 # Process countries in batches of 10
-python src/run_countries.py --limit 10
+python src/run_categorize.py --limit 10
 # ... check results ...
 # Modify JSON files to mark processed countries, then continue
 ```
@@ -151,7 +151,7 @@ Create a `.env` file with your bot credentials (see Prerequisites above)
 ### "Rate limit exceeded"
 The script includes built-in rate limiting (1.5s between edits). If you still hit limits:
 - Reduce the number of countries: `--limit 5`
-- Reduce files per country: `--files-per-country 1`
+- Reduce files per country: `--files-per-item 1`
 - Wait a few minutes and resume
 
 ---
@@ -159,7 +159,7 @@ The script includes built-in rate limiting (1.5s between edits). If you still hi
 ## Best Practices
 
 1. ✅ **Always test with `--dry-run` first**
-2. ✅ **Start small with `--limit` and `--files-per-country`**
+2. ✅ **Start small with `--limit` and `--files-per-item`**
 3. ✅ **Monitor logs during execution**
 4. ✅ **Verify edits on Commons after small batches**
 5. ✅ **Never commit your `.env` file**
@@ -175,13 +175,13 @@ The script includes built-in rate limiting (1.5s between edits). If you still hi
 python src/fetch_commons_files.py
 
 # Phase 2: Safe testing
-python src/run_countries.py --dry-run --limit 2 --files-per-country 1
+python src/run_categorize.py --dry-run --limit 2 --files-per-item 1
 
 # Phase 2: Conservative real run
-python src/run_countries.py --limit 5 --files-per-country 1
+python src/run_categorize.py --limit 5 --files-per-item 1
 
 # Phase 2: Full run
-python src/run_countries.py
+python src/run_categorize.py
 ```
 
 ---
