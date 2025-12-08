@@ -35,4 +35,5 @@ __all__ = [
     "load_json_file",
     "normalize_country_name",
     "build_category_name",
+    "get_parent_category",
 ]

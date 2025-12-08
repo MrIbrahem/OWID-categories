@@ -49,7 +49,7 @@ def load_json_file(file_path: Path) -> Optional[Dict]:
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
-    except Exception as e:
+    except (FileNotFoundError, json.JSONDecodeError) as e:
         logging.error(f"Error loading {file_path}: {e}")
         return None
 
