@@ -128,17 +128,17 @@ def process_files(
     else:
         log_line = f"{entity}"
 
-    logging.info(f"\nProcessing {log_line}: {len(files)} files")
+    logging.info(f"\n\t\t Processing {log_line}: {len(files)} files")
 
     # Check if category already has enough files when files_per_one is set
     if files_per_one:
         current_member_count = get_category_member_count(site, category)
         if current_member_count >= files_per_one:
-            logging.info(f"\nSkipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
+            logging.info(f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
             return stats
 
         remaining_slots = files_per_one - current_member_count
-        logging.info(f"\nProcessing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
+        logging.info(f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
