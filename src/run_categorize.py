@@ -14,10 +14,12 @@ Requirements:
 - Valid Wikimedia Commons bot credentials in .env file
 
 Usage:
-    python run_categorize.py                              # Process all countries
-    python run_categorize.py --dry-run                    # Test without making edits
-    python run_categorize.py --limit 5                    # Process first 5 countries only
-    python run_categorize.py --files-per-item 10          # Process 10 files per country
+    python run_categorize.py                                            # Process all countries
+    python run_categorize.py --dry-run                                  # Test without making edits
+    python run_categorize.py --limit 5                                  # Process first 5 countries only
+    python run_categorize.py --files-per-item 10                        # Process 10 files per country
+    python run_categorize.py --work-path continents --files-type maps   # Process continents and maps
+    python run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
 """
 
 import argparse
@@ -28,31 +30,27 @@ import time
 from pathlib import Path
 from typing import Dict, Optional
 
-from categorize.wiki import (
+from categorize import (
     connect_to_commons,
-    load_credentials,
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
     get_edit_delay,
 )
-from categorize.utils import (
+from utils import (
     setup_logging,
     load_json_file,
     normalize_country_name,
     build_category_name,
     get_parent_category,
 )
-
-
-# Configuration
-CONTINENTS_DIR = Path("output/continents")
-COUNTRIES_DIR = Path("output/countries")
-
-LOG_FILE_COUNTRIES = Path("logs/categorize_countries.log")
-LOG_FILE_CONTINENTS = Path("logs/categorize_continents.log")
-
-
+from owid_config import (
+    load_credentials,
+    LOG_FILE_COUNTRIES,
+    LOG_FILE_CONTINENTS,
+    COUNTRIES_DIR,
+    CONTINENTS_DIR,
+)
 # List of continents to process
 CONTINENTS = [
     "Africa",
@@ -68,7 +66,7 @@ def process_files(
     site: mwclient.Site,
     file_path: Path,
     dry_run: bool = False,
-    graphs_or_maps: str = "graphs",
+    files_type: str = "graphs",
     files_per_one: Optional[int] = None,
     country_or_continent: str = "country",
 ) -> Dict[str, int]:
@@ -79,21 +77,24 @@ def process_files(
         site: Connected mwclient Site
         file_path: Path to country/continent JSON file
         dry_run: If True, don't actually make edits
-        graphs_or_maps: Whether to process 'graphs' or 'maps'
+        files_type: Whether to process 'graphs' or 'maps'
         files_per_one: Optional limit on number of files to process per country/continent
         country_or_continent: Specify whether processing 'country' or 'continent'
 
     Returns:
         Dictionary with statistics (added, skipped, errors)
     """
+    logging.info("-" * 20)
+    logging.info(f"process_files: {files_type}")
+
     stats = {
         "added": 0,
         "skipped": 0,
         "errors": 0
     }
 
-    if graphs_or_maps not in ["graphs", "maps"]:
-        logging.error(f"Invalid graphs_or_maps value: {graphs_or_maps}")
+    if files_type not in ["graphs", "maps"]:
+        logging.error(f"Invalid files_type value: {files_type}")
         stats["errors"] += 1
         return stats
 
@@ -109,7 +110,7 @@ def process_files(
         return stats
 
     entity = data.get(country_or_continent)
-    files = data.get(graphs_or_maps, [])
+    files = data.get(files_type, [])
 
     if not entity:
         logging.error(f"No country/continent name in {file_path}")
@@ -117,7 +118,7 @@ def process_files(
         return stats
 
     # Build category name
-    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=graphs_or_maps)
+    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=files_type)
 
     if country_or_continent == "country":
         iso3 = data.get("iso3")
@@ -127,17 +128,17 @@ def process_files(
     else:
         log_line = f"{entity}"
 
+    logging.info(f"\n\t\t Processing {log_line}: {len(files)} files")
+
     # Check if category already has enough files when files_per_one is set
     if files_per_one:
         current_member_count = get_category_member_count(site, category)
         if current_member_count >= files_per_one:
-            logging.info(f"\nSkipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
+            logging.info(f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
             return stats
 
         remaining_slots = files_per_one - current_member_count
-        logging.info(f"\nProcessing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
-    else:
-        logging.info(f"\nProcessing {log_line}: {len(files)} files")
+        logging.info(f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
@@ -146,7 +147,7 @@ def process_files(
         logging.info(f"Limiting to {remaining_slots} file(s) for this country")
 
     # Ensure the category page exists before adding files to it
-    parent_category = get_parent_category(category_type=country_or_continent)
+    parent_category = get_parent_category(category_type=country_or_continent, files_type=files_type)
     if not ensure_category_exists(site, category, parent_category, entity, dry_run):
         logging.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
         stats["errors"] += 1
@@ -178,6 +179,7 @@ def main(
     limit: Optional[int] = None,
     files_per_one: Optional[int] = None,
     work_path: str = "countries",
+    files_type: str = "graphs",
 ):
     """
     Main execution function for countries/continents categorization.
@@ -187,6 +189,7 @@ def main(
         limit: Optional limit on number of countries/continents to process
         files_per_one: Optional limit on number of files to process per country/continent
         work_path: Specify whether processing 'countries' or 'continents'
+        files_type: Specify whether processing 'graphs' or 'maps'
     """
 
     work_dirs = {
@@ -195,6 +198,8 @@ def main(
     }
 
     work_dir = work_dirs.get(work_path)
+
+    country_or_continent = "country" if work_path == "countries" else "continent"
 
     if not work_dir:
         logging.error(f"Invalid work_path: {work_path}")
@@ -253,7 +258,14 @@ def main(
     }
 
     for file_path in files:
-        stats = process_files(site, file_path, dry_run=dry_run, files_per_one=files_per_one)
+        stats = process_files(
+            site,
+            file_path,
+            dry_run=dry_run,
+            files_type=files_type,
+            files_per_one=files_per_one,
+            country_or_continent=country_or_continent
+        )
 
         # If no files were added or skipped, the item was skipped entirely
         if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
@@ -306,11 +318,19 @@ if __name__ == "__main__":
         default="countries",
         help="Specify whether to process 'countries' or 'continents' (default: countries)"
     )
+    # add files_type argument
+    parser.add_argument(
+        "--files-type",
+        choices=["graphs", "maps"],
+        default="graphs",
+        help="Specify whether to process 'graphs' or 'maps' (default: graphs)"
+    )
     args = parser.parse_args()
 
     main(
         dry_run=args.dry_run,
         limit=args.limit,
         files_per_one=args.files_per_item,
-        work_path=args.work_path
+        work_path=args.work_path,
+        files_type=args.files_type
     )

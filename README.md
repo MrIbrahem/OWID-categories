@@ -51,7 +51,7 @@ OWID-categories/
 │   └── example_usage.py             # Usage examples
 ├── output/                          # Generated output (gitignored)
 │   ├── countries/                   # Per-country JSON files
-│   └── owid_country_summary.json
+│   └── owid_summary.json
 ├── logs/                            # Log files (gitignored)
 ├── .env.example                     # Example environment file
 └── requirements.txt                 # Python dependencies
@@ -210,7 +210,7 @@ output/
 │   ├── CAN.json    # Canadian graphs and maps
 │   ├── BRA.json    # Brazilian graphs and maps
 │   └── ...
-└── owid_country_summary.json  # Global summary with statistics
+└── owid_summary.json  # Global summary with statistics
 ```
 
 #### Country JSON Format

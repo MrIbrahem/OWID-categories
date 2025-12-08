@@ -1,5 +1,5 @@
 """
-Tests for categorize.utils module.
+Tests for utils module.
 
 Tests utility functions for country name normalization, category building,
 and JSON file loading.
@@ -9,12 +9,12 @@ import sys
 from pathlib import Path
 import pytest
 import json
-from unittest.mock import Mock, patch, mock_open
+from unittest.mock import patch, mock_open
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
-from categorize.utils import (
+from utils import (
     normalize_country_name,
     build_category_name,
     get_parent_category,
@@ -119,6 +119,7 @@ class TestBuildCategoryName:
             ("North America", "Category:Our World in Data graphs of North America"),
             ("South America", "Category:Our World in Data graphs of South America"),
             ("Oceania", "Category:Our World in Data graphs of Oceania"),
+            ("World", "Category:Our World in Data graphs of the world"),
         ]
 
         for continent, expected in test_cases:
@@ -148,10 +149,20 @@ class TestGetParentCategory:
         result = get_parent_category("country")
         assert result == "Our World in Data graphs by country"
 
+    def test_country_parent_category_maps(self):
+        """Test parent category for countries."""
+        result = get_parent_category("country", "maps")
+        assert result == "Our World in Data maps by country"
+
     def test_continent_parent_category(self):
         """Test parent category for continents."""
         result = get_parent_category("continent")
         assert result == "Our World in Data graphs by continent"
+
+    def test_continent_parent_category_maps(self):
+        """Test parent category for continents."""
+        result = get_parent_category("continent", "maps")
+        assert result == "Our World in Data maps by continent"
 
 
 @pytest.mark.unit

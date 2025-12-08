@@ -6,34 +6,28 @@ This package contains modules for adding categories to OWID files on Wikimedia C
 
 from .wiki import (
     connect_to_commons,
-    load_credentials,
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
     get_page_text,
     category_exists_on_page,
+    get_edit_delay,
 )
 
-from .utils import (
-    setup_logging,
-    load_json_file,
-    normalize_country_name,
-    build_category_name,
+from .category_members import (
+    get_category_members_petscan,
+    fetch_category_members,
 )
-
 __all__ = [
     # Wiki functions
     "connect_to_commons",
-    "load_credentials",
     "add_category_to_page",
     "ensure_category_exists",
     "get_category_member_count",
     "get_page_text",
     "category_exists_on_page",
     # Utility functions
-    "setup_logging",
-    "load_json_file",
-    "normalize_country_name",
-    "build_category_name",
-    "get_parent_category",
+    "get_category_members_petscan",
+    "fetch_category_members",
+    "get_edit_delay",
 ]

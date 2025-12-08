@@ -13,10 +13,6 @@ from pathlib import Path
 from typing import Dict, Optional
 
 
-# Configuration
-LOG_DIR = Path("logs")
-
-
 def setup_logging(log_file: Path):
     """
     Set up logging configuration.
@@ -24,11 +20,16 @@ def setup_logging(log_file: Path):
     Args:
         log_file: Path to log file
     """
-    LOG_DIR.mkdir(exist_ok=True)
+    if not log_file.parent.exists():
+        log_file.parent.mkdir(parents=True, exist_ok=True)
+
+    if not log_file.exists():
+        log_file.touch()
 
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
+        # format="%(asctime)s - %(levelname)s - %(message)s",
+        format="%(levelname)s - %(message)s",
         handlers=[
             logging.FileHandler(log_file),
             logging.StreamHandler(sys.stdout)
@@ -132,7 +133,7 @@ def build_category_name(entity_name: str, category_type: str = "country", files_
     return f"Category:Our World in Data {files_type} of {normalized_name}"
 
 
-def get_parent_category(category_type: str = "country") -> str:
+def get_parent_category(category_type: str = "country", files_type: str = "graphs") -> str:
     """
     Get the parent category name based on entity type.
 
@@ -142,6 +143,32 @@ def get_parent_category(category_type: str = "country") -> str:
     Returns:
         Parent category name
     """
+    pre_defined_categories = {
+        "graphs": {
+        },
+        "maps": {
+        },
+    }
+
+    if files_type not in pre_defined_categories:
+        files_type = "graphs"
+
     if category_type == "continent":
-        return "Our World in Data graphs by continent"
-    return "Our World in Data graphs by country"
+        return f"Our World in Data {files_type} by continent"
+
+    return f"Our World in Data {files_type} by country"
+
+
+def normalize_title(title: str) -> str:
+    """
+    Remove 'File:' prefix and return base name.
+
+    Args:
+        title: Full file title like "File:Something.svg"
+
+    Returns:
+        Base name without prefix
+    """
+    if title.startswith("File:"):
+        return title[5:]
+    return title

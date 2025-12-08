@@ -8,11 +8,8 @@ including authentication, page editing, and category management.
 
 import logging
 import re
-import os
 from typing import Optional
-
 import mwclient
-from dotenv import load_dotenv
 
 
 # User-Agent header (required by Wikimedia)
@@ -20,24 +17,6 @@ USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-ca
 
 # Rate limiting: delay between edits in seconds
 EDIT_DELAY = 0.1
-
-
-def load_credentials() -> tuple[Optional[str], Optional[str]]:
-    """
-    Load credentials from .env file.
-
-    Returns:
-        Tuple of (username, password) or (None, None) if not found
-    """
-    load_dotenv()
-    username = os.getenv("WM_USERNAME")
-    password = os.getenv("PASSWORD")
-
-    if not username or not password:
-        logging.error("WM_USERNAME and/or PASSWORD not found in .env file")
-        return None, None
-
-    return username, password
 
 
 def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
@@ -221,9 +200,12 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
             logging.debug(f"Category doesn't exist yet: {category}")
             return 0
 
-        # Use categoryinfo for an efficient count
-        info = category_page.categoryinfo
-        member_count = info.get('files', 0)
+        # Use categoryinfo for an efficient count of files
+        # 'Category' object has no attribute 'categoryinfo'
+        # member_count = category_page.categoryinfo.get('files', 0)
+
+        # Count members in the category
+        member_count = sum(1 for _ in category_page.members())
 
         logging.debug(f"Category '{category}' has {member_count} members")
         return member_count
