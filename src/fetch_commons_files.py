@@ -407,7 +407,7 @@ def write_continent_json_files(continents: Dict[str, Dict]):
     logger.info(f"Continent JSON files written to {CONTINENTS_DIR}")
 
 
-def write_summary_json(countries: Dict[str, Dict], continents: Dict[str, Dict]):
+def write_summary_json(countries: Dict[str, Dict], continents: Dict[str, Dict]) -> None:
     """
     Write global summary JSON file including countries and continents.
 

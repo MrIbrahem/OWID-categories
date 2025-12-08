@@ -26,46 +26,16 @@ from fetch_commons_files import (
 def create_sample_data():
     """Create sample file data for testing."""
     return [
-        {
-            "pageid": 1,
-            "title": "File:Agriculture share gdp, 1997 to 2021, CAN.svg"
-        },
-        {
-            "pageid": 2,
-            "title": "File:Agriculture share gdp, 2000 to 2022, USA.svg"
-        },
-        {
-            "pageid": 3,
-            "title": "File:Access to clean fuels and technologies for cooking, Canada, 1990.svg"
-        },
-        {
-            "pageid": 4,
-            "title": "File:GDP per capita, United States, 2020.svg"
-        },
-        {
-            "pageid": 5,
-            "title": "File:Life expectancy, 1950 to 2020, BRA.svg"
-        },
-        {
-            "pageid": 6,
-            "title": "File:Population density, Brazil, 2019.svg"
-        },
-        {
-            "pageid": 7,
-            "title": "File:CO2 emissions, 1990 to 2021, GBR.svg"
-        },
-        {
-            "pageid": 8,
-            "title": "File:Renewable energy share, United Kingdom, 2021.svg"
-        },
-        {
-            "pageid": 9,
-            "title": "File:Income inequality, 1980 to 2020, DEU.svg"
-        },
-        {
-            "pageid": 10,
-            "title": "File:Educational attainment, Germany, 2018.svg"
-        }
+        "File:Agriculture share gdp, 1997 to 2021, CAN.svg",
+        "File:Access to clean fuels and technologies for cooking, Canada, 1990.svg",
+        "File:Agriculture share gdp, 2000 to 2022, USA.svg",
+        "File:CO2 emissions, 1990 to 2021, GBR.svg",
+        "File:Educational attainment, Germany, 2018.svg",
+        "File:GDP per capita, United States, 2020.svg",
+        "File:Income inequality, 1980 to 2020, DEU.svg",
+        "File:Life expectancy, 1950 to 2020, BRA.svg",
+        "File:Population density, Brazil, 2019.svg",
+        "File:Renewable energy share, United Kingdom, 2021.svg",
     ]
 
 
@@ -145,7 +115,7 @@ def test_processing():
 
     # Write output files
     write_country_json_files(countries)
-    write_summary_json(countries)
+    write_summary_json(countries, continents)
 
     # Verify output files were created
     assert COUNTRIES_DIR.exists(), "Countries directory should be created"
@@ -156,10 +126,10 @@ def test_processing():
     with open(summary_file, "r") as f:
         summary = json.load(f)
 
-    assert isinstance(summary, list), "Summary should be a list"
-    assert len(summary) == len(countries), "Summary should have entry for each country"
+    assert isinstance(summary, dict), "Summary should be a dict"
+    assert len(summary["countries"]) == len(countries), "Summary should have entry for each country"
 
-    for entry in summary:
+    for entry in summary["countries"]:
         assert 'iso3' in entry, "Summary entry should have iso3"
         assert 'country' in entry, "Summary entry should have country"
         assert 'graph_count' in entry, "Summary entry should have graph_count"
