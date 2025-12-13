@@ -7,6 +7,7 @@ including authentication, page editing, and category management.
 """
 
 import logging
+import time
 import re
 from typing import Optional
 import mwclient
@@ -16,7 +17,7 @@ import mwclient
 USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
 # Rate limiting: delay between edits in seconds
-EDIT_DELAY = 0.1
+EDIT_DELAY = 1
 
 
 def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
@@ -125,10 +126,11 @@ def add_category_to_page(
         return True
 
     # Make the edit
-    edit_summary = f"Bot: Add {category}"
+    edit_summary = f"Bot:(test run) Add [[:{category}]]"
     try:
         page.save(new_text, summary=edit_summary)
         logging.info(f"Successfully added '{category}' to {title}")
+        time.sleep(get_edit_delay())
         return True
 
     except Exception as e:
