@@ -26,7 +26,6 @@ import argparse
 import mwclient
 import logging
 import sys
-import time
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -35,7 +34,6 @@ from categorize import (
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
-    get_edit_delay,
 )
 from utils import (
     setup_logging,
@@ -166,10 +164,6 @@ def process_files(
             stats["added"] += 1
         else:
             stats["skipped"] += 1
-
-        # Rate limiting
-        if not dry_run:
-            time.sleep(get_edit_delay())
 
     return stats
 
