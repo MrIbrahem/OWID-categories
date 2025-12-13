@@ -11,7 +11,6 @@ from .wiki import (
     get_category_member_count,
     get_page_text,
     category_exists_on_page,
-    get_edit_delay,
 )
 
 from .category_members import (
@@ -29,5 +28,4 @@ __all__ = [
     # Utility functions
     "get_category_members_petscan",
     "fetch_category_members",
-    "get_edit_delay",
 ]

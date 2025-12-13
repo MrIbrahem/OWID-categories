@@ -130,7 +130,7 @@ def add_category_to_page(
     try:
         page.save(new_text, summary=edit_summary)
         logging.info(f"Successfully added '{category}' to {title}")
-        time.sleep(get_edit_delay())
+        time.sleep(EDIT_DELAY)
         return True
 
     except Exception as e:
@@ -218,13 +218,3 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
     except Exception as e:
         logging.error(f"An unexpected error occurred counting members in category '{category}': {e}")
         return 0
-
-
-def get_edit_delay() -> float:
-    """
-    Get the delay between edits in seconds.
-
-    Returns:
-        Delay in seconds
-    """
-    return EDIT_DELAY
