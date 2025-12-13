@@ -125,7 +125,7 @@ def add_category_to_page(
         return True
 
     # Make the edit
-    edit_summary = f"Add {category}"
+    edit_summary = f"Bot: Add {category}"
     try:
         page.save(new_text, summary=edit_summary)
         logging.info(f"Successfully added '{category}' to {title}")
