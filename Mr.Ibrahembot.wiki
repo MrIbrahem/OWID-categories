@@ -1,0 +1,16 @@
+{{Bot|Mr. Ibrahem}}
+* [[Commons:Bots/Requests/Mr.Ibrahembot]]
+
+== Bot purpose ==
+This bot adds missing, appropriate categories to Our World in Data (OWID) files uploaded via the OWID importer tool and currently categorized in [[:Category:Uploaded by OWID importer tool]].
+
+== Scope ==
+The bot will only edit files in [[:Category:Uploaded by OWID importer tool]].
+
+== Bot tasks ==
+* Add country-level categories for OWID graph files under [[:Category:Our World in Data graphs by country]].
+* Add continent-level categories for OWID map files under [[:Category:Our World in Data maps by continent]].
+
+== Notes ==
+* The bot only adds categories (no removals or other metadata changes).
+* Files for which the country/continent cannot be determined will be skipped.
