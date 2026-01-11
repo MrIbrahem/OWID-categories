@@ -152,6 +152,11 @@ python3 src/run_categorize.py
 python3 src/run_categorize.py --files-per-item 1
 ```
 
+**Running on Wikimedia Toolforge:**
+```bash
+toolforge-jobs run owidcat --image tf-python39 --command "~/OWID-categories/owid_task.sh"
+```
+
 **Available options:**
 - `--dry-run`: Test mode without making actual edits
 - `--limit N`: Process only first N countries
@@ -291,3 +296,4 @@ The script uses ISO 3166-1 alpha-3 country codes. The mapping between country na
 ## License
 
 This project is for processing OWID data on Wikimedia Commons.
+

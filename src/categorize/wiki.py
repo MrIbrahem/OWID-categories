@@ -183,6 +183,35 @@ def ensure_category_exists(
         return False
 
 
+def get_category_members(site: mwclient.Site, category: str) -> list:
+    """
+    Get all member pages in a category.
+
+    Args:
+        site: Connected mwclient Site
+        category: Category name (e.g., "Category:Our World in Data graphs of Canada")
+
+    Returns:
+        List of Page objects (empty list if category doesn't exist)
+    """
+    try:
+        # mwclient handles the "Category:" prefix automatically.
+        category_page = site.pages[category]
+
+        if not category_page.exists:
+            logging.debug(f"Category doesn't exist yet: {category}")
+            return []
+
+        return list(category_page.members())
+
+    except mwclient.errors.MwClientError as e:
+        logging.error(f"API error getting members in category '{category}': {e}")
+        return []
+    except Exception as e:
+        logging.error(f"An unexpected error occurred getting members in category '{category}': {e}")
+        return []
+
+
 def get_category_member_count(site: mwclient.Site, category: str) -> int:
     """
     Get the number of files currently in a category.
@@ -194,27 +223,7 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
     Returns:
         Number of members in the category (0 if category doesn't exist)
     """
-    try:
-        # mwclient handles the "Category:" prefix automatically.
-        category_page = site.pages[category]
+    member_count = sum(1 for _ in get_category_members(site, category))
 
-        if not category_page.exists:
-            logging.debug(f"Category doesn't exist yet: {category}")
-            return 0
-
-        # Use categoryinfo for an efficient count of files
-        # 'Category' object has no attribute 'categoryinfo'
-        # member_count = category_page.categoryinfo.get('files', 0)
-
-        # Count members in the category
-        member_count = sum(1 for _ in category_page.members())
-
-        logging.debug(f"Category '{category}' has {member_count} members")
-        return member_count
-
-    except mwclient.errors.MwClientError as e:
-        logging.error(f"API error counting members in category '{category}': {e}")
-        return 0
-    except Exception as e:
-        logging.error(f"An unexpected error occurred counting members in category '{category}': {e}")
-        return 0
+    logging.debug(f"Category '{category}' has {member_count} members")
+    return member_count

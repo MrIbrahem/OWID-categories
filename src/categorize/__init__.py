@@ -11,6 +11,7 @@ from .wiki import (
     get_category_member_count,
     get_page_text,
     category_exists_on_page,
+    get_category_members,
 )
 
 from .category_members import (
@@ -27,5 +28,6 @@ __all__ = [
     "category_exists_on_page",
     # Utility functions
     "get_category_members_petscan",
+    "get_category_members",
     "fetch_category_members",
 ]

@@ -34,6 +34,7 @@ from categorize import (
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
+    get_category_members,
 )
 from utils import (
     setup_logging,
@@ -150,6 +151,18 @@ def process_files(
         logging.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
         stats["errors"] += 1
         return stats
+
+    # check for members in the category
+    existing_members = get_category_members(site, category)
+    existing_titles = {page.name for page in existing_members}
+
+    logging.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
+
+    # Filter out files that are already in the category
+    original_file_count = len(files)
+    files = [file for file in files if file.get("title") not in existing_titles]
+    stats["skipped"] += original_file_count - len(files)
+    logging.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
 
     # Process files
     for file in files:
