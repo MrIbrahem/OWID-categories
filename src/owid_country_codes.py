@@ -8,6 +8,7 @@ Note: This module uses Python 3.10+ union type syntax (str | None).
 For Python <3.10, use Optional[str] from typing instead.
 """
 
+# https://commons.wikimedia.org/wiki/MediaWiki:Gadget-owidslider.js
 OWID_COUNTRY_CODES = {
     "Afghanistan": "AFG",
     "Albania": "ALB",
