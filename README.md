@@ -154,7 +154,7 @@ python3 src/run_categorize.py --files-per-item 1
 
 **Running on Wikimedia Toolforge:**
 ```bash
-toolforge-jobs run owidcat --image python3.9 --command "cd OWID-categories && ~/local/bin/python3 src/run_categorize.py && ~/local/bin/python3 src/run_categorize.py --work-path continents --files-type maps"
+toolforge-jobs run owidcat --image tf-python39 --command "~/OWID-categories/owid_task.sh"
 ```
 
 **Available options:**
