@@ -183,7 +183,7 @@ def ensure_category_exists(
         return False
 
 
-def get_category_members(site: mwclient.Site, category: str) -> int:
+def get_category_members(site: mwclient.Site, category: str) -> list:
     """
     Get all member pages in a category.
 
