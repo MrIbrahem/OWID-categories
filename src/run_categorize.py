@@ -156,6 +156,10 @@ def process_files(
     existing_members = get_category_members(site, category)
     existing_titles = {page.name for page in existing_members}
     logging.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
+    stats["skipped"] += len(existing_titles)
+
+    # Filter out files that are already in the category
+    files = [file for file in files if file.get("title") not in existing_titles]
 
     # Process files
     for file in files:
@@ -163,12 +167,6 @@ def process_files(
         if not title:
             logging.warning(f"File missing title in {file_path}")
             stats["errors"] += 1
-            continue
-
-        # Skip if file already in category
-        if title in existing_titles:
-            logging.info(f"File '{title}' already in category '{category}', skipping")
-            stats["skipped"] += 1
             continue
 
         # Add category
