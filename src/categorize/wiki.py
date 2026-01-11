@@ -202,13 +202,13 @@ def get_category_members(site: mwclient.Site, category: str) -> list:
             logging.debug(f"Category doesn't exist yet: {category}")
             return []
 
-        return category_page.members()
+        return list(category_page.members())
 
     except mwclient.errors.MwClientError as e:
-        logging.error(f"API error counting members in category '{category}': {e}")
+        logging.error(f"API error getting members in category '{category}': {e}")
         return []
     except Exception as e:
-        logging.error(f"An unexpected error occurred counting members in category '{category}': {e}")
+        logging.error(f"An unexpected error occurred getting members in category '{category}': {e}")
         return []
 
 
