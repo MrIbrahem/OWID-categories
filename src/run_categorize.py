@@ -157,10 +157,11 @@ def process_files(
     existing_titles = {page.name for page in existing_members}
 
     logging.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
-    stats["skipped"] += len(existing_titles)
 
     # Filter out files that are already in the category
+    original_file_count = len(files)
     files = [file for file in files if file.get("title") not in existing_titles]
+    stats["skipped"] += original_file_count - len(files)
     logging.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
 
     # Process files
