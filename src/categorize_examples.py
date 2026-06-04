@@ -134,7 +134,7 @@ def main():
     print("=" * 60)
     print()
     print("To use in your code:")
-    print("  from categorize.wiki import connect_to_commons")
+    print("  from categorize import connect_to_commons")
     print("  from utils import normalize_country_name")
     print()
 
