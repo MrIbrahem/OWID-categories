@@ -80,7 +80,7 @@ def normalize_country_name(country: str) -> str:
         "Czech Republic",
         "Central African Republic",
         "Maldives",
-        "Seychelles",
+        # "Seychelles",
         "Bahamas",
         "Marshall Islands",
         "Solomon Islands",
