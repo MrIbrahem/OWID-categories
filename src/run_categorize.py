@@ -23,33 +23,34 @@ Usage:
 """
 
 import argparse
-import mwclient
 import logging
 import sys
 from pathlib import Path
 from typing import Dict, Optional
 
+import mwclient
+
 from categorize import (
-    connect_to_commons,
     add_category_to_page,
+    connect_to_commons,
     ensure_category_exists,
     get_category_member_count,
     get_category_members,
     resolve_category_redirect,
 )
+from owid_config import (
+    CONTINENTS_DIR,
+    COUNTRIES_DIR,
+    LOG_FILE_CONTINENTS,
+    LOG_FILE_COUNTRIES,
+    load_credentials,
+)
 from utils import (
-    setup_logging,
-    load_json_file,
-    normalize_country_name,
     build_category_name,
     get_parent_category,
-)
-from owid_config import (
-    load_credentials,
-    LOG_FILE_COUNTRIES,
-    LOG_FILE_CONTINENTS,
-    COUNTRIES_DIR,
-    CONTINENTS_DIR,
+    load_json_file,
+    normalize_country_name,
+    setup_logging,
 )
 
 logger = logging.getLogger(__name__)
@@ -90,11 +91,7 @@ def process_files(
     logger.info("-" * 20)
     logger.info(f"process_files: {files_type}")
 
-    stats = {
-        "added": 0,
-        "skipped": 0,
-        "errors": 0
-    }
+    stats = {"added": 0, "skipped": 0, "errors": 0}
 
     if files_type not in ["graphs", "maps"]:
         logger.error(f"Invalid files_type value: {files_type}")
@@ -140,11 +137,15 @@ def process_files(
     if files_per_one:
         current_member_count = get_category_member_count(site, category)
         if current_member_count >= files_per_one:
-            logger.info(f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
+            logger.info(
+                f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)"
+            )
             return stats
 
         remaining_slots = files_per_one - current_member_count
-        logger.info(f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
+        logger.info(
+            f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files"
+        )
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
@@ -206,10 +207,7 @@ def main(
         files_type: Specify whether processing 'graphs' or 'maps'
     """
 
-    work_dirs = {
-        "countries": COUNTRIES_DIR,
-        "continents": CONTINENTS_DIR
-    }
+    work_dirs = {"countries": COUNTRIES_DIR, "continents": CONTINENTS_DIR}
 
     work_dir = work_dirs.get(work_path)
 
@@ -262,14 +260,8 @@ def main(
     # Apply limit if specified
     if limit:
         files = files[:limit]
-        logger.info(f"Processing limited to first {limit} Countries/Continents")    # Process each item file
-    total_stats = {
-        "added": 0,
-        "skipped": 0,
-        "errors": 0,
-        "total_processed": 0,
-        "total_skipped": 0
-    }
+        logger.info(f"Processing limited to first {limit} Countries/Continents")  # Process each item file
+    total_stats = {"added": 0, "skipped": 0, "errors": 0, "total_processed": 0, "total_skipped": 0}
 
     for file_path in files:
         stats = process_files(
@@ -278,7 +270,7 @@ def main(
             dry_run=dry_run,
             files_type=files_type,
             files_per_one=files_per_one,
-            country_or_continent=country_or_continent
+            country_or_continent=country_or_continent,
         )
 
         # If no files were added or skipped, the item was skipped entirely
@@ -307,37 +299,25 @@ def main(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Add categories to OWID graph files on Wikimedia Commons"
-    )
+    parser = argparse.ArgumentParser(description="Add categories to OWID graph files on Wikimedia Commons")
+    parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual edits)")
+    parser.add_argument("--limit", type=int, help="Limit processing to first N items (for testing)")
     parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Run in dry-run mode (no actual edits)"
-    )
-    parser.add_argument(
-        "--limit",
-        type=int,
-        help="Limit processing to first N items (for testing)"
-    )
-    parser.add_argument(
-        "--files-per-item",
-        type=int,
-        help="Limit processing to N files per country/continent (for testing)"
+        "--files-per-item", type=int, help="Limit processing to N files per country/continent (for testing)"
     )
     # add work_path argument
     parser.add_argument(
         "--work-path",
         choices=["countries", "continents"],
         default="countries",
-        help="Specify whether to process 'countries' or 'continents' (default: countries)"
+        help="Specify whether to process 'countries' or 'continents' (default: countries)",
     )
     # add files_type argument
     parser.add_argument(
         "--files-type",
         choices=["graphs", "maps"],
         default="graphs",
-        help="Specify whether to process 'graphs' or 'maps' (default: graphs)"
+        help="Specify whether to process 'graphs' or 'maps' (default: graphs)",
     )
     args = parser.parse_args()
 
@@ -346,5 +326,5 @@ if __name__ == "__main__":
         limit=args.limit,
         files_per_one=args.files_per_item,
         work_path=args.work_path,
-        files_type=args.files_type
+        files_type=args.files_type,
     )

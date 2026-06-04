@@ -5,17 +5,18 @@ Tests the country categorization script functionality including
 processing country files and adding categories to graph files.
 """
 
+import json
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, Mock, mock_open, patch
+
 import pytest
-from unittest.mock import Mock, MagicMock, patch, mock_open
-import json
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from run_categorize import process_files
 from owid_config import COUNTRIES_DIR
+from run_categorize import process_files
 
 
 @pytest.mark.unit
@@ -55,19 +56,15 @@ class TestProcessFiles:
                 {
                     "title": "File:Test Graph 2.svg",
                     "indicator": "Population",
-                }
-            ]
+                },
+            ],
         }
 
         # Mock file loading
         with patch("run_categorize.load_json_file", return_value=test_data):
             with patch("run_categorize.get_category_member_count", return_value=0):
                 with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(
-                        mock_site,
-                        COUNTRIES_DIR / "CAN.json",
-                        dry_run=True
-                    )
+                    stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
 
         # Assertions
         assert stats["added"] >= 0, "Should have processed some files"
@@ -95,22 +92,14 @@ class TestProcessFiles:
         test_data = {
             "iso3": "USA",
             "country": "United States",
-            "graphs": [
-                {"title": f"File:Test Graph {i}.svg", "indicator": "Test"}
-                for i in range(10)
-            ]
+            "graphs": [{"title": f"File:Test Graph {i}.svg", "indicator": "Test"} for i in range(10)],
         }
 
         # Mock file loading
         with patch("run_categorize.load_json_file", return_value=test_data):
             with patch("run_categorize.get_category_member_count", return_value=0):
                 with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(
-                        mock_site,
-                        COUNTRIES_DIR / "USA.json",
-                        dry_run=True,
-                        files_per_one=3
-                    )
+                    stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
 
         # Should only process 3 files
         assert stats["added"] + stats["skipped"] <= 3, "Should respect per-country limit"
@@ -120,17 +109,10 @@ class TestProcessFiles:
         mock_site = Mock()
 
         # Test data missing country name
-        test_data = {
-            "iso3": "XXX",
-            "graphs": []
-        }
+        test_data = {"iso3": "XXX", "graphs": []}
 
         with patch("run_categorize.load_json_file", return_value=test_data):
-            stats = process_files(
-                mock_site,
-                COUNTRIES_DIR / "XXX.json",
-                dry_run=True
-            )
+            stats = process_files(mock_site, COUNTRIES_DIR / "XXX.json", dry_run=True)
 
         assert stats["errors"] > 0, "Should have error for missing country"
 
@@ -139,11 +121,7 @@ class TestProcessFiles:
         mock_site = Mock()
 
         with patch("run_categorize.load_json_file", return_value=None):
-            stats = process_files(
-                mock_site,
-                COUNTRIES_DIR / "invalid.json",
-                dry_run=True
-            )
+            stats = process_files(mock_site, COUNTRIES_DIR / "invalid.json", dry_run=True)
 
         assert stats["errors"] > 0, "Should have error for invalid JSON"
 
@@ -222,11 +200,7 @@ class TestDryRunSimulation:
         for json_file in sorted(json_files)[:3]:
             with patch("run_categorize.get_category_member_count", return_value=0):
                 with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(
-                        mock_site,
-                        json_file,
-                        dry_run=True
-                    )
+                    stats = process_files(mock_site, json_file, dry_run=True)
 
             # Basic assertions
             assert isinstance(stats, dict), "Should return stats dictionary"

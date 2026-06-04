@@ -2,8 +2,10 @@
 Tests for categorize.wikitext_utils module.
 """
 
-import pytest
 import re
+
+import pytest
+
 from categorize.wikitext_utils import (
     category_exists_on_page,
     extract_redirect_target,
@@ -25,10 +27,7 @@ Some file description here.
 [[Category:Our World in Data graphs of Canada]]
 [[Category:Economic indicators]]
 """
-        result = category_exists_on_page(
-            page_text,
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = category_exists_on_page(page_text, "Category:Our World in Data graphs of Canada")
         assert result is True, "Category should be found when present"
 
     def test_category_not_found(self):
@@ -41,35 +40,23 @@ Some file description here.
 
 [[Category:Economic indicators]]
 """
-        result = category_exists_on_page(
-            page_text,
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = category_exists_on_page(page_text, "Category:Our World in Data graphs of Canada")
         assert result is False, "Category should not be found when absent"
 
     def test_category_found_lowercase(self):
         """Test category check is case-insensitive."""
         page_text = "[[category:Our World in Data graphs of Canada]]"
-        result = category_exists_on_page(
-            page_text,
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = category_exists_on_page(page_text, "Category:Our World in Data graphs of Canada")
         assert result is True, "Category check should be case-insensitive"
 
     def test_empty_page_text(self):
         """Test with empty page text."""
-        result = category_exists_on_page(
-            "",
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = category_exists_on_page("", "Category:Our World in Data graphs of Canada")
         assert result is False, "Should return False for empty page text"
 
     def test_none_page_text(self):
         """Test with None page text."""
-        result = category_exists_on_page(
-            None,
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = category_exists_on_page(None, "Category:Our World in Data graphs of Canada")
         assert result is False, "Should return False for None page text"
 
 

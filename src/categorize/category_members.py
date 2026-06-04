@@ -3,10 +3,11 @@
 OWID Commons File Fetcher and Processor
 """
 
-import time
 import logging
+import time
 import urllib
 from typing import List
+
 import requests
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ def get_category_members_petscan(category: str) -> list | list[str]:
         "format": "plain",
         "depth": 0,
         "ns[6]": 1,
-        "doit": "Do it!"
+        "doit": "Do it!",
     }
     url = f"{base_url}?{urllib.parse.urlencode(params)}"
 
@@ -83,19 +84,14 @@ def fetch_category_members(category_name: str) -> List[str]:
             "list": "categorymembers",
             "cmtitle": category_name,
             "cmtype": "file",
-            "cmlimit": "max"
+            "cmlimit": "max",
         }
 
         if cmcontinue:
             params["cmcontinue"] = cmcontinue
 
         try:
-            response = requests.get(
-                API_ENDPOINT,
-                params=params,
-                headers={"User-Agent": USER_AGENT},
-                timeout=30
-            )
+            response = requests.get(API_ENDPOINT, params=params, headers={"User-Agent": USER_AGENT}, timeout=30)
             response.raise_for_status()
             data = response.json()
 

@@ -14,13 +14,12 @@ import json
 import logging
 import re
 from typing import Dict, List, Optional, Tuple
-from owid_country_codes import get_country_from_iso3, get_iso3_from_country
-from owid_config import OUTPUT_DIR, LOG_DIR, COUNTRIES_DIR
 
-from categorize import (
+from categorize import (  # fetch_category_members,
     get_category_members_petscan,
-    # fetch_category_members,
 )
+from owid_config import COUNTRIES_DIR, LOG_DIR, OUTPUT_DIR
+from owid_country_codes import get_country_from_iso3, get_iso3_from_country
 from utils import normalize_title, setup_logging
 
 logger = logging.getLogger(__name__)
@@ -32,8 +31,15 @@ LOG_FILE = LOG_DIR / "fetch_commons.log"
 
 # List of continents for classification
 CONTINENTS = {
-    "Africa", "Antarctica", "Asia", "Europe", "North America",
-    "South America", "Oceania", "Americas", "World"
+    "Africa",
+    "Antarctica",
+    "Asia",
+    "Europe",
+    "North America",
+    "South America",
+    "Oceania",
+    "Americas",
+    "World",
 }
 
 # Regex patterns for classification
@@ -66,12 +72,7 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         first_comma = base_name.find(",")
         indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
 
-        return "graph", {
-            "iso3": iso3,
-            "indicator": indicator,
-            "start_year": int(start_year),
-            "end_year": int(end_year)
-        }
+        return "graph", {"iso3": iso3, "indicator": indicator, "start_year": int(start_year), "end_year": int(end_year)}
 
     # Try map pattern
     map_match = MAP_PATTERN.search(title)
@@ -86,21 +87,12 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
 
         # Check if region is a continent
         if region in CONTINENTS:
-            return "continent_map", {
-                "continent": region,
-                "indicator": indicator,
-                "year": int(year)
-            }
+            return "continent_map", {"continent": region, "indicator": indicator, "year": int(year)}
 
         # Try to resolve region to ISO3
         iso3 = get_iso3_from_country(region)
 
-        return "map", {
-            "iso3": iso3,
-            "region": region,
-            "indicator": indicator,
-            "year": int(year)
-        }
+        return "map", {"iso3": iso3, "region": region, "indicator": indicator, "year": int(year)}
     # Unknown file type
     return None, None
 
@@ -138,7 +130,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
         "map_count": 0,
         "continent_map_count": 0,
         "unknown_count": 0,
-        "unresolved_region_count": 0
+        "unresolved_region_count": 0,
     }
 
     logger.info("Starting file classification and aggregation")
@@ -160,12 +152,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
 
             # Initialize continent entry if needed
             if continent not in continents:
-                continents[continent] = {
-                    "continent": continent,
-                    "graphs": [],
-                    "maps": [],
-                    "unknowns": []
-                }
+                continents[continent] = {"continent": continent, "graphs": [], "maps": [], "unknowns": []}
 
             # Build entry
             file_page = build_file_page_url(title)
@@ -173,7 +160,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
                 "title": title,
                 "indicator": parsed_data["indicator"],
                 "year": parsed_data["year"],
-                "file_page": file_page
+                "file_page": file_page,
             }
             continents[continent]["maps"].append(entry)
             stats["continent_map_count"] += 1
@@ -193,13 +180,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
             if not country_name:
                 logger.warning(f"Unknown ISO3 code: {iso3}")
 
-            countries[iso3] = {
-                "iso3": iso3,
-                "country": country_name,
-                "graphs": [],
-                "maps": [],
-                "unknowns": []
-            }
+            countries[iso3] = {"iso3": iso3, "country": country_name, "graphs": [], "maps": [], "unknowns": []}
 
         # Build entry
         file_page = build_file_page_url(title)
@@ -210,7 +191,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
                 "indicator": parsed_data["indicator"],
                 "start_year": parsed_data["start_year"],
                 "end_year": parsed_data["end_year"],
-                "file_page": file_page
+                "file_page": file_page,
             }
             countries[iso3]["graphs"].append(entry)
             stats["graph_count"] += 1
@@ -221,7 +202,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
                 "indicator": parsed_data["indicator"],
                 "year": parsed_data["year"],
                 "region": parsed_data["region"],
-                "file_page": file_page
+                "file_page": file_page,
             }
             countries[iso3]["maps"].append(entry)
             stats["map_count"] += 1
@@ -287,24 +268,20 @@ def write_summary_json(countries: Dict[str, Dict], continents: Dict[str, Dict]) 
         countries: Dictionary of country data keyed by ISO3
         continents: Dictionary of continent data keyed by continent name
     """
-    summary = {
-        "countries": [],
-        "continents": []
-    }
+    summary = {"countries": [], "continents": []}
 
     for iso3, data in sorted(countries.items()):
-        summary["countries"].append({
-            "iso3": iso3,
-            "country": data["country"],
-            "graph_count": len(data["graphs"]),
-            "map_count": len(data["maps"])
-        })
+        summary["countries"].append(
+            {
+                "iso3": iso3,
+                "country": data["country"],
+                "graph_count": len(data["graphs"]),
+                "map_count": len(data["maps"]),
+            }
+        )
 
     for continent, data in sorted(continents.items()):
-        summary["continents"].append({
-            "continent": continent,
-            "map_count": len(data["maps"])
-        })
+        summary["continents"].append({"continent": continent, "map_count": len(data["maps"])})
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

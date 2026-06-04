@@ -8,9 +8,10 @@ from wikitext_utils.py to handle category redirects and page updates.
 import logging
 import time
 from typing import Optional
+
 import mwclient
-from . import wiki
-from . import wikitext_utils
+
+from . import wiki, wikitext_utils
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +70,7 @@ def add_category_to_page(
     site: mwclient.Site,
     title: str,
     category: str,
-    dry_run: bool = False
+    dry_run: bool = False,
 ) -> bool:
     """
     Add a category to a page on Commons.

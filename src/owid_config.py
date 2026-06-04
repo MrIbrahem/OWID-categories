@@ -8,9 +8,10 @@ Defines output directories, log file paths, and loads environment variables.
 
 import logging
 import os
-from dotenv import load_dotenv
 from pathlib import Path
 from typing import Optional
+
+from dotenv import load_dotenv
 
 load_dotenv()
 

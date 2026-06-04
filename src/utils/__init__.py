@@ -5,12 +5,12 @@ This package contains modules for adding categories to OWID files on Wikimedia C
 """
 
 from .utils import (
-    setup_logging,
-    load_json_file,
-    normalize_country_name,
     build_category_name,
     get_parent_category,
+    load_json_file,
+    normalize_country_name,
     normalize_title,
+    setup_logging,
 )
 
 __all__ = [

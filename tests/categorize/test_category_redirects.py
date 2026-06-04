@@ -2,13 +2,15 @@
 Tests for categorize.category_redirects module.
 """
 
-import pytest
 import time
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
 from categorize.category_redirects import (
     add_category_to_page,
-    resolve_category_redirect,
     get_redirect_target,
+    resolve_category_redirect,
 )
 
 
@@ -29,12 +31,7 @@ class TestAddCategoryToPage:
         # Test adding category
         category = "Category:Our World in Data graphs of Canada"
         with patch("categorize.wiki.save_page", return_value=True) as mock_save:
-            result = add_category_to_page(
-                mock_site,
-                "File:Test.svg",
-                category,
-                dry_run=True
-            )
+            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
 
             assert result is True, "Should return True when category would be added"
             assert mock_page.text.called, "Page text should be checked"
@@ -52,12 +49,7 @@ class TestAddCategoryToPage:
 
         # Test adding existing category
         category = "Category:Our World in Data graphs of Canada"
-        result = add_category_to_page(
-            mock_site,
-            "File:Test.svg",
-            category,
-            dry_run=True
-        )
+        result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
 
         assert result is False, "Should return False when category already exists"
 
@@ -72,12 +64,7 @@ class TestAddCategoryToPage:
 
         # Test adding category
         category = "Category:Our World in Data graphs of Canada"
-        result = add_category_to_page(
-            mock_site,
-            "File:NonExistent.svg",
-            category,
-            dry_run=True
-        )
+        result = add_category_to_page(mock_site, "File:NonExistent.svg", category, dry_run=True)
 
         assert result is False, "Should return False when page doesn't exist"
 
@@ -94,12 +81,7 @@ class TestAddCategoryToPage:
         # Test adding category in dry-run
         category = "Category:Our World in Data graphs of Canada"
         with patch("categorize.wiki.save_page") as mock_save:
-            result = add_category_to_page(
-                mock_site,
-                "File:Test.svg",
-                category,
-                dry_run=True
-            )
+            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
 
             assert result is True, "Should return True in dry-run mode"
             assert not mock_save.called, "save_page should not be called in dry-run mode"
@@ -183,10 +165,7 @@ class TestResolveCategoryRedirect:
         mock_page2.exists = True
         mock_page2.text.return_value = "[[Category:Some parent]]"
 
-        pages = {
-            "Category:Original": mock_page1,
-            "Category:Target category": mock_page2
-        }
+        pages = {"Category:Original": mock_page1, "Category:Target category": mock_page2}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
         with patch("time.sleep"):
@@ -204,10 +183,7 @@ class TestResolveCategoryRedirect:
         mock_target.exists = True
         mock_target.text.return_value = "text"
 
-        pages = {
-            "Category:Original": mock_page,
-            "Category:Target category": mock_target
-        }
+        pages = {"Category:Original": mock_page, "Category:Target category": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
         with patch("time.sleep"):
@@ -225,10 +201,7 @@ class TestResolveCategoryRedirect:
         mock_target.exists = True
         mock_target.text.return_value = "text"
 
-        pages = {
-            "Category:Original": mock_page,
-            "Category:Target category": mock_target
-        }
+        pages = {"Category:Original": mock_page, "Category:Target category": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
         with patch("time.sleep"):
@@ -251,11 +224,7 @@ class TestResolveCategoryRedirect:
         mock_page3.exists = True
         mock_page3.text.return_value = "Final content"
 
-        pages = {
-            "Category:Start": mock_page1,
-            "Category:Redirect 2": mock_page2,
-            "Category:Final target": mock_page3
-        }
+        pages = {"Category:Start": mock_page1, "Category:Redirect 2": mock_page2, "Category:Final target": mock_page3}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
         with patch("time.sleep"):
@@ -291,10 +260,7 @@ class TestResolveCategoryRedirect:
         mock_target.exists = True
         mock_target.text.return_value = "Content"
 
-        pages = {
-            "Category:Original": mock_page,
-            "Category:Target": mock_target
-        }
+        pages = {"Category:Original": mock_page, "Category:Target": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
         with patch("time.sleep"):

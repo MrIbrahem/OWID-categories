@@ -9,6 +9,7 @@ including authentication, page editing, and category management.
 import logging
 import time
 from typing import Optional
+
 import mwclient
 
 logger = logging.getLogger(__name__)
@@ -69,7 +70,9 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
             return None
         except (mwclient.errors.MwClientError, Exception) as e:
             if attempt < max_retries - 1:
-                logger.warning(f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s...")
+                logger.warning(
+                    f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s..."
+                )
                 time.sleep(retry_delay)
                 retry_delay *= 2
             else:
@@ -77,12 +80,7 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
     return None
 
 
-def save_page(
-    site: mwclient.Site,
-    title: str,
-    text: str,
-    summary: str
-) -> bool:
+def save_page(site: mwclient.Site, title: str, text: str, summary: str) -> bool:
     """
     Save wikitext to a page on Commons.
 
@@ -107,11 +105,7 @@ def save_page(
 
 
 def ensure_category_exists(
-    site: mwclient.Site,
-    category_title: str,
-    parent_category: str,
-    sort_key: str,
-    dry_run: bool = False
+    site: mwclient.Site, category_title: str, parent_category: str, sort_key: str, dry_run: bool = False
 ) -> bool:
     """
     Ensure the category page exists. Create it if it doesn't.
@@ -130,7 +124,7 @@ def ensure_category_exists(
 
     if category_page.exists:
         logger.debug(f"Category already exists: {category_title}")
-        return True    # Category already exists
+        return True  # Category already exists
 
     # Category doesn't exist, create it
     category_content = f"[[Category:{parent_category}|{sort_key}]]"

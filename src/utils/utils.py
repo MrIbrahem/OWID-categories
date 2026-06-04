@@ -34,8 +34,8 @@ def setup_logging(log_file: Path):
         format="%(levelname)s - %(message)s",
         handlers=[
             logging.FileHandler(log_file),
-            logging.StreamHandler(sys.stdout)
-        ]
+            logging.StreamHandler(sys.stdout),
+        ],
     )
 
 
@@ -146,10 +146,8 @@ def get_parent_category(category_type: str = "country", files_type: str = "graph
         Parent category name
     """
     pre_defined_categories = {
-        "graphs": {
-        },
-        "maps": {
-        },
+        "graphs": {},
+        "maps": {},
     }
 
     if files_type not in pre_defined_categories:

@@ -5,20 +5,21 @@ Tests utility functions for country name normalization, category building,
 and JSON file loading.
 """
 
+import json
 import sys
 from pathlib import Path
+from unittest.mock import mock_open, patch
+
 import pytest
-import json
-from unittest.mock import patch, mock_open
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from utils import (
-    normalize_country_name,
     build_category_name,
     get_parent_category,
     load_json_file,
+    normalize_country_name,
 )
 
 
@@ -171,12 +172,7 @@ class TestLoadJsonFile:
 
     def test_load_valid_json(self):
         """Test loading a valid JSON file."""
-        test_data = {
-            "iso3": "CAN",
-            "country": "Canada",
-            "graphs": [],
-            "maps": []
-        }
+        test_data = {"iso3": "CAN", "country": "Canada", "graphs": [], "maps": []}
 
         with patch("builtins.open", mock_open(read_data=json.dumps(test_data))):
             result = load_json_file(Path("test.json"))

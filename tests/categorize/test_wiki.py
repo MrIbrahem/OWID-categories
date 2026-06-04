@@ -7,8 +7,9 @@ and category management on Wikimedia Commons.
 
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
 import pytest
-from unittest.mock import Mock, MagicMock, patch
 
 from categorize.wiki import (
     ensure_category_exists,
@@ -61,7 +62,7 @@ class TestEnsureCategoryExists:
             "Category:Our World in Data graphs of Canada",
             "Our World in Data graphs by country",
             "Canada",
-            dry_run=True
+            dry_run=True,
         )
         assert result is True, "Should return True when category already exists"
 
@@ -77,7 +78,7 @@ class TestEnsureCategoryExists:
             "Category:Our World in Data graphs of Brazil",
             "Our World in Data graphs by country",
             "Brazil",
-            dry_run=True
+            dry_run=True,
         )
         assert result is True, "Should return True in dry-run mode"
         assert not mock_page_not_exists.save.called, "Should not save in dry-run mode"
@@ -90,12 +91,7 @@ class TestEnsureCategoryExists:
         mock_site.pages.__getitem__ = Mock(return_value=mock_page)
 
         with patch("categorize.wiki.save_page", return_value=True) as mock_save:
-            result = ensure_category_exists(
-                mock_site,
-                "Category:Test",
-                "Parent",
-                "Sort"
-            )
+            result = ensure_category_exists(mock_site, "Category:Test", "Parent", "Sort")
             assert result is True
             mock_save.assert_called_once()
 
@@ -159,10 +155,7 @@ class TestGetCategoryMemberCount:
         mock_site = Mock()
         mock_site.pages.__getitem__ = Mock(return_value=mock_page)
 
-        result = get_category_member_count(
-            mock_site,
-            "Category:Our World in Data graphs of Canada"
-        )
+        result = get_category_member_count(mock_site, "Category:Our World in Data graphs of Canada")
         assert result == 3, "Should return correct member count"
 
     def test_count_members_nonexistent_category(self):
@@ -174,10 +167,7 @@ class TestGetCategoryMemberCount:
         mock_site = Mock()
         mock_site.pages.__getitem__ = Mock(return_value=mock_page)
 
-        result = get_category_member_count(
-            mock_site,
-            "Category:Nonexistent Category"
-        )
+        result = get_category_member_count(mock_site, "Category:Nonexistent Category")
         assert result == 0, "Should return 0 for non-existent category"
 
     def test_count_members_empty_category(self):
@@ -190,8 +180,5 @@ class TestGetCategoryMemberCount:
         mock_site = Mock()
         mock_site.pages.__getitem__ = Mock(return_value=mock_page)
 
-        result = get_category_member_count(
-            mock_site,
-            "Category:Our World in Data graphs of Empty Country"
-        )
+        result = get_category_member_count(mock_site, "Category:Our World in Data graphs of Empty Country")
         assert result == 0, "Should return 0 for empty category"

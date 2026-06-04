@@ -6,14 +6,13 @@ This demonstrates how to use the categorize module functions
 programmatically without running the full scripts.
 """
 
-from owid_config import load_credentials
+from owid_config import COUNTRIES_DIR, load_credentials
 from utils.utils import (
-    load_json_file,
-    normalize_country_name,
     build_category_name,
     get_parent_category,
+    load_json_file,
+    normalize_country_name,
 )
-from owid_config import COUNTRIES_DIR
 
 
 def example_normalize_countries():

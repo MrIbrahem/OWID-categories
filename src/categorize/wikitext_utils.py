@@ -8,6 +8,7 @@ separating text processing from API operations.
 import logging
 import re
 from typing import Optional
+
 import wikitextparser as wtp
 
 logger = logging.getLogger(__name__)
