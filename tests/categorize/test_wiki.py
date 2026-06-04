@@ -346,6 +346,151 @@ class TestResolveCategoryRedirect:
         result = resolve_category_redirect(mock_site, "Category:Infinite", max_depth=2)
         assert result == "Category:Infinite"
 
+    def test_max_depth_zero_returns_immediately(self):
+        """Test that max_depth=0 returns the category without any lookup."""
+        mock_site = Mock()
+
+        result = resolve_category_redirect(mock_site, "Category:Something", max_depth=0)
+
+        assert result == "Category:Something"
+        # Site should not be queried at all
+        mock_site.pages.__getitem__.assert_not_called()
+
+    def test_page_does_not_exist_returns_original(self):
+        """Test that a non-existent category page returns the original category name."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = False
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        category = "Category:Non-existent category"
+        result = resolve_category_redirect(mock_site, category)
+        assert result == category
+
+    def test_categoryredirect_alias_no_space(self):
+        """Test {{Categoryredirect}} alias (no space between Category and redirect)."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Categoryredirect|Category:Target}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Source": mock_page,
+            "Category:Target": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Source")
+        assert result == "Category:Target"
+
+    def test_catredirect_alias_no_space(self):
+        """Test {{Catredirect}} alias (no space between Cat and redirect)."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Catredirect|Category:Destination}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Origin": mock_page,
+            "Category:Destination": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Origin")
+        assert result == "Category:Destination"
+
+    def test_target_whitespace_is_stripped(self):
+        """Test that leading/trailing whitespace in the target is stripped."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        # Target has extra spaces around it
+        mock_page.text.return_value = "{{Category redirect|  Category:Trimmed target  }}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Padded": mock_page,
+            "Category:Trimmed target": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Padded")
+        assert result == "Category:Trimmed target"
+
+    def test_lowercase_cat_redirect_alias(self):
+        """Test lowercase {{cat redirect}} alias."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{cat redirect|Category:Lower target}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Lower source": mock_page,
+            "Category:Lower target": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Lower source")
+        assert result == "Category:Lower target"
+
+    def test_redirect_with_extra_whitespace_in_template(self):
+        """Test redirect template with extra whitespace around the pipe."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        # Extra spaces around the pipe and before the target
+        mock_page.text.return_value = "{{  Category redirect  |  Category:Spaced target  }}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Spaced": mock_page,
+            "Category:Spaced target": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Spaced")
+        assert result == "Category:Spaced target"
+
+    def test_redirect_adds_category_prefix_only_once(self):
+        """Test that Category: prefix is not doubled when target already has it."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|Category:Already prefixed}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "Normal content"
+
+        pages = {
+            "Category:Source": mock_page,
+            "Category:Already prefixed": mock_target,
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Source")
+        # Should not be "Category:Category:Already prefixed"
+        assert result == "Category:Already prefixed"
+        assert not result.startswith("Category:Category:")
+
 
 @pytest.mark.unit
 class TestGetCategoryMemberCount:
