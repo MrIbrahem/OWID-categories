@@ -65,6 +65,44 @@ def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
     return None
 
 
+def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
+    """
+    Resolve category redirects. If the category has a {{Category redirect}} template,
+    return the target category name.
+
+    Args:
+        site: Connected mwclient Site
+        category: Original category name
+        max_depth: Maximum recursion depth to avoid infinite loops
+
+    Returns:
+        Resolved category name
+    """
+    if max_depth <= 0:
+        return category
+
+    page_text = get_page_text(site, category)
+    if not page_text:
+        return category
+
+    # Regex to match {{Category redirect|Target}} or {{Category redirect|1=Target}}
+    # Supports aliases: Category redirect, Categoryredirect, Cat redirect, Catredirect
+    # Case-insensitive
+    pattern = r"{{\s*(?:[Cc]ategory\s+redirect|[Cc]ategoryredirect|[Cc]at\s+redirect|[Cc]atredirect)\s*\|\s*(?:1=)?\s*([^|}]+)"
+    match = re.search(pattern, page_text)
+
+    if match:
+        target = match.group(1).strip()
+        # Ensure it has Category: prefix if the match doesn't include it
+        if not target.startswith("Category:"):
+            target = f"Category:{target}"
+
+        logging.info(f"Category redirect found: {category} -> {target}")
+        return resolve_category_redirect(site, target, max_depth - 1)
+
+    return category
+
+
 def category_exists_on_page(page_text: str, category: str) -> bool:
     """
     Check if a category already exists on a page.

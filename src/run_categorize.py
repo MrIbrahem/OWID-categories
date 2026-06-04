@@ -35,6 +35,7 @@ from categorize import (
     ensure_category_exists,
     get_category_member_count,
     get_category_members,
+    resolve_category_redirect,
 )
 from utils import (
     setup_logging,
@@ -118,6 +119,9 @@ def process_files(
 
     # Build category name
     category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=files_type)
+
+    # Resolve category redirect if any
+    category = resolve_category_redirect(site, category)
 
     if country_or_continent == "country":
         iso3 = data.get("iso3")

@@ -18,6 +18,7 @@ from categorize.wiki import (
     add_category_to_page,
     ensure_category_exists,
     get_category_member_count,
+    resolve_category_redirect,
 )
 
 
@@ -226,6 +227,124 @@ class TestEnsureCategoryExists:
             dry_run=True
         )
         assert result is True, "Should return True for countries with 'the' prefix in dry-run mode"
+
+
+@pytest.mark.unit
+class TestResolveCategoryRedirect:
+    """Test category redirect resolution."""
+
+    def test_no_redirect(self):
+        """Test category with no redirect template."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "[[Category:Some parent]]"
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        category = "Category:Normal category"
+        result = resolve_category_redirect(mock_site, category)
+        assert result == category
+
+    def test_standard_redirect(self):
+        """Test standard category redirect."""
+        mock_site = Mock()
+
+        # Original category page
+        mock_page1 = MagicMock()
+        mock_page1.exists = True
+        mock_page1.text.return_value = "{{Category redirect|Category:Target category}}"
+
+        # Target category page
+        mock_page2 = MagicMock()
+        mock_page2.exists = True
+        mock_page2.text.return_value = "[[Category:Some parent]]"
+
+        pages = {
+            "Category:Original": mock_page1,
+            "Category:Target category": mock_page2
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Original")
+        assert result == "Category:Target category"
+
+    def test_redirect_with_parameter_name(self):
+        """Test redirect with 1= parameter."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|1=Category:Target category}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "text"
+
+        pages = {
+            "Category:Original": mock_page,
+            "Category:Target category": mock_target
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Original")
+        assert result == "Category:Target category"
+
+    def test_redirect_without_category_prefix_in_target(self):
+        """Test redirect where target doesn't have Category: prefix."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|Target category}}"
+
+        mock_target = MagicMock()
+        mock_target.exists = True
+        mock_target.text.return_value = "text"
+
+        pages = {
+            "Category:Original": mock_page,
+            "Category:Target category": mock_target
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Original")
+        assert result == "Category:Target category"
+
+    def test_recursive_redirect(self):
+        """Test multiple levels of redirects."""
+        mock_site = Mock()
+
+        mock_page1 = MagicMock()
+        mock_page1.exists = True
+        mock_page1.text.return_value = "{{Category redirect|Category:Redirect 2}}"
+
+        mock_page2 = MagicMock()
+        mock_page2.exists = True
+        mock_page2.text.return_value = "{{Cat redirect|Category:Final target}}"
+
+        mock_page3 = MagicMock()
+        mock_page3.exists = True
+        mock_page3.text.return_value = "Final content"
+
+        pages = {
+            "Category:Start": mock_page1,
+            "Category:Redirect 2": mock_page2,
+            "Category:Final target": mock_page3
+        }
+        mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
+
+        result = resolve_category_redirect(mock_site, "Category:Start")
+        assert result == "Category:Final target"
+
+    def test_max_depth_reached(self):
+        """Test that recursion stops at max_depth."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|Category:Infinite}}"
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        # Should return the category after max_depth is reached
+        result = resolve_category_redirect(mock_site, "Category:Infinite", max_depth=2)
+        assert result == "Category:Infinite"
 
 
 @pytest.mark.unit
