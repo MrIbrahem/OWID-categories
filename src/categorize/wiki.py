@@ -8,10 +8,8 @@ including authentication, page editing, and category management.
 
 import logging
 import time
-import re
 from typing import Optional
 import mwclient
-import wikitextparser as wtp
 
 logger = logging.getLogger(__name__)
 
@@ -79,153 +77,32 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
     return None
 
 
-def extract_redirect_target(page_text: str) -> Optional[str]:
-    """
-    Extract the redirect target from page text if it contains a category redirect template.
-
-    Args:
-        page_text: Wikitext of the page
-
-    Returns:
-        Target category name or None if no redirect found
-    """
-    parsed = wtp.parse(page_text)
-    redirect_templates = {
-        "category redirect",
-        "categoryredirect",
-        "cat redirect",
-        "catredirect",
-    }
-
-    for template in parsed.templates:
-        name = template.normal_name().lower().strip()
-        if name in redirect_templates:
-            arg = template.get_arg("1")
-            if arg and arg.value:
-                return arg.value.strip()
-    return None
-
-
-def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
-    """
-    Get the redirect target for a category if it exists.
-
-    Args:
-        site: Connected mwclient Site
-        category: Category name
-
-    Returns:
-        Redirect target with 'Category:' prefix, or None if no redirect
-    """
-    page_text = get_page_text(site, category)
-    if not page_text:
-        return None
-
-    target = extract_redirect_target(page_text)
-    if target:
-        if not target.startswith("Category:"):
-            target = f"Category:{target}"
-        return target
-    return None
-
-
-def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
-    """
-    Resolve category redirects. If the category has a {{Category redirect}} template,
-    return the target category name.
-
-    Args:
-        site: Connected mwclient Site
-        category: Original category name
-        max_depth: Maximum recursion depth to avoid infinite loops
-
-    Returns:
-        Resolved category name
-    """
-    if max_depth <= 0:
-        return category
-
-    target = get_redirect_target(site, category)
-
-    if target:
-        logger.info(f"Category redirect found: {category} -> {target}")
-        # Pause before recursive call
-        time.sleep(1)
-        return resolve_category_redirect(site, target, max_depth - 1)
-
-    return category
-
-
-def category_exists_on_page(page_text: str, category: str) -> bool:
-    """
-    Check if a category already exists on a page.
-
-    Args:
-        page_text: Current page text
-        category: Category name to check (e.g., "Category:Our World in Data graphs of Canada")
-
-    Returns:
-        True if category exists, False otherwise
-    """
-    if not page_text:
-        return False
-
-    category_simple = category.replace("Category:", "")
-
-    # Match [[Category:Name]] or [[Category:Name|sortkey]] with case-insensitive "Category:"
-    pattern = rf"\[\[\s*[Cc]ategory\s*:\s*{re.escape(category_simple)}\s*(?:\|[^\]]*)?]]"
-    return bool(re.search(pattern, page_text))
-
-
-def add_category_to_page(
+def save_page(
     site: mwclient.Site,
     title: str,
-    category: str,
-    dry_run: bool = False
+    text: str,
+    summary: str
 ) -> bool:
     """
-    Add a category to a page on Commons.
+    Save wikitext to a page on Commons.
 
     Args:
         site: Connected mwclient Site
-        title: Page title (e.g., "File:Agriculture share gdp, 1997 to 2021, CAN.svg")
-        category: Category to add (e.g., "Category:Our World in Data graphs of Canada")
-        dry_run: If True, don't actually make the edit
+        title: Page title
+        text: New page content
+        summary: Edit summary
 
     Returns:
-        True if category was added (or would be added in dry-run), False otherwise
+        True if successfully saved, False otherwise
     """
-    page = site.pages[title]
-
-    if not page.exists:
-        logger.warning(f"Page does not exist: {title}")
-        return False
-
-    # Get current page text
-    current_text = page.text()
-
-    # Check if category already exists
-    if category_exists_on_page(current_text, category):
-        logger.info(f"Category already exists on {title}")
-        return False
-
-    # Add category at the end of the page
-    new_text = current_text.rstrip() + f"\n[[{category}]]\n"
-
-    if dry_run:
-        logger.info(f"[DRY RUN] Would add '{category}' to {title}")
-        return True
-
-    # Make the edit
-    edit_summary = f"Adding [[:{category}]]"
     try:
-        page.save(new_text, summary=edit_summary)
-        logger.info(f"Successfully added '{category}' to {title}")
+        page = site.pages[title]
+        page.save(text, summary=summary)
+        logger.info(f"Successfully saved page '{title}'")
         time.sleep(EDIT_DELAY)
         return True
-
     except Exception as e:
-        logger.error(f"Failed to save category to {title}: {e}")
+        logger.error(f"Failed to save page '{title}': {e}")
         return False
 
 
@@ -264,14 +141,7 @@ def ensure_category_exists(
 
     # Create the category page
     edit_summary = "Create category for OWID graphs"
-
-    try:
-        category_page.save(category_content, summary=edit_summary)
-        logger.info(f"Created category page: {category_title}")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to create category page '{category_title}': {e}")
-        return False
+    return save_page(site, category_title, category_content, edit_summary)
 
 
 def get_category_members(site: mwclient.Site, category: str) -> list:

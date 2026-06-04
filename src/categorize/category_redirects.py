@@ -1,0 +1,113 @@
+"""
+Orchestration module for category redirect resolution and management.
+
+This module coordinates API operations from wiki.py and wikitext analysis
+from wikitext_utils.py to handle category redirects and page updates.
+"""
+
+import logging
+import time
+from typing import Optional
+import mwclient
+from . import wiki
+from . import wikitext_utils
+
+logger = logging.getLogger(__name__)
+
+
+def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
+    """
+    Get the redirect target for a category if it exists.
+
+    Args:
+        site: Connected mwclient Site
+        category: Category name
+
+    Returns:
+        Redirect target with 'Category:' prefix, or None if no redirect
+    """
+    page_text = wiki.get_page_text(site, category)
+    if not page_text:
+        return None
+
+    target = wikitext_utils.extract_redirect_target(page_text)
+    if target:
+        if not target.startswith("Category:"):
+            target = f"Category:{target}"
+        return target
+    return None
+
+
+def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
+    """
+    Resolve category redirects. If the category has a {{Category redirect}} template,
+    return the target category name.
+
+    Args:
+        site: Connected mwclient Site
+        category: Original category name
+        max_depth: Maximum recursion depth to avoid infinite loops
+
+    Returns:
+        Resolved category name
+    """
+    if max_depth <= 0:
+        return category
+
+    target = get_redirect_target(site, category)
+
+    if target:
+        logger.info(f"Category redirect found: {category} -> {target}")
+        # Pause before recursive call
+        time.sleep(1)
+        return resolve_category_redirect(site, target, max_depth - 1)
+
+    return category
+
+
+def add_category_to_page(
+    site: mwclient.Site,
+    title: str,
+    category: str,
+    dry_run: bool = False
+) -> bool:
+    """
+    Add a category to a page on Commons.
+
+    Args:
+        site: Connected mwclient Site
+        title: Page title
+        category: Category to add
+        dry_run: If True, don't actually make the edit
+
+    Returns:
+        True if category was added (or would be added in dry-run), False otherwise
+    """
+    # Get current page text via wiki module
+    current_text = wiki.get_page_text(site, title)
+    if current_text is None:
+        # get_page_text returns None if page doesn't exist or on error
+        # We need to distinguish between non-existent and error if we want to match previous behavior
+        # Previous behavior checked page.exists
+        page = site.pages[title]
+        if not page.exists:
+            logger.warning(f"Page does not exist: {title}")
+            return False
+        # If it exists but is empty, it returns empty string
+        current_text = ""
+
+    # Check if category already exists via wikitext_utils
+    if wikitext_utils.category_exists_on_page(current_text, category):
+        logger.info(f"Category already exists on {title}")
+        return False
+
+    # Add category at the end of the page
+    new_text = current_text.rstrip() + f"\n[[{category}]]\n"
+
+    if dry_run:
+        logger.info(f"[DRY RUN] Would add '{category}' to {title}")
+        return True
+
+    # Make the edit via wiki module
+    edit_summary = f"Adding [[:{category}]]"
+    return wiki.save_page(site, title, new_text, edit_summary)
