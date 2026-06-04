@@ -39,7 +39,7 @@ class TestNormalizeCountryName:
             ("Czech Republic", "the Czech Republic"),
             ("Central African Republic", "the Central African Republic"),
             ("Maldives", "the Maldives"),
-            ("Seychelles", "the Seychelles"),
+            ("Seychelles", "Seychelles"),
             ("Bahamas", "the Bahamas"),
             ("Marshall Islands", "the Marshall Islands"),
             ("Solomon Islands", "the Solomon Islands"),
