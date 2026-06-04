@@ -14,6 +14,8 @@ from typing import Optional
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
 MAIN_DIR = Path()
 
 if os.getenv("MAIN_DIR", ""):
@@ -47,7 +49,7 @@ def load_credentials() -> tuple[Optional[str], Optional[str]]:
     password = os.getenv("PASSWORD")
 
     if not username or not password:
-        logging.error("WM_USERNAME and/or PASSWORD not found in .env file")
+        logger.error("WM_USERNAME and/or PASSWORD not found in .env file")
         return None, None
 
     return username, password

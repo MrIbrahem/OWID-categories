@@ -13,6 +13,7 @@ from typing import Optional
 import mwclient
 import wikitextparser as wtp
 
+logger = logging.getLogger(__name__)
 
 # User-Agent header (required by Wikimedia)
 USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
@@ -33,19 +34,19 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
         Connected Site object or None on failure
     """
     try:
-        logging.info("Connecting to Wikimedia Commons...")
+        logger.info("Connecting to Wikimedia Commons...")
         site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
 
-        logging.info(f"Logging in as {username}...")
+        logger.info(f"Logging in as {username}...")
         site.login(username, password)
 
-        logging.info("Successfully connected and logged in")
+        logger.info("Successfully connected and logged in")
         return site
     except mwclient.errors.LoginError as e:
-        logging.error(f"Login failed: {e}")
+        logger.error(f"Login failed: {e}")
         return None
     except Exception as e:
-        logging.exception(f"Failed to connect to Commons: {e}")
+        logger.exception(f"Failed to connect to Commons: {e}")
         return None
 
 
@@ -70,11 +71,11 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
             return None
         except (mwclient.errors.MwClientError, Exception) as e:
             if attempt < max_retries - 1:
-                logging.warning(f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s...")
+                logger.warning(f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s...")
                 time.sleep(retry_delay)
                 retry_delay *= 2
             else:
-                logging.error(f"Failed to get text for '{title}' after {max_retries} attempts: {e}")
+                logger.error(f"Failed to get text for '{title}' after {max_retries} attempts: {e}")
     return None
 
 
@@ -120,7 +121,7 @@ def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int
         if not target.startswith("Category:"):
             target = f"Category:{target}"
 
-        logging.info(f"Category redirect found: {category} -> {target}")
+        logger.info(f"Category redirect found: {category} -> {target}")
         # Pause before recursive call
         time.sleep(1)
         return resolve_category_redirect(site, target, max_depth - 1)
@@ -170,7 +171,7 @@ def add_category_to_page(
     page = site.pages[title]
 
     if not page.exists:
-        logging.warning(f"Page does not exist: {title}")
+        logger.warning(f"Page does not exist: {title}")
         return False
 
     # Get current page text
@@ -178,26 +179,26 @@ def add_category_to_page(
 
     # Check if category already exists
     if category_exists_on_page(current_text, category):
-        logging.info(f"Category already exists on {title}")
+        logger.info(f"Category already exists on {title}")
         return False
 
     # Add category at the end of the page
     new_text = current_text.rstrip() + f"\n[[{category}]]\n"
 
     if dry_run:
-        logging.info(f"[DRY RUN] Would add '{category}' to {title}")
+        logger.info(f"[DRY RUN] Would add '{category}' to {title}")
         return True
 
     # Make the edit
     edit_summary = f"Adding [[:{category}]]"
     try:
         page.save(new_text, summary=edit_summary)
-        logging.info(f"Successfully added '{category}' to {title}")
+        logger.info(f"Successfully added '{category}' to {title}")
         time.sleep(EDIT_DELAY)
         return True
 
     except Exception as e:
-        logging.error(f"Failed to save category to {title}: {e}")
+        logger.error(f"Failed to save category to {title}: {e}")
         return False
 
 
@@ -224,14 +225,14 @@ def ensure_category_exists(
     category_page = site.pages[category_title]
 
     if category_page.exists:
-        logging.debug(f"Category already exists: {category_title}")
+        logger.debug(f"Category already exists: {category_title}")
         return True    # Category already exists
 
     # Category doesn't exist, create it
     category_content = f"[[Category:{parent_category}|{sort_key}]]"
 
     if dry_run:
-        logging.info(f"[DRY RUN] Would create category page: {category_title}")
+        logger.info(f"[DRY RUN] Would create category page: {category_title}")
         return True
 
     # Create the category page
@@ -239,10 +240,10 @@ def ensure_category_exists(
 
     try:
         category_page.save(category_content, summary=edit_summary)
-        logging.info(f"Created category page: {category_title}")
+        logger.info(f"Created category page: {category_title}")
         return True
     except Exception as e:
-        logging.error(f"Failed to create category page '{category_title}': {e}")
+        logger.error(f"Failed to create category page '{category_title}': {e}")
         return False
 
 
@@ -262,16 +263,16 @@ def get_category_members(site: mwclient.Site, category: str) -> list:
         category_page = site.pages[category]
 
         if not category_page.exists:
-            logging.debug(f"Category doesn't exist yet: {category}")
+            logger.debug(f"Category doesn't exist yet: {category}")
             return []
 
         return list(category_page.members())
 
     except mwclient.errors.MwClientError as e:
-        logging.error(f"API error getting members in category '{category}': {e}")
+        logger.error(f"API error getting members in category '{category}': {e}")
         return []
     except Exception as e:
-        logging.error(f"An unexpected error occurred getting members in category '{category}': {e}")
+        logger.error(f"An unexpected error occurred getting members in category '{category}': {e}")
         return []
 
 
@@ -288,5 +289,5 @@ def get_category_member_count(site: mwclient.Site, category: str) -> int:
     """
     member_count = sum(1 for _ in get_category_members(site, category))
 
-    logging.debug(f"Category '{category}' has {member_count} members")
+    logger.debug(f"Category '{category}' has {member_count} members")
     return member_count
