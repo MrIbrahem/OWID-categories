@@ -20,6 +20,8 @@ from categorize.wiki import (
     get_category_member_count,
     resolve_category_redirect,
     get_page_text,
+    extract_redirect_target,
+    get_redirect_target,
 )
 
 
@@ -269,6 +271,93 @@ class TestGetPageText:
             result = get_page_text(mock_site, "Title", max_retries=2)
         assert result is None
         assert mock_site.pages.__getitem__.call_count == 2
+
+
+@pytest.mark.unit
+class TestGetRedirectTarget:
+    """Test get_redirect_target function."""
+
+    def test_get_redirect_target_success(self):
+        """Test successful retrieval of redirect target."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|Category:Target}}"
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        result = get_redirect_target(mock_site, "Category:Original")
+        assert result == "Category:Target"
+
+    def test_get_redirect_target_normalization(self):
+        """Test retrieval and normalization of redirect target."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "{{Category redirect|Target without prefix}}"
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        result = get_redirect_target(mock_site, "Category:Original")
+        assert result == "Category:Target without prefix"
+
+    def test_get_redirect_target_no_redirect(self):
+        """Test when page has no redirect template."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = True
+        mock_page.text.return_value = "[[Category:Parent]]"
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        result = get_redirect_target(mock_site, "Category:Original")
+        assert result is None
+
+    def test_get_redirect_target_page_not_exists(self):
+        """Test when page does not exist."""
+        mock_site = Mock()
+        mock_page = MagicMock()
+        mock_page.exists = False
+        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
+
+        result = get_redirect_target(mock_site, "Category:Nonexistent")
+        assert result is None
+
+
+@pytest.mark.unit
+class TestExtractRedirectTarget:
+    """Test extraction of redirect target from wikitext."""
+
+    def test_extract_standard_redirect(self):
+        """Test extraction from {{Category redirect|Target}}."""
+        wikitext = "{{Category redirect|Category:Target category}}"
+        assert extract_redirect_target(wikitext) == "Category:Target category"
+
+    def test_extract_alias_redirect(self):
+        """Test extraction from {{Cat redirect|Target}}."""
+        wikitext = "{{Cat redirect|Category:Target category}}"
+        assert extract_redirect_target(wikitext) == "Category:Target category"
+
+    def test_extract_named_parameter(self):
+        """Test extraction from {{Category redirect|1=Target}}."""
+        wikitext = "{{Category redirect|1=Category:Target category}}"
+        assert extract_redirect_target(wikitext) == "Category:Target category"
+
+    def test_extract_missing_parameter(self):
+        """Test extraction when parameter is missing."""
+        wikitext = "{{Category redirect}}"
+        assert extract_redirect_target(wikitext) is None
+
+    def test_extract_no_redirect(self):
+        """Test extraction when no redirect template is present."""
+        wikitext = "[[Category:Some category]]"
+        assert extract_redirect_target(wikitext) is None
+
+    def test_extract_multiple_templates(self):
+        """Test extraction when multiple templates are present."""
+        wikitext = """
+{{Information|Description=Test}}
+{{Category redirect|Category:Target}}
+[[Category:Parent]]
+"""
+        assert extract_redirect_target(wikitext) == "Category:Target"
 
 
 @pytest.mark.unit

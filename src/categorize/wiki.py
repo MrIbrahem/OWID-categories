@@ -79,6 +79,56 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
     return None
 
 
+def extract_redirect_target(page_text: str) -> Optional[str]:
+    """
+    Extract the redirect target from page text if it contains a category redirect template.
+
+    Args:
+        page_text: Wikitext of the page
+
+    Returns:
+        Target category name or None if no redirect found
+    """
+    parsed = wtp.parse(page_text)
+    redirect_templates = {
+        "category redirect",
+        "categoryredirect",
+        "cat redirect",
+        "catredirect",
+    }
+
+    for template in parsed.templates:
+        name = template.normal_name().lower().strip()
+        if name in redirect_templates:
+            arg = template.get_arg("1")
+            if arg and arg.value:
+                return arg.value.strip()
+    return None
+
+
+def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
+    """
+    Get the redirect target for a category if it exists.
+
+    Args:
+        site: Connected mwclient Site
+        category: Category name
+
+    Returns:
+        Redirect target with 'Category:' prefix, or None if no redirect
+    """
+    page_text = get_page_text(site, category)
+    if not page_text:
+        return None
+
+    target = extract_redirect_target(page_text)
+    if target:
+        if not target.startswith("Category:"):
+            target = f"Category:{target}"
+        return target
+    return None
+
+
 def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
     """
     Resolve category redirects. If the category has a {{Category redirect}} template,
@@ -95,32 +145,9 @@ def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int
     if max_depth <= 0:
         return category
 
-    page_text = get_page_text(site, category)
-    if not page_text:
-        return category
-
-    parsed = wtp.parse(page_text)
-    redirect_templates = {
-        "category redirect",
-        "categoryredirect",
-        "cat redirect",
-        "catredirect",
-    }
-
-    target = None
-    for template in parsed.templates:
-        name = template.normal_name().lower().strip()
-        if name in redirect_templates:
-            arg = template.get_arg("1")
-            if arg and arg.value:
-                target = arg.value.strip()
-                break
+    target = get_redirect_target(site, category)
 
     if target:
-        # Ensure it has Category: prefix if the match doesn't include it
-        if not target.startswith("Category:"):
-            target = f"Category:{target}"
-
         logger.info(f"Category redirect found: {category} -> {target}")
         # Pause before recursive call
         time.sleep(1)
