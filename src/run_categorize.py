@@ -51,6 +51,9 @@ from owid_config import (
     COUNTRIES_DIR,
     CONTINENTS_DIR,
 )
+
+logger = logging.getLogger(__name__)
+
 # List of continents to process
 CONTINENTS = [
     "Africa",
@@ -84,8 +87,8 @@ def process_files(
     Returns:
         Dictionary with statistics (added, skipped, errors)
     """
-    logging.info("-" * 20)
-    logging.info(f"process_files: {files_type}")
+    logger.info("-" * 20)
+    logger.info(f"process_files: {files_type}")
 
     stats = {
         "added": 0,
@@ -94,12 +97,12 @@ def process_files(
     }
 
     if files_type not in ["graphs", "maps"]:
-        logging.error(f"Invalid files_type value: {files_type}")
+        logger.error(f"Invalid files_type value: {files_type}")
         stats["errors"] += 1
         return stats
 
     if country_or_continent not in ["country", "continent"]:
-        logging.error(f"Invalid country_or_continent value: {country_or_continent}")
+        logger.error(f"Invalid country_or_continent value: {country_or_continent}")
         stats["errors"] += 1
         return stats
 
@@ -113,7 +116,7 @@ def process_files(
     files = data.get(files_type, [])
 
     if not entity:
-        logging.error(f"No country/continent name in {file_path}")
+        logger.error(f"No country/continent name in {file_path}")
         stats["errors"] += 1
         return stats
 
@@ -131,28 +134,28 @@ def process_files(
     else:
         log_line = f"{entity}"
 
-    logging.info(f"\n\t\t Processing {log_line}: {len(files)} files")
+    logger.info(f"\n\t\t Processing {log_line}: {len(files)} files")
 
     # Check if category already has enough files when files_per_one is set
     if files_per_one:
         current_member_count = get_category_member_count(site, category)
         if current_member_count >= files_per_one:
-            logging.info(f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
+            logger.info(f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)")
             return stats
 
         remaining_slots = files_per_one - current_member_count
-        logging.info(f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
+        logger.info(f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files")
 
     # Apply per-country/continent file limit if specified
     if files_per_one:
         remaining_slots = files_per_one - current_member_count
         files = files[:remaining_slots]
-        logging.info(f"Limiting to {remaining_slots} file(s) for this country")
+        logger.info(f"Limiting to {remaining_slots} file(s) for this country")
 
     # Ensure the category page exists before adding files to it
     parent_category = get_parent_category(category_type=country_or_continent, files_type=files_type)
     if not ensure_category_exists(site, category, parent_category, entity, dry_run):
-        logging.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
+        logger.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
         stats["errors"] += 1
         return stats
 
@@ -160,19 +163,19 @@ def process_files(
     existing_members = get_category_members(site, category)
     existing_titles = {page.name for page in existing_members}
 
-    logging.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
+    logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
 
     # Filter out files that are already in the category
     original_file_count = len(files)
     files = [file for file in files if file.get("title") not in existing_titles]
     stats["skipped"] += original_file_count - len(files)
-    logging.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
+    logger.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
 
     # Process files
     for file in files:
         title = file.get("title")
         if not title:
-            logging.warning(f"File missing title in {file_path}")
+            logger.warning(f"File missing title in {file_path}")
             stats["errors"] += 1
             continue
 
@@ -213,53 +216,53 @@ def main(
     country_or_continent = "country" if work_path == "countries" else "continent"
 
     if not work_dir:
-        logging.error(f"Invalid work_path: {work_path}")
+        logger.error(f"Invalid work_path: {work_path}")
         sys.exit(1)
 
     setup_logging(LOG_FILE_COUNTRIES if work_path == "countries" else LOG_FILE_CONTINENTS)
 
-    logging.info("=" * 80)
-    logging.info("OWID Commons Countries/Continents Categorizer")
-    logging.info("=" * 80)
+    logger.info("=" * 80)
+    logger.info("OWID Commons Countries/Continents Categorizer")
+    logger.info("=" * 80)
 
     if dry_run:
-        logging.info("Running in DRY RUN mode - no actual edits will be made")
+        logger.info("Running in DRY RUN mode - no actual edits will be made")
 
     if files_per_one:
-        logging.info(f"Processing {files_per_one} file(s) per item")
+        logger.info(f"Processing {files_per_one} file(s) per item")
 
     # Load credentials
     username, password = load_credentials()
     if not username or not password:
-        logging.error("Failed to load credentials from .env file")
-        logging.error("Please create a .env file with WM_USERNAME and PASSWORD")
+        logger.error("Failed to load credentials from .env file")
+        logger.error("Please create a .env file with WM_USERNAME and PASSWORD")
         sys.exit(1)
 
     # Connect to Commons
     site = connect_to_commons(username, password)
     if not site:
-        logging.error("Failed to connect to Wikimedia Commons")
+        logger.error("Failed to connect to Wikimedia Commons")
         sys.exit(1)
 
     # Check if Countries/Continents directory exists
     if not work_dir.exists():
-        logging.error(f"Countries/Continents directory not found: {work_dir}")
-        logging.error("Please run Phase 1 (fetch_commons_files.py) first")
+        logger.error(f"Countries/Continents directory not found: {work_dir}")
+        logger.error("Please run Phase 1 (fetch_commons_files.py) first")
         sys.exit(1)
 
     # Get all item JSON files
     files = sorted(work_dir.glob("*.json"))
 
     if not files:
-        logging.error(f"No item JSON files found in {work_dir}")
+        logger.error(f"No item JSON files found in {work_dir}")
         sys.exit(1)
 
-    logging.info(f"Found {len(files)} item files")
+    logger.info(f"Found {len(files)} item files")
 
     # Apply limit if specified
     if limit:
         files = files[:limit]
-        logging.info(f"Processing limited to first {limit} Countries/Continents")    # Process each item file
+        logger.info(f"Processing limited to first {limit} Countries/Continents")    # Process each item file
     total_stats = {
         "added": 0,
         "skipped": 0,
@@ -288,19 +291,19 @@ def main(
             total_stats["total_processed"] += 1
 
     # Final summary
-    logging.info("\n" + "=" * 80)
-    logging.info("FINAL SUMMARY")
-    logging.info("=" * 80)
-    logging.info(f"Countries/Continents processed: {total_stats['total_processed']}")
-    logging.info(f"Countries/Continents skipped (already have enough files): {total_stats['total_skipped']}")
-    logging.info(f"Categories added: {total_stats['added']}")
-    logging.info(f"Already had category (skipped): {total_stats['skipped']}")
-    logging.info(f"Errors: {total_stats['errors']}")
-    logging.info("=" * 80)
+    logger.info("\n" + "=" * 80)
+    logger.info("FINAL SUMMARY")
+    logger.info("=" * 80)
+    logger.info(f"Countries/Continents processed: {total_stats['total_processed']}")
+    logger.info(f"Countries/Continents skipped (already have enough files): {total_stats['total_skipped']}")
+    logger.info(f"Categories added: {total_stats['added']}")
+    logger.info(f"Already had category (skipped): {total_stats['skipped']}")
+    logger.info(f"Errors: {total_stats['errors']}")
+    logger.info("=" * 80)
 
     if dry_run:
-        logging.info("\nThis was a DRY RUN - no actual edits were made")
-        logging.info("Run without --dry-run flag to make actual edits")
+        logger.info("\nThis was a DRY RUN - no actual edits were made")
+        logger.info("Run without --dry-run flag to make actual edits")
 
 
 if __name__ == "__main__":
