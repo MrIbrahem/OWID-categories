@@ -60,13 +60,14 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("utils.utils.load_json_file", return_value=test_data):
-            with patch("categorize.wiki.get_category_member_count", return_value=0):
-                stats = process_files(
-                    mock_site,
-                    COUNTRIES_DIR / "CAN.json",
-                    dry_run=True
-                )
+        with patch("run_categorize.load_json_file", return_value=test_data):
+            with patch("run_categorize.get_category_member_count", return_value=0):
+                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                    stats = process_files(
+                        mock_site,
+                        COUNTRIES_DIR / "CAN.json",
+                        dry_run=True
+                    )
 
         # Assertions
         assert stats["added"] >= 0, "Should have processed some files"
@@ -101,14 +102,15 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("utils.utils.load_json_file", return_value=test_data):
-            with patch("categorize.wiki.get_category_member_count", return_value=0):
-                stats = process_files(
-                    mock_site,
-                    COUNTRIES_DIR / "USA.json",
-                    dry_run=True,
-                    files_per_one=3
-                )
+        with patch("run_categorize.load_json_file", return_value=test_data):
+            with patch("run_categorize.get_category_member_count", return_value=0):
+                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                    stats = process_files(
+                        mock_site,
+                        COUNTRIES_DIR / "USA.json",
+                        dry_run=True,
+                        files_per_one=3
+                    )
 
         # Should only process 3 files
         assert stats["added"] + stats["skipped"] <= 3, "Should respect per-country limit"
@@ -123,7 +125,7 @@ class TestProcessFiles:
             "graphs": []
         }
 
-        with patch("utils.utils.load_json_file", return_value=test_data):
+        with patch("run_categorize.load_json_file", return_value=test_data):
             stats = process_files(
                 mock_site,
                 COUNTRIES_DIR / "XXX.json",
@@ -136,7 +138,7 @@ class TestProcessFiles:
         """Test processing invalid JSON file."""
         mock_site = Mock()
 
-        with patch("utils.utils.load_json_file", return_value=None):
+        with patch("run_categorize.load_json_file", return_value=None):
             stats = process_files(
                 mock_site,
                 COUNTRIES_DIR / "invalid.json",
@@ -218,12 +220,13 @@ class TestDryRunSimulation:
 
         # Process first 3 countries in dry-run
         for json_file in sorted(json_files)[:3]:
-            with patch("categorize.wiki.get_category_member_count", return_value=0):
-                stats = process_files(
-                    mock_site,
-                    json_file,
-                    dry_run=True
-                )
+            with patch("run_categorize.get_category_member_count", return_value=0):
+                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                    stats = process_files(
+                        mock_site,
+                        json_file,
+                        dry_run=True
+                    )
 
             # Basic assertions
             assert isinstance(stats, dict), "Should return stats dictionary"

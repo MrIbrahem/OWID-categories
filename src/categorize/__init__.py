@@ -10,6 +10,7 @@ from .wiki import (
     ensure_category_exists,
     get_category_member_count,
     get_page_text,
+    resolve_category_redirect,
     category_exists_on_page,
     get_category_members,
 )
@@ -25,6 +26,7 @@ __all__ = [
     "ensure_category_exists",
     "get_category_member_count",
     "get_page_text",
+    "resolve_category_redirect",
     "category_exists_on_page",
     # Utility functions
     "get_category_members_petscan",
