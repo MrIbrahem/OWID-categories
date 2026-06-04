@@ -86,15 +86,8 @@ def add_category_to_page(
     # Get current page text via wiki module
     current_text = wiki.get_page_text(site, title)
     if current_text is None:
-        # get_page_text returns None if page doesn't exist or on error
-        # We need to distinguish between non-existent and error if we want to match previous behavior
-        # Previous behavior checked page.exists
-        page = site.pages[title]
-        if not page.exists:
-            logger.warning(f"Page does not exist: {title}")
-            return False
-        # If it exists but is empty, it returns empty string
-        current_text = ""
+        logger.warning(f"Page does not exist or could not be retrieved: {title}")
+        return False
 
     # Check if category already exists via wikitext_utils
     if wikitext_utils.category_exists_on_page(current_text, category):
