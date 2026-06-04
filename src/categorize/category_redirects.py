@@ -56,7 +56,7 @@ def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int
 
     target = get_redirect_target(site, category)
 
-    if target:
+    if target and target != category:
         logger.info(f"Category redirect found: {category} -> {target}")
         # Pause before recursive call
         time.sleep(1)
