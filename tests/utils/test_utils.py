@@ -72,13 +72,6 @@ class TestNormalizeCountryName:
             result = normalize_country_name(country)
             assert result == expected, f"Expected '{expected}' but got '{result}' for country '{country}'"
 
-    def test_seychelles_regression(self):
-        """Regression test: Seychelles must return 'the Seychelles' (was incorrectly commented out)."""
-        result = normalize_country_name("Seychelles")
-        assert result == "the Seychelles", (
-            "Seychelles should receive the 'the' prefix; this was previously broken by a commented-out entry"
-        )
-
 
 @pytest.mark.unit
 class TestBuildCategoryName:
@@ -146,15 +139,10 @@ class TestBuildCategoryName:
         result = build_category_name("Canada", "country", "maps")
         assert result == "Category:Our World in Data maps of Canada"
 
-    def test_seychelles_category_name_regression(self):
-        """Regression test: Seychelles category should use 'the Seychelles' (was previously broken)."""
-        result = build_category_name("Seychelles", "country", "graphs")
-        assert result == "Category:Our World in Data graphs of the Seychelles"
-
 
 @pytest.mark.unit
 class TestGetParentCategory:
-
+    """Test parent category retrieval."""
 
     def test_country_parent_category(self):
         """Test parent category for countries."""

@@ -11,6 +11,7 @@ import time
 import re
 from typing import Optional
 import mwclient
+import wikitextparser as wtp
 
 
 # User-Agent header (required by Wikimedia)
@@ -48,20 +49,32 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
         return None
 
 
-def get_page_text(site: mwclient.Site, title: str) -> Optional[str]:
+def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Optional[str]:
     """
-    Get the current text content of a page.
+    Get the current text content of a page with retries and error handling.
 
     Args:
         site: Connected mwclient Site
         title: Page title
+        max_retries: Maximum number of retries for transient errors
 
     Returns:
-        Page text or None if page doesn't exist
+        Page text or None if page doesn't exist or on permanent failure
     """
-    page = site.pages[title]
-    if page.exists:
-        return page.text()
+    retry_delay = 1
+    for attempt in range(max_retries):
+        try:
+            page = site.pages[title]
+            if page.exists:
+                return page.text()
+            return None
+        except (mwclient.errors.MwClientError, Exception) as e:
+            if attempt < max_retries - 1:
+                logging.warning(f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s...")
+                time.sleep(retry_delay)
+                retry_delay *= 2
+            else:
+                logging.error(f"Failed to get text for '{title}' after {max_retries} attempts: {e}")
     return None
 
 
@@ -85,19 +98,31 @@ def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int
     if not page_text:
         return category
 
-    # Regex to match {{Category redirect|Target}} or {{Category redirect|1=Target}}
-    # Supports aliases: Category redirect, Categoryredirect, Cat redirect, Catredirect
-    # Case-insensitive
-    pattern = r"{{\s*(?:[Cc]ategory\s+redirect|[Cc]ategoryredirect|[Cc]at\s+redirect|[Cc]atredirect)\s*\|\s*(?:1=)?\s*([^|}]+)"
-    match = re.search(pattern, page_text)
+    parsed = wtp.parse(page_text)
+    redirect_templates = {
+        "category redirect",
+        "categoryredirect",
+        "cat redirect",
+        "catredirect",
+    }
 
-    if match:
-        target = match.group(1).strip()
+    target = None
+    for template in parsed.templates:
+        name = template.normal_name().lower().strip()
+        if name in redirect_templates:
+            arg = template.get_arg("1")
+            if arg and arg.value:
+                target = arg.value.strip()
+                break
+
+    if target:
         # Ensure it has Category: prefix if the match doesn't include it
         if not target.startswith("Category:"):
             target = f"Category:{target}"
 
         logging.info(f"Category redirect found: {category} -> {target}")
+        # Pause before recursive call
+        time.sleep(1)
         return resolve_category_redirect(site, target, max_depth - 1)
 
     return category
