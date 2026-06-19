@@ -157,8 +157,8 @@ def get_category_members(site: mwclient.Site, category: str, namespace: int | No
         if not category_page.exists:
             logger.debug(f"Category doesn't exist yet: {category}")
             return []
-
-        return list(category_page.members(api_chunk_size=5000, namespace=namespace))
+        category_c = site.categories[category]
+        return list(category_c.members(api_chunk_size=5000, namespace=namespace))
 
     except mwclient.errors.MwClientError as e:
         logger.error(f"API error getting members in category '{category}': {e}")
