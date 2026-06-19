@@ -1,5 +1,5 @@
 """
-Tests for run_categorize.py module.
+Tests for main_app.main_run_categorize.py module.
 
 Tests the country categorization script functionality including
 processing country files and adding categories to graph files.
@@ -56,9 +56,9 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("run_categorize.load_json_file", return_value=test_data):
-            with patch("run_categorize.get_category_member_count", return_value=0):
-                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
+            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
+                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
                     stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
 
         # Assertions
@@ -91,9 +91,9 @@ class TestProcessFiles:
         }
 
         # Mock file loading
-        with patch("run_categorize.load_json_file", return_value=test_data):
-            with patch("run_categorize.get_category_member_count", return_value=0):
-                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
+            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
+                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
                     stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
 
         # Should only process 3 files
@@ -106,7 +106,7 @@ class TestProcessFiles:
         # Test data missing country name
         test_data = {"iso3": "XXX", "graphs": []}
 
-        with patch("run_categorize.load_json_file", return_value=test_data):
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
             stats = process_files(mock_site, COUNTRIES_DIR / "XXX.json", dry_run=True)
 
         assert stats["errors"] > 0, "Should have error for missing country"
@@ -115,7 +115,7 @@ class TestProcessFiles:
         """Test processing invalid JSON file."""
         mock_site = Mock()
 
-        with patch("run_categorize.load_json_file", return_value=None):
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=None):
             stats = process_files(mock_site, COUNTRIES_DIR / "invalid.json", dry_run=True)
 
         assert stats["errors"] > 0, "Should have error for invalid JSON"
@@ -193,8 +193,8 @@ class TestDryRunSimulation:
 
         # Process first 3 countries in dry-run
         for json_file in sorted(json_files)[:3]:
-            with patch("run_categorize.get_category_member_count", return_value=0):
-                with patch("run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
+                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
                     stats = process_files(mock_site, json_file, dry_run=True)
 
             # Basic assertions
