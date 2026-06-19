@@ -5,6 +5,7 @@ OWID Commons File Fetcher and Processor
 
 import logging
 import time
+import urllib.parse
 import urllib
 from typing import List
 

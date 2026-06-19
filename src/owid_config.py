@@ -17,10 +17,8 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-MAIN_DIR = Path()
-
-if os.getenv("MAIN_DIR", ""):
-    MAIN_DIR = Path(os.getenv("MAIN_DIR"))
+main_dir = os.getenv("MAIN_DIR", "")
+MAIN_DIR = Path(main_dir) if main_dir else Path()
 
 WIKIPEDIA_BOT_USERNAME = os.getenv("WIKIPEDIA_BOT_USERNAME")
 WIKIPEDIA_BOT_PASSWORD = os.getenv("WIKIPEDIA_BOT_PASSWORD")
