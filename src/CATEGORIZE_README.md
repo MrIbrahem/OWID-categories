@@ -197,7 +197,7 @@ python -m py_compile run_categorize.py
 
 - Python 3.10+
 - Required packages: `mwclient`, `python-dotenv`
-- `.env` file with `WM_USERNAME` and `PASSWORD`
+- `.env` file with `WIKIPEDIA_BOT_USERNAME` and `WIKIPEDIA_BOT_PASSWORD`
 - Valid Wikimedia Commons bot credentials
 
 ## See Also

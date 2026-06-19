@@ -29,14 +29,14 @@ If you don't have a bot account yet:
 cp .env.example .env
 
 # Edit .env and add your credentials
-# WM_USERNAME should be in format: YourUsername@BotName
-# PASSWORD is the generated bot password
+# WIKIPEDIA_BOT_USERNAME should be in format: YourUsername@BotName
+# WIKIPEDIA_BOT_PASSWORD is the generated bot password
 ```
 
 Example `.env` file:
 ```
-WM_USERNAME=JohnDoe@owid-categorizer
-PASSWORD=abcd1234efgh5678ijkl9012
+WIKIPEDIA_BOT_USERNAME=JohnDoe@owid-categorizer
+WIKIPEDIA_BOT_PASSWORD=abcd1234efgh5678ijkl9012
 ```
 
 **Important**: Never commit the `.env` file to version control!
@@ -201,7 +201,7 @@ Errors: 5
 
 ## Troubleshooting
 
-### "WM_USERNAME and/or PASSWORD not found in .env file"
+### "WIKIPEDIA_BOT_USERNAME and/or WIKIPEDIA_BOT_PASSWORD not found in .env file"
 
 Solution: Create a `.env` file with your bot credentials (see Setup section)
 

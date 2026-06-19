@@ -102,8 +102,8 @@ Phase 2 adds country-specific categories to graph files on Wikimedia Commons.
 
 2. **Edit `.env` and add your Wikimedia Commons bot credentials:**
    ```
-   WM_USERNAME=YourBotUsername
-   PASSWORD=YourBotPassword
+   WIKIPEDIA_BOT_USERNAME=YourBotUsername
+   WIKIPEDIA_BOT_PASSWORD=YourBotPassword
    ```
 
    To create bot credentials:

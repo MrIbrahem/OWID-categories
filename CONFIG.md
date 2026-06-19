@@ -23,8 +23,8 @@ Create a `.env` file in your project root with the following variables:
 
 ```env
 # Required for Phase 2 (automated categorization)
-WM_USERNAME=your_wikimedia_username
-PASSWORD=your_bot_password
+WIKIPEDIA_BOT_USERNAME=your_wikimedia_username
+WIKIPEDIA_BOT_PASSWORD=your_bot_password
 
 # Optional - defaults to current directory if not set
 MAIN_DIR=/path/to/your/project/root
@@ -79,7 +79,7 @@ workspace/
     └── logs/         # Created here
 ```
 
-#### `WM_USERNAME`
+#### `WIKIPEDIA_BOT_USERNAME`
 
 **Purpose**: Your Wikimedia Commons username for authenticated API operations
 
@@ -91,10 +91,10 @@ workspace/
 
 **Example**:
 ```env
-WM_USERNAME=JohnDoe2025
+WIKIPEDIA_BOT_USERNAME=JohnDoe2025
 ```
 
-#### `PASSWORD`
+#### `WIKIPEDIA_BOT_PASSWORD`
 
 **Purpose**: Your Wikimedia Commons password or bot password
 
@@ -110,7 +110,7 @@ WM_USERNAME=JohnDoe2025
 **Example**:
 ```env
 # Using a bot password (recommended)
-PASSWORD=YourBotName@abcdef123456789012345678
+WIKIPEDIA_BOT_PASSWORD=YourBotName@abcdef123456789012345678
 ```
 
 ---
@@ -160,8 +160,8 @@ When you run any script that imports `owid_config`, the following directories ar
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `WM_USERNAME` | str \| None | Wikimedia Commons username |
-| `PASSWORD` | str \| None | Wikimedia Commons password/bot password |
+| `WIKIPEDIA_BOT_USERNAME` | str \| None | Wikimedia Commons username |
+| `WIKIPEDIA_BOT_PASSWORD` | str \| None | Wikimedia Commons password/bot password |
 
 ---
 
@@ -221,15 +221,15 @@ logger.info("Starting categorization process")
 ### Checking Credentials
 
 ```python
-from owid_config import WM_USERNAME, PASSWORD
+from owid_config import WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD
 
 def check_credentials():
     """Verify that credentials are configured."""
-    if not WM_USERNAME or not PASSWORD:
+    if not WIKIPEDIA_BOT_USERNAME or not WIKIPEDIA_BOT_PASSWORD:
         raise ValueError(
-            "Credentials not found. Please set WM_USERNAME and PASSWORD in .env file"
+            "Credentials not found. Please set WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD in .env file"
         )
-    print(f"✓ Authenticated as: {WM_USERNAME}")
+    print(f"✓ Authenticated as: {WIKIPEDIA_BOT_USERNAME}")
 
 # Use in scripts that require authentication
 if __name__ == "__main__":
@@ -295,8 +295,8 @@ Edit `.env` and add your settings:
 MAIN_DIR=.
 
 # Wikimedia Commons credentials (required for Phase 2)
-WM_USERNAME=YourUsername
-PASSWORD=YourBotPassword@token123456
+WIKIPEDIA_BOT_USERNAME=YourUsername
+WIKIPEDIA_BOT_PASSWORD=YourBotPassword@token123456
 ```
 
 ### Step 3: Verify `.gitignore`
@@ -328,7 +328,7 @@ Create a test script:
 from owid_config import (
     MAIN_DIR, OUTPUT_DIR, LOG_DIR,
     COUNTRIES_DIR, CONTINENTS_DIR,
-    WM_USERNAME, PASSWORD
+    WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD
 )
 
 print("Configuration Test")
@@ -339,8 +339,8 @@ print(f"LOG_DIR: {LOG_DIR}")
 print(f"COUNTRIES_DIR: {COUNTRIES_DIR}")
 print(f"CONTINENTS_DIR: {CONTINENTS_DIR}")
 print()
-print(f"Username configured: {'Yes' if WM_USERNAME else 'No'}")
-print(f"Password configured: {'Yes' if PASSWORD else 'No'}")
+print(f"Username configured: {'Yes' if WIKIPEDIA_BOT_USERNAME else 'No'}")
+print(f"Password configured: {'Yes' if WIKIPEDIA_BOT_PASSWORD else 'No'}")
 print()
 print("Directory Status:")
 print(f"  Output dir exists: {OUTPUT_DIR.exists()}")
@@ -373,12 +373,12 @@ def save_country_file(iso3: str, data: dict):
 ### Phase 2: `run_categorize.py`
 
 ```python
-from owid_config import WM_USERNAME, PASSWORD, LOG_FILE_COUNTRIES
+from owid_config import WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD, LOG_FILE_COUNTRIES
 import mwclient
 
 # Requires credentials
 site = mwclient.Site("commons.wikimedia.org")
-site.login(WM_USERNAME, PASSWORD)
+site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 ```
 
 **Credentials required** - writes to Commons
@@ -389,11 +389,11 @@ site.login(WM_USERNAME, PASSWORD)
 
 ### Issue: "Credentials not found"
 
-**Problem**: `WM_USERNAME` or `PASSWORD` is `None`
+**Problem**: `WIKIPEDIA_BOT_USERNAME` or `WIKIPEDIA_BOT_PASSWORD` is `None`
 
 **Solution**:
 1. Verify `.env` file exists in project root
-2. Check variable names are exactly `WM_USERNAME` and `PASSWORD`
+2. Check variable names are exactly `WIKIPEDIA_BOT_USERNAME` and `WIKIPEDIA_BOT_PASSWORD`
 3. Ensure no extra spaces around `=` in `.env`
 4. Restart your Python environment after editing `.env`
 
@@ -491,7 +491,7 @@ MAIN_DIR = Path(
 ### Validating Configuration
 
 ```python
-from owid_config import WM_USERNAME, PASSWORD, MAIN_DIR
+from owid_config import WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD, MAIN_DIR
 
 def validate_config():
     """Validate configuration before running scripts."""
@@ -500,11 +500,11 @@ def validate_config():
     if not MAIN_DIR.exists():
         errors.append(f"MAIN_DIR does not exist: {MAIN_DIR}")
 
-    if not WM_USERNAME:
-        errors.append("WM_USERNAME not set in .env")
+    if not WIKIPEDIA_BOT_USERNAME:
+        errors.append("WIKIPEDIA_BOT_USERNAME not set in .env")
 
-    if not PASSWORD:
-        errors.append("PASSWORD not set in .env")
+    if not WIKIPEDIA_BOT_PASSWORD:
+        errors.append("WIKIPEDIA_BOT_PASSWORD not set in .env")
 
     if errors:
         raise ValueError("Configuration errors:\n" + "\n".join(errors))
