@@ -332,6 +332,8 @@ def main() -> None:
         sys.exit(1)
 
     # Fetch all files from the category
+    # files = fetch_category_members(CATEGORY_NAME)
+    # files = get_category_members_petscan(CATEGORY_NAME)
     files = [p.name for p in get_category_members(site, CATEGORY_NAME, namespace=6)]
 
     # Process and aggregate files by country and continent

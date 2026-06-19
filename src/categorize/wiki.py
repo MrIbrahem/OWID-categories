@@ -138,7 +138,11 @@ def ensure_category_exists(
     return save_page(site, category_title, category_content, edit_summary)
 
 
-def get_category_members(site: mwclient.Site, category: str, namespace: int | None = None) -> list:
+def get_category_members(
+    site: mwclient.Site,
+    category: str,
+    namespace: int | None = None,
+) -> list:
     """
     Get all member pages in a category.
 
