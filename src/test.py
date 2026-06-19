@@ -1,6 +1,6 @@
-from .api_services import get_category_members_titles
-from .categorize import connect_to_commons
-from .owid_config import load_credentials
+from .main_app.api_services import get_category_members_titles
+from .main_app.categorize import connect_to_commons
+from .main_app.owid_config import load_credentials
 
 username, password = load_credentials()
 

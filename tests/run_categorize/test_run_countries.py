@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from src.owid_config import COUNTRIES_DIR
+from src.main_app.owid_config import COUNTRIES_DIR
 from src.run_categorize import process_files
 
 
