@@ -13,13 +13,14 @@ Requirements:
 import json
 import logging
 import re
+import sys
 from typing import Dict, List, Optional, Tuple
 
-from categorize import (  
-    fetch_category_members,
-    get_category_members_petscan,
+from categorize import (
+    connect_to_commons,
+    get_category_members,
 )
-from owid_config import COUNTRIES_DIR, LOG_DIR, OUTPUT_DIR
+from owid_config import COUNTRIES_DIR, LOG_DIR, OUTPUT_DIR, load_credentials
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
 from utils import normalize_title, setup_logging
 
@@ -317,9 +318,21 @@ def main() -> None:
     """Main execution function."""
     setup_logging(LOG_FILE)
 
+    # Load credentials
+    username, password = load_credentials()
+    if not username or not password:
+        logger.error("Failed to load credentials from .env file")
+        logger.error("Please create a .env file with WM_USERNAME and PASSWORD")
+        sys.exit(1)
+
+    # Connect to Commons
+    site = connect_to_commons(username, password)
+    if not site:
+        logger.error("Failed to connect to Wikimedia Commons")
+        sys.exit(1)
+
     # Fetch all files from the category
-    files = fetch_category_members(CATEGORY_NAME)
-    # files = get_category_members_petscan(CATEGORY_NAME)
+    files = [p.name for p in get_category_members(site, CATEGORY_NAME)]
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)
