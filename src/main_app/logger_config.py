@@ -99,13 +99,13 @@ def setup_logging(
         if error_log_file_path:
             setup_file_handler(project_logger, error_log_file_path, logging.WARNING)
 
+
 def configure_logging(
     level: str | int,
     log_dir: Path,
     use_colorlog: bool = False,
 ) -> None:
-    """
-    """
+    """ """
     if not log_dir.exists():
         try:
             log_dir.mkdir(parents=True, exist_ok=True)

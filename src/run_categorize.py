@@ -25,9 +25,9 @@ Usage:
 import argparse
 import logging
 
+from main_app.logger_config import setup_logging
 from main_app.main_run_categorize import run_categories_entry
 from main_app.owid_config import LOG_FILE_CONTINENTS, LOG_FILE_COUNTRIES
-from main_app.logger_config import setup_logging
 
 logger = logging.getLogger(__name__)
 

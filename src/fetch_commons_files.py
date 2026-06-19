@@ -12,9 +12,9 @@ Requirements:
 
 import logging
 
+from main_app.logger_config import setup_logging
 from main_app.main_fetch_files import fetch_files_entry
 from main_app.owid_config import LOG_FILE_FETCH_COMMONS
-from main_app.logger_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
