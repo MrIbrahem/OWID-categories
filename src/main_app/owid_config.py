@@ -40,7 +40,7 @@ CONTINENTS_DIR = OUTPUT_DIR / "continents"
 
 LOG_FILE_COUNTRIES = LOG_DIR / "categorize_countries.log"
 LOG_FILE_CONTINENTS = LOG_DIR / "categorize_continents.log"
-LOG_FILE = LOG_DIR / "fetch_commons.log"
+LOG_FILE_FETCH_COMMONS = LOG_DIR / "fetch_commons.log"
 
 def load_credentials() -> tuple[Optional[str], Optional[str]]:
     """
