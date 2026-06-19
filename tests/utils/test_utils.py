@@ -100,7 +100,7 @@ class TestBuildCategoryName:
             ("Central African Republic", "Category:Our World in Data graphs of the Central African Republic"),
             ("Bahamas", "Category:Our World in Data graphs of the Bahamas"),
             ("Maldives", "Category:Our World in Data graphs of the Maldives"),
-            ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
+            ("Seychelles", "Category:Our World in Data graphs of Seychelles"),
         ]
 
         for country, expected in test_cases:
