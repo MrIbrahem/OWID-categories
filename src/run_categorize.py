@@ -160,8 +160,7 @@ def process_files(
         return stats
 
     # check for members in the category
-    existing_members = get_category_members(site, category, namespace=6)
-    existing_titles = {page.name for page in existing_members}
+    existing_titles = get_category_members(site, category, namespace=6)
 
     logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
 
