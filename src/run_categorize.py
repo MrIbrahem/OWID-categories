@@ -36,6 +36,7 @@ setup_logging(
     name="main_app",
     log_file=str(LOG_FILE_CONTINENTS),
     use_colorlog=False,
+    overwrite=True,
 )
 
 def main() -> None:

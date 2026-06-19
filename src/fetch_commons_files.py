@@ -23,6 +23,7 @@ setup_logging(
     name="main_app",
     log_file=str(LOG_FILE_COUNTRIES),
     use_colorlog=False,
+    overwrite=True,
 )
 if __name__ == "__main__":
     fetch_files_entry()
