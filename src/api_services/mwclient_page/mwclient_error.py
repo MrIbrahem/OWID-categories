@@ -22,7 +22,7 @@ def handle_mwclient_error(exc: Exception) -> dict[str, Any] | None:
         return {
             "success": False,
             "error": "protectedpageerror",
-            "details": f"code: {exc.code}, info: {exc.info}",
+            "details": f"code: {exc.code}, info: {exc.info}",  # type: ignore
         }
 
     if isinstance(exc, mwclient.errors.EditError):
@@ -35,9 +35,9 @@ def handle_mwclient_error(exc: Exception) -> dict[str, Any] | None:
         return {"success": False, "error": "userblocked"}
 
     if isinstance(exc, mwclient.errors.APIError):
-        if exc.code == "ratelimited":
+        if exc.code == "ratelimited":  # type: ignore
             return {"success": False, "error": "ratelimited"}
-        return {"success": False, "error": exc.code, "details": str(exc)}
+        return {"success": False, "error": exc.code, "details": str(exc)}  # type: ignore
 
     return None  # unrecognised — let the caller log and handle
 

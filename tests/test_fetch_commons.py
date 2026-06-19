@@ -6,15 +6,10 @@ This script demonstrates the functionality without requiring network access.
 """
 
 import json
-import sys
-from pathlib import Path
 
 import pytest
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from fetch_commons_files import (
+from src.fetch_commons_files import (
     COUNTRIES_DIR,
     OUTPUT_DIR,
     classify_and_parse_file,

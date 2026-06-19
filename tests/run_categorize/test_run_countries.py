@@ -6,17 +6,12 @@ processing country files and adding categories to graph files.
 """
 
 import json
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, mock_open, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from owid_config import COUNTRIES_DIR
-from run_categorize import process_files
+from src.owid_config import COUNTRIES_DIR
+from src.run_categorize import process_files
 
 
 @pytest.mark.unit

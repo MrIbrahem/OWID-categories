@@ -6,16 +6,12 @@ and JSON file loading.
 """
 
 import json
-import sys
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
 import pytest
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-
-from utils import (
+from src.utils import (
     build_category_name,
     get_parent_category,
     load_json_file,
