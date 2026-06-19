@@ -11,7 +11,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 
-from src.utils import (
+from src.main_app.utils import (
     build_category_name,
     get_parent_category,
     load_json_file,

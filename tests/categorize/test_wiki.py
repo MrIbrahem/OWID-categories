@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from src.categorize.wiki import (
+from src.main_app.categorize.wiki import (
     ensure_category_exists,
 )
 

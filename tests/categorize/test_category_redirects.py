@@ -2,12 +2,11 @@
 Tests for categorize.category_redirects module.
 """
 
-import time
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from src.categorize.category_redirects import (
+from src.main_app.categorize.category_redirects import (
     add_category_to_page,
     get_redirect_target,
     resolve_category_redirect,

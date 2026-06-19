@@ -9,7 +9,7 @@ import json
 
 import pytest
 
-from src.fetch_commons_files import (
+from src.main_app.main_fetch_files import (
     COUNTRIES_DIR,
     OUTPUT_DIR,
     classify_and_parse_file,
