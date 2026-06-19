@@ -28,19 +28,34 @@ def prepare_log_file(log_file: str | None, project_logger: logging.Logger) -> Pa
     return log_file_path
 
 
+def setup_file_handler(project_logger: logging.Logger, log_file: Path, level: int) -> None:
+    if not log_file:
+        return
+    file_formatter = logging.Formatter(
+        fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    # file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+    file_handler = WatchedFileHandler(log_file, mode="a", encoding="utf-8")
+    file_handler.setFormatter(file_formatter)
+    file_handler.setLevel(level)
+    project_logger.addHandler(file_handler)
+
+
 def setup_logging(
     level: str | int = "WARNING",
-    name: str = "src",
+    name: str = "main_app",
     log_file: str | None = None,
     error_log_file: str | None = None,
     use_colorlog: bool = False,
+    overwrite: bool = False,
 ) -> None:
     """
     Configure logging for the entire project namespace only.
     """
     project_logger = logging.getLogger(name)
 
-    if project_logger.handlers:
+    if project_logger.handlers and not overwrite:
         return
 
     numeric_level = getattr(logging, level.upper(), logging.INFO) if isinstance(level, str) else level
@@ -84,40 +99,19 @@ def setup_logging(
         if error_log_file_path:
             setup_file_handler(project_logger, error_log_file_path, logging.WARNING)
 
-
-def setup_file_handler(project_logger: logging.Logger, log_file: Path, level: int) -> None:
-    if not log_file:
-        return
-    file_formatter = logging.Formatter(
-        fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-    # file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
-    file_handler = WatchedFileHandler(log_file, mode="a", encoding="utf-8")
-    file_handler.setFormatter(file_formatter)
-    file_handler.setLevel(level)
-    project_logger.addHandler(file_handler)
-
-
 def configure_logging(
     level: str | int,
+    log_dir: Path,
     use_colorlog: bool = False,
 ) -> None:
     """
-    NOTE: Don't use settings.paths.log_dir here, logger must initialize before the app/config is created.
     """
-    # Create log directory if needed
-    main_dir = os.getenv("MAIN_DIR", "~/data")
-    main_dir = Path(os.path.expandvars(main_dir)).expanduser()
-
-    log_dir = Path(main_dir) / "logs"
-
     if not log_dir.exists():
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
         except OSError as exc:
-            setup_logging(level=level, name="src", use_colorlog=use_colorlog)
-            logging.getLogger("src").warning(
+            setup_logging(level=level, name="main_app", use_colorlog=use_colorlog)
+            logging.getLogger("main_app").warning(
                 "Falling back to console logging; could not create log directory %s: %s", log_dir, exc
             )
             return
@@ -128,7 +122,7 @@ def configure_logging(
 
     setup_logging(
         level=level,
-        name="src",
+        name="main_app",
         log_file=all_log_path,
         error_log_file=error_log_path,
         use_colorlog=use_colorlog,
