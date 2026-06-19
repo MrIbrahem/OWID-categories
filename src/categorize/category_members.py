@@ -118,3 +118,31 @@ def fetch_category_members(category_name: str) -> List[str]:
 
     logger.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
     return all_files
+
+
+def get_category_count(category_name):
+    # Ensure the title has the proper prefix
+    if not category_name.startswith("Category:"):
+        category_name = f"Category:{category_name}"
+
+    url = API_ENDPOINT
+    params = {"action": "query", "titles": category_name, "prop": "categoryinfo", "format": "json"}
+
+    # Always include a descriptive User-Agent header per Wikipedia API guidelines
+    headers = {"User-Agent": "CategoryCounterBot/1.0 (your_email@example.com)"}
+
+    response = requests.get(url, params=params, headers=headers).json()
+
+    # Extract the page data dynamically since the page ID string changes
+    pages = response.get("query", {}).get("pages", {})
+    page_id = list(pages.keys())[0]
+
+    info = pages[page_id].get("categoryinfo", {})
+    # {'size': 354, 'pages': 1, 'files': 309, 'subcats': 44}
+    size = info.get("size") or 0
+    return size
+
+
+__all__ = [
+    "get_category_count",
+]

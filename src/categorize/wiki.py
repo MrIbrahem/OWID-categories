@@ -11,6 +11,8 @@ import time
 from typing import Optional
 
 import mwclient
+import mwclient.listing
+from mwclient import Site
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-ca
 EDIT_DELAY = 1
 
 
-def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
+def connect_to_commons(username: str, password: str) -> Optional[Site]:
     """
     Connect to Wikimedia Commons using mwclient.
 
@@ -34,7 +36,7 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
     """
     try:
         logger.info("Connecting to Wikimedia Commons...")
-        site = mwclient.Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
+        site = Site("commons.wikimedia.org", clients_useragent=USER_AGENT)
 
         logger.info(f"Logging in as {username}...")
         site.login(username, password)
@@ -49,7 +51,7 @@ def connect_to_commons(username: str, password: str) -> Optional[mwclient.Site]:
         return None
 
 
-def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Optional[str]:
+def get_page_text(site: Site, title: str, max_retries: int = 3) -> Optional[str]:
     """
     Get the current text content of a page with retries and error handling.
 
@@ -80,7 +82,7 @@ def get_page_text(site: mwclient.Site, title: str, max_retries: int = 3) -> Opti
     return None
 
 
-def save_page(site: mwclient.Site, title: str, text: str, summary: str) -> bool:
+def save_page(site: Site, title: str, text: str, summary: str) -> bool:
     """
     Save wikitext to a page on Commons.
 
@@ -95,7 +97,7 @@ def save_page(site: mwclient.Site, title: str, text: str, summary: str) -> bool:
     """
     try:
         page = site.pages[title]
-        page.save(text, summary=summary)
+        page.edit(text, summary=summary)
         logger.info(f"Successfully saved page '{title}'")
         time.sleep(EDIT_DELAY)
         return True
@@ -105,7 +107,11 @@ def save_page(site: mwclient.Site, title: str, text: str, summary: str) -> bool:
 
 
 def ensure_category_exists(
-    site: mwclient.Site, category_title: str, parent_category: str, sort_key: str, dry_run: bool = False
+    site: Site,
+    category_title: str,
+    parent_category: str,
+    sort_key: str,
+    dry_run: bool = False,
 ) -> bool:
     """
     Ensure the category page exists. Create it if it doesn't.
@@ -139,10 +145,10 @@ def ensure_category_exists(
 
 
 def get_category_members(
-    site: mwclient.Site,
+    site: Site,
     category: str,
     namespace: int | None = None,
-) -> list:
+) -> list[str]:
     """
     Get all member pages in a category.
 
@@ -156,13 +162,14 @@ def get_category_members(
     """
     try:
         # mwclient handles the "Category:" prefix automatically.
-        category_page = site.pages[category]
+        # category_page = site.pages[category]
 
-        if not category_page.exists:
-            logger.debug(f"Category doesn't exist yet: {category}")
-            return []
-        # category_c = site.categories[category]
-        return list(category_page.members(namespace=namespace))
+        category_page = site.categories[category]
+        members = category_page.members(  # type: ignore
+            namespace=namespace,
+        )
+        members_str = [p.name for p in list(members)]
+        return members_str
 
     except mwclient.errors.MwClientError as e:
         logger.error(f"API error getting members in category '{category}': {e}")
@@ -170,20 +177,3 @@ def get_category_members(
     except Exception as e:
         logger.error(f"An unexpected error occurred getting members in category '{category}': {e}")
         return []
-
-
-def get_category_member_count(site: mwclient.Site, category: str) -> int:
-    """
-    Get the number of files currently in a category.
-
-    Args:
-        site: Connected mwclient Site
-        category: Category name (e.g., "Category:Our World in Data graphs of Canada")
-
-    Returns:
-        Number of members in the category (0 if category doesn't exist)
-    """
-    member_count = sum(1 for _ in get_category_members(site, category))
-
-    logger.debug(f"Category '{category}' has {member_count} members")
-    return member_count

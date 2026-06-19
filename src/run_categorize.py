@@ -33,7 +33,7 @@ from categorize import (
     add_category_to_page,
     connect_to_commons,
     ensure_category_exists,
-    get_category_member_count,
+    get_category_count,
     get_category_members,
     resolve_category_redirect,
 )
@@ -134,7 +134,7 @@ def process_files(
 
     # Check if category already has enough files when files_per_one is set
     if files_per_one:
-        current_member_count = get_category_member_count(site, category)
+        current_member_count = get_category_count(category)
         if current_member_count >= files_per_one:
             logger.info(
                 f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)"

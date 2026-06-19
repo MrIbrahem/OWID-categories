@@ -6,6 +6,7 @@ This package contains modules for adding categories to OWID files on Wikimedia C
 
 from .category_members import (
     fetch_category_members,
+    get_category_count,
     get_category_members_petscan,
 )
 from .category_redirects import (
@@ -16,7 +17,6 @@ from .category_redirects import (
 from .wiki import (
     connect_to_commons,
     ensure_category_exists,
-    get_category_member_count,
     get_category_members,
     get_page_text,
     save_page,
@@ -31,7 +31,6 @@ __all__ = [
     "connect_to_commons",
     "add_category_to_page",
     "ensure_category_exists",
-    "get_category_member_count",
     "get_page_text",
     "resolve_category_redirect",
     "category_exists_on_page",
@@ -42,4 +41,5 @@ __all__ = [
     "get_category_members_petscan",
     "get_category_members",
     "fetch_category_members",
+    "get_category_count",
 ]
