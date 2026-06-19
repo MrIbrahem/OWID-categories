@@ -138,13 +138,14 @@ def ensure_category_exists(
     return save_page(site, category_title, category_content, edit_summary)
 
 
-def get_category_members(site: mwclient.Site, category: str) -> list:
+def get_category_members(site: mwclient.Site, category: str, namespace: int | None = None) -> list:
     """
     Get all member pages in a category.
 
     Args:
         site: Connected mwclient Site
         category: Category name (e.g., "Category:Our World in Data graphs of Canada")
+        namespace: Namespace to filter by (e.g., 6 for File)
 
     Returns:
         List of Page objects (empty list if category doesn't exist)
@@ -157,7 +158,7 @@ def get_category_members(site: mwclient.Site, category: str) -> list:
             logger.debug(f"Category doesn't exist yet: {category}")
             return []
 
-        return list(category_page.members(api_chunk_size=5000))
+        return list(category_page.members(api_chunk_size=5000, namespace=namespace))
 
     except mwclient.errors.MwClientError as e:
         logger.error(f"API error getting members in category '{category}': {e}")

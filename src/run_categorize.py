@@ -161,7 +161,7 @@ def process_files(
         return stats
 
     # check for members in the category
-    existing_members = get_category_members(site, category)
+    existing_members = get_category_members(site, category, namespace=6)
     existing_titles = {page.name for page in existing_members}
 
     logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
@@ -233,7 +233,7 @@ def main(
     username, password = load_credentials()
     if not username or not password:
         logger.error("Failed to load credentials from .env file")
-        logger.error("Please create a .env file with WM_USERNAME and PASSWORD")
+        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
         sys.exit(1)
 
     # Connect to Commons

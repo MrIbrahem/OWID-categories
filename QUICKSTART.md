@@ -27,8 +27,8 @@ Add country-specific categories to graph files on Wikimedia Commons.
 1. Complete Phase 1 first
 2. Create a `.env` file with bot credentials:
    ```
-   WM_USERNAME=YourBotUsername@BotName
-   PASSWORD=YourBotPassword
+   WIKIPEDIA_BOT_USERNAME=YourBotUsername@BotName
+   WIKIPEDIA_BOT_PASSWORD=YourBotPassword
    ```
 
 ### Testing (Dry-Run)
@@ -140,7 +140,7 @@ Get-Content logs\categorize_commons.log -Wait -Tail 20
 ### "Countries directory not found"
 Run Phase 1 first: `python src/fetch_commons_files.py`
 
-### "WM_USERNAME and/or PASSWORD not found"
+### "WIKIPEDIA_BOT_USERNAME and/or WIKIPEDIA_BOT_PASSWORD not found"
 Create a `.env` file with your bot credentials (see Prerequisites above)
 
 ### "Failed to connect to Wikimedia Commons"

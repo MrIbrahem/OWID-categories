@@ -109,7 +109,7 @@ def example_connect_dry_run():
         print("\n  Note: Use connect_to_commons() to actually connect")
     else:
         print("✗ No credentials found")
-        print("  Create .env file with WM_USERNAME and PASSWORD")
+        print("  Create .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
     print()
 
 

@@ -22,8 +22,8 @@ MAIN_DIR = Path()
 if os.getenv("MAIN_DIR", ""):
     MAIN_DIR = Path(os.getenv("MAIN_DIR"))
 
-WM_USERNAME = os.getenv("WM_USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+WIKIPEDIA_BOT_USERNAME = os.getenv("WIKIPEDIA_BOT_USERNAME")
+WIKIPEDIA_BOT_PASSWORD = os.getenv("WIKIPEDIA_BOT_PASSWORD")
 
 OUTPUT_DIR = MAIN_DIR / "output"
 LOG_DIR = MAIN_DIR / "logs"
@@ -46,11 +46,11 @@ def load_credentials() -> tuple[Optional[str], Optional[str]]:
     Returns:
         Tuple of (username, password) or (None, None) if not found
     """
-    username = os.getenv("WM_USERNAME")
-    password = os.getenv("PASSWORD")
+    username = os.getenv("WIKIPEDIA_BOT_USERNAME")
+    password = os.getenv("WIKIPEDIA_BOT_PASSWORD")
 
     if not username or not password:
-        logger.error("WM_USERNAME and/or PASSWORD not found in .env file")
+        logger.error("WIKIPEDIA_BOT_USERNAME and/or WIKIPEDIA_BOT_PASSWORD not found in .env file")
         return None, None
 
     return username, password

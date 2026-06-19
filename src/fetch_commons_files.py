@@ -322,7 +322,7 @@ def main() -> None:
     username, password = load_credentials()
     if not username or not password:
         logger.error("Failed to load credentials from .env file")
-        logger.error("Please create a .env file with WM_USERNAME and PASSWORD")
+        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
         sys.exit(1)
 
     # Connect to Commons
@@ -332,7 +332,7 @@ def main() -> None:
         sys.exit(1)
 
     # Fetch all files from the category
-    files = [p.name for p in get_category_members(site, CATEGORY_NAME)]
+    files = [p.name for p in get_category_members(site, CATEGORY_NAME, namespace=6)]
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)
