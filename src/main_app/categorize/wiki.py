@@ -90,3 +90,9 @@ def ensure_category_exists(
 
     save = category_page.edit(category_content, edit_summary)
     return save.get("success") is True
+
+
+__all__ = [
+    "connect_to_commons",
+    "ensure_category_exists",
+]

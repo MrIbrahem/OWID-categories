@@ -111,3 +111,10 @@ def add_category_to_page(
 
     save = page.edit(new_text, edit_summary)
     return save.get("success") is True
+
+
+__all__ = [
+    "get_redirect_target",
+    "resolve_category_redirect",
+    "add_category_to_page",
+]

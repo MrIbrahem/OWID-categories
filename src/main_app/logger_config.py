@@ -133,3 +133,11 @@ def configure_logging(
         error_log_file=error_log_path,
         use_colorlog=use_colorlog,
     )
+
+
+__all__ = [
+    "prepare_log_file",
+    "setup_logging",
+    "setup_file_handler",
+    "configure_logging",
+]
