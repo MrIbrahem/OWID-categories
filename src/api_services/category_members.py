@@ -5,7 +5,6 @@ OWID Commons File Fetcher and Processor
 
 import logging
 import time
-from typing import List
 
 import mwclient
 import requests
@@ -15,9 +14,6 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
-
-# User-Agent header (required by Wikimedia)
-USER_AGENT = "OWID-Commons-Processor/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
 
 
 def get_category_count(category_name):

@@ -7,12 +7,12 @@ including authentication, page editing, and category management.
 """
 
 import logging
-import time
 from typing import Optional
 
 import mwclient
-import mwclient.listing
 from mwclient import Site
+
+from ..api_services import MwClientPage
 
 logger = logging.getLogger(__name__)
 
@@ -51,61 +51,6 @@ def connect_to_commons(username: str, password: str) -> Optional[Site]:
         return None
 
 
-def get_page_text(site: Site, title: str, max_retries: int = 3) -> Optional[str]:
-    """
-    Get the current text content of a page with retries and error handling.
-
-    Args:
-        site: Connected mwclient Site
-        title: Page title
-        max_retries: Maximum number of retries for transient errors
-
-    Returns:
-        Page text or None if page doesn't exist or on permanent failure
-    """
-    retry_delay = 1
-    for attempt in range(max_retries):
-        try:
-            page = site.pages[title]
-            if page.exists:
-                return page.text()
-            return None
-        except (mwclient.errors.MwClientError, Exception) as e:
-            if attempt < max_retries - 1:
-                logger.warning(
-                    f"Attempt {attempt + 1} failed to get text for '{title}': {e}. Retrying in {retry_delay}s..."
-                )
-                time.sleep(retry_delay)
-                retry_delay *= 2
-            else:
-                logger.error(f"Failed to get text for '{title}' after {max_retries} attempts: {e}")
-    return None
-
-
-def save_page(site: Site, title: str, text: str, summary: str) -> bool:
-    """
-    Save wikitext to a page on Commons.
-
-    Args:
-        site: Connected mwclient Site
-        title: Page title
-        text: New page content
-        summary: Edit summary
-
-    Returns:
-        True if successfully saved, False otherwise
-    """
-    try:
-        page = site.pages[title]
-        page.edit(text, summary=summary)
-        logger.info(f"Successfully saved page '{title}'")
-        time.sleep(EDIT_DELAY)
-        return True
-    except Exception as e:
-        logger.error(f"Failed to save page '{title}': {e}")
-        return False
-
-
 def ensure_category_exists(
     site: Site,
     category_title: str,
@@ -126,9 +71,10 @@ def ensure_category_exists(
     Returns:
         True if category exists or was created, False on error
     """
-    category_page = site.pages[category_title]
 
-    if category_page.exists:
+    category_page = MwClientPage(category_title, site)
+
+    if category_page.exists():
         logger.debug(f"Category already exists: {category_title}")
         return True  # Category already exists
 
@@ -141,4 +87,6 @@ def ensure_category_exists(
 
     # Create the category page
     edit_summary = "Create category for OWID graphs"
-    return save_page(site, category_title, category_content, edit_summary)
+
+    save = category_page.edit(category_content, edit_summary)
+    return save.get("success") is True

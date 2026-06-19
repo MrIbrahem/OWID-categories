@@ -12,8 +12,6 @@ from .category_redirects import (
 from .wiki import (
     connect_to_commons,
     ensure_category_exists,
-    get_page_text,
-    save_page,
 )
 from .wikitext_utils import (
     category_exists_on_page,
@@ -25,10 +23,8 @@ __all__ = [
     "connect_to_commons",
     "add_category_to_page",
     "ensure_category_exists",
-    "get_page_text",
     "resolve_category_redirect",
     "category_exists_on_page",
-    "save_page",
     "get_redirect_target",
     "extract_redirect_target",
     # Utility functions

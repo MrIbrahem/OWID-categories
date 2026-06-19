@@ -11,7 +11,8 @@ from typing import Optional
 
 import mwclient
 
-from . import wiki, wikitext_utils
+from ..api_services import MwClientPage
+from . import wikitext_utils
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,8 @@ def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
     Returns:
         Redirect target with 'Category:' prefix, or None if no redirect
     """
-    page_text = wiki.get_page_text(site, category)
+    page = MwClientPage(category, site)
+    page_text = page.get_text()
     if not page_text:
         return None
 
@@ -85,8 +87,10 @@ def add_category_to_page(
         True if category was added (or would be added in dry-run), False otherwise
     """
     # Get current page text via wiki module
-    current_text = wiki.get_page_text(site, title)
-    if current_text is None:
+    page = MwClientPage(title, site)
+    current_text = page.get_text()
+
+    if not current_text:
         logger.warning(f"Page does not exist or could not be retrieved: {title}")
         return False
 
@@ -104,4 +108,6 @@ def add_category_to_page(
 
     # Make the edit via wiki module
     edit_summary = f"Adding [[:{category}]]"
-    return wiki.save_page(site, title, new_text, edit_summary)
+
+    save = page.edit(new_text, edit_summary)
+    return save.get("success") is True

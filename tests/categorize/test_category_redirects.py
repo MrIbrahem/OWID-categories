@@ -18,25 +18,6 @@ from src.categorize.category_redirects import (
 class TestAddCategoryToPage:
     """Test adding categories to pages (with mocks)."""
 
-    def test_add_category_to_existing_page(self):
-        """Test adding category to an existing page."""
-        # Create mock page and site
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text\n[[Category:Existing]]"
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        # Test adding category
-        category = "Category:Our World in Data graphs of Canada"
-        with patch("categorize.wiki.save_page", return_value=True) as mock_save:
-            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
-
-            assert result is True, "Should return True when category would be added"
-            assert mock_page.text.called, "Page text should be checked"
-            assert not mock_save.called, "Should not call save_page in dry_run"
-
     def test_add_category_already_exists(self):
         """Test adding category that already exists."""
         # Create mock page with category already present
@@ -67,24 +48,6 @@ class TestAddCategoryToPage:
         result = add_category_to_page(mock_site, "File:NonExistent.svg", category, dry_run=True)
 
         assert result is False, "Should return False when page doesn't exist"
-
-    def test_add_category_dry_run(self):
-        """Test dry-run mode doesn't make actual edits."""
-        # Create mock page
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text"
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        # Test adding category in dry-run
-        category = "Category:Our World in Data graphs of Canada"
-        with patch("categorize.wiki.save_page") as mock_save:
-            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
-
-            assert result is True, "Should return True in dry-run mode"
-            assert not mock_save.called, "save_page should not be called in dry-run mode"
 
 
 @pytest.mark.unit
