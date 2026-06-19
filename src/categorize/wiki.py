@@ -170,8 +170,8 @@ def get_category_members(
         for p in members:
             title = p if isinstance(p, str) else p.name
 
-            if len(title) % 1000 == 0:
-                logger.debug(f"loaded {len(title)} members")
+            if len(list_members) % 1000 == 0:
+                logger.debug(f"loaded {len(list_members)} members")
 
             list_members.append(title)
 
