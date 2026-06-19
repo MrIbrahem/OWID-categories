@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Configuration
-PROJECT_DIR="$HOME/OWID-categories"
+PROJECT_DIR="$HOME/bots/OWID-categories"
 PYTHON_BIN="$HOME/local/bin/python3"
 LOG_FILE="$PROJECT_DIR/logs/task_$(date +%Y%m%d).log"
 
