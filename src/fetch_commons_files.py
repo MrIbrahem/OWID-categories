@@ -13,7 +13,7 @@ Requirements:
 import logging
 
 from main_app.main_fetch_files import fetch_files_entry
-from main_app.owid_config import LOG_FILE_COUNTRIES
+from main_app.owid_config import LOG_FILE
 from main_app.logger_config import setup_logging
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 setup_logging(
     level="INFO",
     name="main_app",
-    log_file=str(LOG_FILE_COUNTRIES),
+    log_file=str(LOG_FILE),
     use_colorlog=False,
     overwrite=True,
 )
