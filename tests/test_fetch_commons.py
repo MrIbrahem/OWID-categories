@@ -65,6 +65,7 @@ def test_classification():
     # Test map file with country name (United States)
     file_type, parsed_data = classify_and_parse_file("File:GDP per capita, United States, 2020.svg")
     assert file_type == "map", "Should classify as map"
+    assert parsed_data is not None
     assert parsed_data["region"] == "United States", "Should extract correct region"
     assert parsed_data["year"] == 2020, "Should extract correct year"
 

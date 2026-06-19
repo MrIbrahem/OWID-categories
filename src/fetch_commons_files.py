@@ -16,9 +16,7 @@ import re
 import sys
 from typing import Dict, List, Optional, Tuple
 
-from categorize import (
-    # fetch_category_members,
-    # get_category_members_petscan,
+from categorize import (  # fetch_category_members,; get_category_members_petscan,
     connect_to_commons,
     get_category_members,
 )
