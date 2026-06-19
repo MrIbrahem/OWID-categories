@@ -277,6 +277,7 @@ def run_categories_entry(
         logger.info("\nThis was a DRY RUN - no actual edits were made")
         logger.info("Run without --dry-run flag to make actual edits")
 
+
 __all__ = [
     "run_categories_entry",
 ]

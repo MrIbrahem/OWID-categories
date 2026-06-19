@@ -338,6 +338,7 @@ def fetch_files_entry() -> None:
 
     logger.info("Processing complete!")
 
+
 __all__ = [
     "fetch_files_entry",
 ]
