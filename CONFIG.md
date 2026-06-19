@@ -7,11 +7,12 @@ The `owid_config.py` module is the **central configuration hub** for the OWID Co
 ## Purpose
 
 This module:
-- ✅ Loads environment variables from `.env` file
-- ✅ Sets up project directory structure automatically
-- ✅ Provides centralized access to paths and credentials
-- ✅ Ensures consistent configuration across all scripts
-- ✅ Simplifies path management using Python's `pathlib`
+
+-   ✅ Loads environment variables from `.env` file
+-   ✅ Sets up project directory structure automatically
+-   ✅ Provides centralized access to paths and credentials
+-   ✅ Ensures consistent configuration across all scripts
+-   ✅ Simplifies path management using Python's `pathlib`
 
 ---
 
@@ -39,11 +40,13 @@ MAIN_DIR=/path/to/your/project/root
 **Default**: Current directory (`.`) if not specified
 
 **Usage**:
-- Controls where `output/` and `logs/` directories are created
-- Allows you to organize project data separately from source code
-- Useful for running the project from different locations
+
+-   Controls where `output/` and `logs/` directories are created
+-   Allows you to organize project data separately from source code
+-   Useful for running the project from different locations
 
 **Examples**:
+
 ```env
 # Windows absolute path
 MAIN_DIR=C:\Users\YourName\Documents\OWID-data
@@ -59,6 +62,7 @@ MAIN_DIR=.
 ```
 
 **Recommended Setup**:
+
 ```
 Project Structure Option 1 (MAIN_DIR=.):
 OWID-categories/
@@ -90,6 +94,7 @@ workspace/
 **Format**: Your exact Wikimedia Commons username (case-sensitive)
 
 **Example**:
+
 ```env
 WIKIPEDIA_BOT_USERNAME=JohnDoe2025
 ```
@@ -101,13 +106,15 @@ WIKIPEDIA_BOT_USERNAME=JohnDoe2025
 **Required**: For Phase 2 (automated edits to Commons)
 
 **Security Recommendations**:
-- ✅ **Use bot passwords** instead of main account passwords
-- ✅ Create bot passwords at: https://commons.wikimedia.org/wiki/Special:BotPasswords
-- ✅ Grant only necessary permissions (e.g., "Edit existing pages")
-- ✅ Never commit `.env` to version control
-- ✅ Add `.env` to `.gitignore`
+
+-   ✅ **Use bot passwords** instead of main account passwords
+-   ✅ Create bot passwords at: https://commons.wikimedia.org/wiki/Special:BotPasswords
+-   ✅ Grant only necessary permissions (e.g., "Edit existing pages")
+-   ✅ Never commit `.env` to version control
+-   ✅ Add `.env` to `.gitignore`
 
 **Example**:
+
 ```env
 # Using a bot password (recommended)
 WIKIPEDIA_BOT_PASSWORD=YourBotName@abcdef123456789012345678
@@ -146,21 +153,21 @@ When you run any script that imports `owid_config`, the following directories ar
 
 ### Path Objects (all are `pathlib.Path` instances)
 
-| Variable | Type | Description | Example Value |
-|----------|------|-------------|---------------|
-| `MAIN_DIR` | Path | Project root directory | `Path("C:/OWID-data")` |
-| `OUTPUT_DIR` | Path | Output directory for JSON files | `Path("C:/OWID-data/output")` |
-| `LOG_DIR` | Path | Directory for log files | `Path("C:/OWID-data/logs")` |
-| `COUNTRIES_DIR` | Path | Country JSON files directory | `Path("C:/OWID-data/output/countries")` |
-| `CONTINENTS_DIR` | Path | Continent JSON files directory | `Path("C:/OWID-data/output/continents")` |
-| `LOG_FILE_COUNTRIES` | Path | Country operation log file | `Path("C:/OWID-data/logs/categorize_countries.log")` |
-| `LOG_FILE_CONTINENTS` | Path | Continent operation log file | `Path("C:/OWID-data/logs/categorize_continents.log")` |
+| Variable              | Type | Description                     | Example Value                                         |
+| --------------------- | ---- | ------------------------------- | ----------------------------------------------------- |
+| `MAIN_DIR`            | Path | Project root directory          | `Path("C:/OWID-data")`                                |
+| `OUTPUT_DIR`          | Path | Output directory for JSON files | `Path("C:/OWID-data/output")`                         |
+| `LOG_DIR`             | Path | Directory for log files         | `Path("C:/OWID-data/logs")`                           |
+| `COUNTRIES_DIR`       | Path | Country JSON files directory    | `Path("C:/OWID-data/output/countries")`               |
+| `CONTINENTS_DIR`      | Path | Continent JSON files directory  | `Path("C:/OWID-data/output/continents")`              |
+| `LOG_FILE_COUNTRIES`  | Path | Country operation log file      | `Path("C:/OWID-data/logs/categorize_countries.log")`  |
+| `LOG_FILE_CONTINENTS` | Path | Continent operation log file    | `Path("C:/OWID-data/logs/categorize_continents.log")` |
 
 ### Credential Variables (strings or None)
 
-| Variable | Type | Description |
-|----------|------|-------------|
-| `WIKIPEDIA_BOT_USERNAME` | str \| None | Wikimedia Commons username |
+| Variable                 | Type        | Description                             |
+| ------------------------ | ----------- | --------------------------------------- |
+| `WIKIPEDIA_BOT_USERNAME` | str \| None | Wikimedia Commons username              |
 | `WIKIPEDIA_BOT_PASSWORD` | str \| None | Wikimedia Commons password/bot password |
 
 ---
@@ -349,6 +356,7 @@ print(f"  Countries dir exists: {COUNTRIES_DIR.exists()}")
 ```
 
 Run the test:
+
 ```bash
 python test_config.py
 ```
@@ -392,6 +400,7 @@ site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 **Problem**: `WIKIPEDIA_BOT_USERNAME` or `WIKIPEDIA_BOT_PASSWORD` is `None`
 
 **Solution**:
+
 1. Verify `.env` file exists in project root
 2. Check variable names are exactly `WIKIPEDIA_BOT_USERNAME` and `WIKIPEDIA_BOT_PASSWORD`
 3. Ensure no extra spaces around `=` in `.env`
@@ -402,6 +411,7 @@ site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 **Problem**: Can't create `output/` or `logs/` directories
 
 **Solution**:
+
 1. Check `MAIN_DIR` path has write permissions
 2. Verify `MAIN_DIR` exists (parent directory must exist)
 3. Run script with appropriate permissions
@@ -411,6 +421,7 @@ site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 **Problem**: Files saved to unexpected location
 
 **Solution**:
+
 1. Check `MAIN_DIR` value in `.env`
 2. Print `MAIN_DIR` to verify it's being loaded correctly
 3. Ensure `.env` is in the correct directory (project root)
@@ -421,6 +432,7 @@ site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 **Problem**: Updated `.env` but still using old values
 
 **Solution**:
+
 1. Restart your Python interpreter/IDE
 2. Clear `__pycache__` directories
 3. Verify you're editing the correct `.env` file
@@ -432,21 +444,21 @@ site.login(WIKIPEDIA_BOT_USERNAME, WIKIPEDIA_BOT_PASSWORD)
 
 ### ✅ DO
 
-- Use bot passwords instead of main account passwords
-- Add `.env` to `.gitignore`
-- Rotate credentials periodically
-- Use separate credentials for development vs. production
-- Set minimal permissions on bot passwords
-- Store credentials securely (password manager)
+-   Use bot passwords instead of main account passwords
+-   Add `.env` to `.gitignore`
+-   Rotate credentials periodically
+-   Use separate credentials for development vs. production
+-   Set minimal permissions on bot passwords
+-   Store credentials securely (password manager)
 
 ### ❌ DON'T
 
-- Commit `.env` to version control
-- Share credentials in chat/email
-- Use main account password for automation
-- Hard-code credentials in scripts
-- Grant unnecessary permissions to bots
-- Reuse passwords across services
+-   Commit `.env` to version control
+-   Share credentials in chat/email
+-   Use main account password for automation
+-   Hard-code credentials in scripts
+-   Grant unnecessary permissions to bots
+-   Reuse passwords across services
 
 ---
 
@@ -520,22 +532,23 @@ if __name__ == "__main__":
 
 ## See Also
 
-- **[README.md](README.md)** - Project overview
-- **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
-- **[plans/plan.md](plans/plan.md)** - Phase 1 documentation
-- **[plans/plan2.md](plans/plan2.md)** - Phase 2 documentation
-- **[Python-dotenv Documentation](https://pypi.org/project/python-dotenv/)** - `.env` file handling
+-   **[README.md](README.md)** - Project overview
+-   **[QUICKSTART.md](QUICKSTART.md)** - Quick setup guide
+-   **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+-   **[plans/plan.md](plans/plan.md)** - Phase 1 documentation
+-   **[plans/plan2.md](plans/plan2.md)** - Phase 2 documentation
+-   **[Python-dotenv Documentation](https://pypi.org/project/python-dotenv/)** - `.env` file handling
 
 ---
 
 ## Summary
 
 The `owid_config.py` module provides:
-- **Centralized configuration** for paths and credentials
-- **Automatic directory creation** for outputs and logs
-- **Environment-based settings** via `.env` files
-- **Secure credential management** separate from code
-- **Consistent path handling** using `pathlib.Path`
+
+-   **Centralized configuration** for paths and credentials
+-   **Automatic directory creation** for outputs and logs
+-   **Environment-based settings** via `.env` files
+-   **Secure credential management** separate from code
+-   **Consistent path handling** using `pathlib.Path`
 
 **Key Takeaway**: All scripts import from `owid_config` to ensure consistent file locations and credential access across the entire project.
