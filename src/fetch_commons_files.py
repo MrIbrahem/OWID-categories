@@ -15,7 +15,8 @@ import logging
 import re
 from typing import Dict, List, Optional, Tuple
 
-from categorize import (  # fetch_category_members,
+from categorize import (  
+    fetch_category_members,
     get_category_members_petscan,
 )
 from owid_config import COUNTRIES_DIR, LOG_DIR, OUTPUT_DIR
@@ -317,8 +318,8 @@ def main() -> None:
     setup_logging(LOG_FILE)
 
     # Fetch all files from the category
-    # files = fetch_category_members(CATEGORY_NAME)
-    files = get_category_members_petscan(CATEGORY_NAME)
+    files = fetch_category_members(CATEGORY_NAME)
+    # files = get_category_members_petscan(CATEGORY_NAME)
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)
