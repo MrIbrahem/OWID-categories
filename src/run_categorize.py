@@ -31,13 +31,6 @@ from main_app.logger_config import setup_logging
 
 logger = logging.getLogger(__name__)
 
-setup_logging(
-    level="INFO",
-    name="main_app",
-    log_file=str(LOG_FILE_CONTINENTS),
-    use_colorlog=False,
-    overwrite=True,
-)
 
 def main() -> None:
 
@@ -62,6 +55,16 @@ def main() -> None:
         help="Specify whether to process 'graphs' or 'maps' (default: graphs)",
     )
     args = parser.parse_args()
+
+    log_file = LOG_FILE_COUNTRIES if args.work_path == "countries" else LOG_FILE_CONTINENTS
+
+    setup_logging(
+        level="INFO",
+        name="main_app",
+        log_file=str(log_file),
+        use_colorlog=False,
+        overwrite=True,
+    )
 
     run_categories_entry(
         dry_run=args.dry_run,
