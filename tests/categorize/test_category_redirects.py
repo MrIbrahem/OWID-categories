@@ -7,7 +7,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from categorize.category_redirects import (
+from src.categorize.category_redirects import (
     add_category_to_page,
     get_redirect_target,
     resolve_category_redirect,

@@ -4,7 +4,7 @@ Tests for categorize.wikitext_utils module.
 
 import pytest
 
-from categorize.wikitext_utils import (
+from src.categorize.wikitext_utils import (
     category_exists_on_page,
     extract_redirect_target,
 )

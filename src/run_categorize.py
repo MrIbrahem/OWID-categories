@@ -29,19 +29,20 @@ from typing import Dict, Optional
 
 import mwclient
 
+from api_services import (
+    get_category_count,
+    get_category_members,
+)
+
 from categorize import (
     add_category_to_page,
     connect_to_commons,
     ensure_category_exists,
-    get_category_count,
-    get_category_members,
     resolve_category_redirect,
 )
 from owid_config import (
     CONTINENTS_DIR,
     COUNTRIES_DIR,
-    LOG_FILE_CONTINENTS,
-    LOG_FILE_COUNTRIES,
     load_credentials,
 )
 from utils import (

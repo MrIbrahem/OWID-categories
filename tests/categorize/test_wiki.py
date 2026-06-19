@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from categorize.wiki import (
+from src.categorize.wiki import (
     ensure_category_exists,
     get_page_text,
     save_page,

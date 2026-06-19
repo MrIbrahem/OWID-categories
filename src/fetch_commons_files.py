@@ -15,9 +15,9 @@ import logging
 import re
 from typing import Dict, List, Optional, Tuple
 
-from categorize import (  # fetch_category_members,; get_category_members_petscan,
+from api_services import get_category_members
+from categorize import (
     connect_to_commons,
-    get_category_members,
 )
 from owid_config import COUNTRIES_DIR, OUTPUT_DIR, load_credentials
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
@@ -329,8 +329,6 @@ def main() -> None:
         return
 
     # Fetch all files from the category
-    # files = fetch_category_members(CATEGORY_NAME)
-    # files = get_category_members_petscan(CATEGORY_NAME)
     files = get_category_members(site, CATEGORY_NAME, namespace=6)
 
     # Process and aggregate files by country and continent

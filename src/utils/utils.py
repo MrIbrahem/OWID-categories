@@ -13,6 +13,7 @@ from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+
 def load_json_file(file_path: Path) -> Optional[Dict]:
     """
     Load a JSON file.
