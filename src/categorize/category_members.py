@@ -100,7 +100,7 @@ def fetch_category_members(category_name: str) -> List[str]:
             all_files.extend([x.get("title", "") for x in members])
             page_count += 1
 
-            logger.info(f"Fetched page {page_count}: {len(members)} files (total: {len(all_files)})")
+            logger.info(f"Fetched category {page_count}: {len(members)} files (total: {len(all_files)})")
 
             if "continue" in data:
                 cmcontinue = data["continue"].get("cmcontinue")

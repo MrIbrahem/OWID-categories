@@ -183,38 +183,3 @@ def get_category_members(
     except KeyError as e:
         logger.warning(f"Key error in API response for {category_title}: {e}")
         return []
-
-
-def get_category_members_titles(
-    site: Site,
-    category: str,
-    namespace: int | None = None,
-) -> list[str]:
-    """
-    Get all member pages in a category.
-
-    Args:
-        site: Connected mwclient Site
-        category: Category name (e.g., "Category:Our World in Data graphs of Canada")
-        namespace: Namespace to filter by (e.g., 6 for File)
-
-    Returns:
-        List of Page objects (empty list if category doesn't exist)
-    """
-    try:
-        # mwclient handles the "Category:" prefix automatically.
-        # category_page = site.pages[category]
-
-        category_page = site.categories[category]
-        members = category_page.members(  # type: ignore
-            namespace=namespace,
-        )
-        members_str = [p.name for p in list(members)]
-        return members_str
-
-    except mwclient.errors.MwClientError as e:
-        logger.error(f"API error getting members in category '{category}': {e}")
-        return []
-    except Exception as e:
-        logger.error(f"An unexpected error occurred getting members in category '{category}': {e}")
-        return []

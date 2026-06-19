@@ -19,16 +19,15 @@ from categorize import (  # fetch_category_members,; get_category_members_petsca
     connect_to_commons,
     get_category_members,
 )
-from owid_config import COUNTRIES_DIR, LOG_DIR, OUTPUT_DIR, load_credentials
+from owid_config import COUNTRIES_DIR, OUTPUT_DIR, load_credentials
 from owid_country_codes import get_country_from_iso3, get_iso3_from_country
-from utils import normalize_title, setup_logging
+from utils import normalize_title
 
 logger = logging.getLogger(__name__)
 
 # Configuration
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
 SUMMARY_FILE = OUTPUT_DIR / "owid_summary.json"
-LOG_FILE = LOG_DIR / "fetch_commons.log"
 
 # List of continents for classification
 CONTINENTS = {
@@ -315,7 +314,6 @@ def write_not_matched_files(not_matched: List[str]) -> None:
 
 def main() -> None:
     """Main execution function."""
-    setup_logging(LOG_FILE)
 
     # Load credentials
     username, password = load_credentials()

@@ -13,15 +13,20 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 logger = logging.getLogger(__name__)
+
+try:
+    load_dotenv()
+except Exception as e:
+    logger.warning(f"Failed to load .env file: {e}")
 
 main_dir = os.getenv("MAIN_DIR", "")
 MAIN_DIR = Path(main_dir) if main_dir else Path()
 
 WIKIPEDIA_BOT_USERNAME = os.getenv("WIKIPEDIA_BOT_USERNAME")
 WIKIPEDIA_BOT_PASSWORD = os.getenv("WIKIPEDIA_BOT_PASSWORD")
+
+LOGGER_LEVEL = os.getenv("LOGGER_LEVEL", "WARNING")
 
 OUTPUT_DIR = MAIN_DIR / "output"
 LOG_DIR = MAIN_DIR / "logs"
@@ -62,4 +67,5 @@ __all__ = [
     "CONTINENTS_DIR",
     "LOG_FILE_COUNTRIES",
     "LOG_FILE_CONTINENTS",
+    "LOGGER_LEVEL",
 ]

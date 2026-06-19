@@ -8,36 +8,10 @@ and country name normalization.
 
 import json
 import logging
-import sys
 from pathlib import Path
 from typing import Dict, Optional
 
 logger = logging.getLogger(__name__)
-
-
-def setup_logging(log_file: Path):
-    """
-    Set up logging configuration.
-
-    Args:
-        log_file: Path to log file
-    """
-    if not log_file.parent.exists():
-        log_file.parent.mkdir(parents=True, exist_ok=True)
-
-    if not log_file.exists():
-        log_file.touch()
-
-    logging.basicConfig(
-        level=logging.INFO,
-        # format="%(asctime)s - %(levelname)s - %(message)s",
-        format="%(levelname)s - %(message)s",
-        handlers=[
-            logging.FileHandler(log_file),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
-
 
 def load_json_file(file_path: Path) -> Optional[Dict]:
     """

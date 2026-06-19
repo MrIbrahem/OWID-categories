@@ -49,7 +49,6 @@ from utils import (
     get_parent_category,
     load_json_file,
     normalize_country_name,
-    setup_logging,
 )
 
 logger = logging.getLogger(__name__)
@@ -214,8 +213,6 @@ def run(
     if not work_dir:
         logger.error(f"Invalid work_path: {work_path}")
         return
-
-    setup_logging(LOG_FILE_COUNTRIES if work_path == "countries" else LOG_FILE_CONTINENTS)
 
     logger.info("=" * 80)
     logger.info("OWID Commons Countries/Continents Categorizer")

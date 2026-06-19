@@ -6,7 +6,7 @@ import logging
 import time
 from typing import Any
 
-import requests
+import mwclient
 from mwclient.client import Site
 
 logger = logging.getLogger(__name__)
@@ -222,9 +222,8 @@ def get_category_members_titles(
     Returns:
         List of file titles (strings).
     """
-    cmcontinue = None
     page_count = 0
-    delay = 1.0  # seconds
+    delay = 0.1  # seconds
     max_delay = 8.0
 
     logger.info(f"Starting to fetch files from {category_name}")
@@ -247,10 +246,12 @@ def get_category_members_titles(
             params["cmnamespace"] = str(namespace)
 
     all_files = []
-    while True:
-
+    first_request = True
+    cmcontinue = None
+    while first_request or cmcontinue is not None:
+        first_request = False
         if len(all_files) % 1000 == 0:
-            logger.debug(f"loaded {len(all_files)} members")
+            logger.info(f"loaded {len(all_files)} members")
 
         if cmcontinue:
             params["cmcontinue"] = cmcontinue
@@ -261,12 +262,17 @@ def get_category_members_titles(
             all_files.extend([x.get("title", "") for x in members])
             page_count += 1
 
-            logger.info(f"Fetched page {page_count}: {len(members)} files (total: {len(all_files)})")
+            logger.debug(f"Fetched category members {page_count}: {len(members)} page, (total: {len(all_files)})")
 
             if "continue" in data:
                 cmcontinue = data["continue"].get("cmcontinue")
                 time.sleep(delay)
             else:
+                break
+
+        except mwclient.errors.APIError as e:
+            if e.code == "invalidcategory":
+                logger.warning(f"Invalid category: {category_name}")
                 break
 
         except Exception as e:
