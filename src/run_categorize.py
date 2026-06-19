@@ -24,7 +24,6 @@ Usage:
 
 import argparse
 import logging
-import sys
 from pathlib import Path
 from typing import Dict, Optional
 
@@ -189,7 +188,7 @@ def process_files(
     return stats
 
 
-def main(
+def run(
     dry_run: bool = False,
     limit: Optional[int] = None,
     files_per_one: Optional[int] = None,
@@ -215,7 +214,7 @@ def main(
 
     if not work_dir:
         logger.error(f"Invalid work_path: {work_path}")
-        sys.exit(1)
+        return
 
     setup_logging(LOG_FILE_COUNTRIES if work_path == "countries" else LOG_FILE_CONTINENTS)
 
@@ -234,26 +233,26 @@ def main(
     if not username or not password:
         logger.error("Failed to load credentials from .env file")
         logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
-        sys.exit(1)
+        return
 
     # Connect to Commons
     site = connect_to_commons(username, password)
     if not site:
         logger.error("Failed to connect to Wikimedia Commons")
-        sys.exit(1)
+        return
 
     # Check if Countries/Continents directory exists
     if not work_dir.exists():
         logger.error(f"Countries/Continents directory not found: {work_dir}")
         logger.error("Please run Phase 1 (fetch_commons_files.py) first")
-        sys.exit(1)
+        return
 
     # Get all item JSON files
     files = sorted(work_dir.glob("*.json"))
 
     if not files:
         logger.error(f"No item JSON files found in {work_dir}")
-        sys.exit(1)
+        return
 
     logger.info(f"Found {len(files)} item files")
 
@@ -298,7 +297,8 @@ def main(
         logger.info("Run without --dry-run flag to make actual edits")
 
 
-if __name__ == "__main__":
+def main():
+
     parser = argparse.ArgumentParser(description="Add categories to OWID graph files on Wikimedia Commons")
     parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual edits)")
     parser.add_argument("--limit", type=int, help="Limit processing to first N items (for testing)")
@@ -321,10 +321,14 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    main(
+    run(
         dry_run=args.dry_run,
         limit=args.limit,
         files_per_one=args.files_per_item,
         work_path=args.work_path,
         files_type=args.files_type,
     )
+
+
+if __name__ == "__main__":
+    main()

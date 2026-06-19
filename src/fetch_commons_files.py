@@ -13,7 +13,6 @@ Requirements:
 import json
 import logging
 import re
-import sys
 from typing import Dict, List, Optional, Tuple
 
 from categorize import (  # fetch_category_members,; get_category_members_petscan,
@@ -323,13 +322,13 @@ def main() -> None:
     if not username or not password:
         logger.error("Failed to load credentials from .env file")
         logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
-        sys.exit(1)
+        return
 
     # Connect to Commons
     site = connect_to_commons(username, password)
     if not site:
         logger.error("Failed to connect to Wikimedia Commons")
-        sys.exit(1)
+        return
 
     # Fetch all files from the category
     # files = fetch_category_members(CATEGORY_NAME)
