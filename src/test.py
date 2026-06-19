@@ -9,7 +9,7 @@ if username and password:
     site = connect_to_commons(username, password)
 
     members = get_category_members_titles(
-        site, # type: ignore
+        site,  # type: ignore
         "Category:Uploaded_by_OWID_importer_tool",
         namespace=6,
     )

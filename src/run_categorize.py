@@ -33,7 +33,6 @@ from api_services import (
     get_category_count,
     get_category_members,
 )
-
 from categorize import (
     add_category_to_page,
     connect_to_commons,
