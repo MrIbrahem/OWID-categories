@@ -8,6 +8,10 @@ classifies them as graphs or maps, extracts country codes, and generates JSON ou
 Requirements:
 - Python 3.10+ (uses union type syntax: str | None)
 - requests library
+
+Usage:
+    python src/fetch_commons_files.py
+
 """
 
 import logging
@@ -25,5 +29,6 @@ setup_logging(
     use_colorlog=False,
     overwrite=True,
 )
+
 if __name__ == "__main__":
     fetch_files_entry()

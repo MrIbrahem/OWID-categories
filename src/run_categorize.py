@@ -14,12 +14,12 @@ Requirements:
 - Valid Wikimedia Commons bot credentials in .env file
 
 Usage:
-    python run_categorize.py                                            # Process all countries
-    python run_categorize.py --dry-run                                  # Test without making edits
-    python run_categorize.py --limit 5                                  # Process first 5 countries only
-    python run_categorize.py --files-per-item 10                        # Process 10 files per country
-    python run_categorize.py --work-path continents --files-type maps   # Process continents and maps
-    python run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
+    python src/run_categorize.py                                            # Process all countries
+    python src/run_categorize.py --dry-run                                  # Test without making edits
+    python src/run_categorize.py --limit 5                                  # Process first 5 countries only
+    python src/run_categorize.py --files-per-item 10                        # Process 10 files per country
+    python src/run_categorize.py --work-path continents --files-type maps   # Process continents and maps
+    python src/run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
 """
 
 import argparse
