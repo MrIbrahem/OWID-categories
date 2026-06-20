@@ -168,12 +168,12 @@ def get_page_creator(site, page_title):
     return None
 
 
-def get_global_editcount(site, username):
-    logger.info(f"Fetching global edit count of {username}...")
+def get_global_editcounts(site, users) -> dict[str, int]:
+    logger.info(f"Fetching global edit count of {len(users)}...")
     params = {
         "list": "globalusers",
         "gusprop": "editcount",
-        "gususers": username,
+        "gususers": users,
         "formatversion": 2,
         "format": "json",
     }
@@ -182,13 +182,14 @@ def get_global_editcount(site, username):
         data = site.get("query", **params)
     except Exception as e:
         logger.error("API request failed %s", str(e))
-        return None
+        data = {}
+
+    logger.info(f"len of data: {len(data)}")
 
     users = data.get("query", {}).get("globalusers", [])
-    if users:
-        return users[0].get("editcount")
-    return None
+    # [ { "centralid": 4327653, "name": "Mr. Ibrahem", "editcount": 2017792 }, ... ]
 
+    return { x["name"]: x["editcount"] for x in users }
 
 def main() -> None:
     # Load credentials
@@ -212,12 +213,31 @@ def main() -> None:
 
     lines = [f"=== {SECTION_HEADING} ===", ""]
     rows = []
+
+    data = []
+
     for sub in subpages:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
         username = get_page_creator(site, full_title)
-        editcount = get_global_editcount(site, username) if username else None
+        data.append({
+            "full_title": full_title,
+            "last_edit": last_edit,
+            "username": username,
+        })
+
+
+    users = [x["username"] for x in data if x["username"]]
+
+    editcounts = get_global_editcounts(site, users)
+
+    for sub in data:
+        full_title = sub["full_title"]
+        last_edit = sub["last_edit"]
+        username = sub["username"]
+        editcount = editcounts.get(username) if username else None
         editcount_str = f"{editcount:,}" if isinstance(editcount, int) else "unknown"
+
         line = f"*[[{full_title}]] (Last edited: {last_edit}, {username or 'unknown'} global edits: {editcount_str})"
         lines.append(line)
 
