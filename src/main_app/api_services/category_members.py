@@ -31,7 +31,7 @@ def get_category_count(category_name: str) -> int:
         "prop": "categoryinfo",
         "titles": category_name,
         "utf8": 1,
-        "formatversion": "2"
+        "formatversion": "2",
     }
 
     # Always include a descriptive User-Agent header per Wikipedia API guidelines
