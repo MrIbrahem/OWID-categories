@@ -120,15 +120,15 @@ class MwClientPage:
         logger.info("Page '%s' exists", self.title)
         return True
 
-    def get_text(self) -> str:
+    def get_text(self) -> None:
         if not self.exists() or not self.page:
-            return ""
+            return None
 
         try:
             return self.page.text()
         except Exception:
             logger.exception("Failed to retrieve wikitext for %s", self.title)
-        return ""
+        return None
 
     def get_redirect_target(self) -> str | None:
         """Get the redirect target page name if the page is a redirect."""

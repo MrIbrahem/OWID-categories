@@ -33,7 +33,7 @@ def get_redirect_target(
     """
     page = MwClientPage(category, site)
     page_text = page.get_text()
-    if not page_text:
+    if page_text is None:
         return None
 
     target = wikitext_utils.extract_redirect_target(page_text)
@@ -97,7 +97,7 @@ def add_category_to_page(
     page = MwClientPage(title, site)
     current_text = page.get_text()
 
-    if not current_text:
+    if current_text is None:
         logger.warning(f"Page does not exist or could not be retrieved: {title}")
         return False
 
