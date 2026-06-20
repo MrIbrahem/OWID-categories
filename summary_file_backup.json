@@ -1,36 +1,1452 @@
 {
-    "files": {},
+    "files": {
+        "total": 1633016,
+        "matched": 609380,
+        "not_matched": {
+            "unknown": 609380,
+            "unresolved_region": 0
+        }
+    },
     "countries": [
+        {
+            "iso3": "ABW",
+            "country": "Aruba",
+            "graph_count": 75,
+            "map_count": 0
+        },
+        {
+            "iso3": "AFG",
+            "country": "Afghanistan",
+            "graph_count": 912,
+            "map_count": 0
+        },
+        {
+            "iso3": "AGO",
+            "country": "Angola",
+            "graph_count": 978,
+            "map_count": 0
+        },
+        {
+            "iso3": "AIA",
+            "country": "Anguilla",
+            "graph_count": 59,
+            "map_count": 0
+        },
+        {
+            "iso3": "ALB",
+            "country": "Albania",
+            "graph_count": 901,
+            "map_count": 0
+        },
+        {
+            "iso3": "AND",
+            "country": "Andorra",
+            "graph_count": 752,
+            "map_count": 0
+        },
+        {
+            "iso3": "ARE",
+            "country": "United Arab Emirates",
+            "graph_count": 1157,
+            "map_count": 0
+        },
+        {
+            "iso3": "ARG",
+            "country": "Argentina",
+            "graph_count": 1124,
+            "map_count": 0
+        },
+        {
+            "iso3": "ARM",
+            "country": "Armenia",
+            "graph_count": 1054,
+            "map_count": 0
+        },
+        {
+            "iso3": "ASM",
+            "country": "American Samoa",
+            "graph_count": 117,
+            "map_count": 0
+        },
+        {
+            "iso3": "ATF",
+            "country": "French Southern Territories",
+            "graph_count": 10,
+            "map_count": 0
+        },
+        {
+            "iso3": "ATG",
+            "country": "Antigua and Barbuda",
+            "graph_count": 769,
+            "map_count": 0
+        },
+        {
+            "iso3": "AUS",
+            "country": "Australia",
+            "graph_count": 1112,
+            "map_count": 0
+        },
+        {
+            "iso3": "AUT",
+            "country": "Austria",
+            "graph_count": 1110,
+            "map_count": 0
+        },
+        {
+            "iso3": "AZE",
+            "country": "Azerbaijan",
+            "graph_count": 1080,
+            "map_count": 0
+        },
+        {
+            "iso3": "BDI",
+            "country": "Burundi",
+            "graph_count": 948,
+            "map_count": 0
+        },
+        {
+            "iso3": "BEL",
+            "country": "Belgium",
+            "graph_count": 1130,
+            "map_count": 0
+        },
+        {
+            "iso3": "BEN",
+            "country": "Benin",
+            "graph_count": 982,
+            "map_count": 0
+        },
+        {
+            "iso3": "BFA",
+            "country": "Burkina Faso",
+            "graph_count": 973,
+            "map_count": 0
+        },
+        {
+            "iso3": "BGD",
+            "country": "Bangladesh",
+            "graph_count": 1062,
+            "map_count": 0
+        },
+        {
+            "iso3": "BGR",
+            "country": "Bulgaria",
+            "graph_count": 1137,
+            "map_count": 0
+        },
+        {
+            "iso3": "BHR",
+            "country": "Bahrain",
+            "graph_count": 884,
+            "map_count": 0
+        },
+        {
+            "iso3": "BHS",
+            "country": "Bahamas",
+            "graph_count": 767,
+            "map_count": 0
+        },
+        {
+            "iso3": "BIH",
+            "country": "Bosnia and Herzegovina",
+            "graph_count": 992,
+            "map_count": 0
+        },
+        {
+            "iso3": "BLR",
+            "country": "Belarus",
+            "graph_count": 1078,
+            "map_count": 0
+        },
+        {
+            "iso3": "BLZ",
+            "country": "Belize",
+            "graph_count": 908,
+            "map_count": 0
+        },
+        {
+            "iso3": "BMU",
+            "country": "Bermuda",
+            "graph_count": 152,
+            "map_count": 0
+        },
+        {
+            "iso3": "BOL",
+            "country": "Bolivia",
+            "graph_count": 985,
+            "map_count": 0
+        },
         {
             "iso3": "BRA",
             "country": "Brazil",
-            "graph_count": 1,
-            "map_count": 1
+            "graph_count": 1165,
+            "map_count": 0
+        },
+        {
+            "iso3": "BRB",
+            "country": "Barbados",
+            "graph_count": 836,
+            "map_count": 0
+        },
+        {
+            "iso3": "BRN",
+            "country": "Brunei",
+            "graph_count": 827,
+            "map_count": 0
+        },
+        {
+            "iso3": "BTN",
+            "country": "Bhutan",
+            "graph_count": 907,
+            "map_count": 0
+        },
+        {
+            "iso3": "BVT",
+            "country": "Bouvet Island",
+            "graph_count": 4,
+            "map_count": 0
+        },
+        {
+            "iso3": "BWA",
+            "country": "Botswana",
+            "graph_count": 942,
+            "map_count": 0
+        },
+        {
+            "iso3": "CAF",
+            "country": "Central African Republic",
+            "graph_count": 878,
+            "map_count": 0
         },
         {
             "iso3": "CAN",
             "country": "Canada",
-            "graph_count": 1,
-            "map_count": 1
+            "graph_count": 1129,
+            "map_count": 0
+        },
+        {
+            "iso3": "CHE",
+            "country": "Switzerland",
+            "graph_count": 1092,
+            "map_count": 0
+        },
+        {
+            "iso3": "CHL",
+            "country": "Chile",
+            "graph_count": 1116,
+            "map_count": 0
+        },
+        {
+            "iso3": "CHN",
+            "country": "China",
+            "graph_count": 1068,
+            "map_count": 0
+        },
+        {
+            "iso3": "CIV",
+            "country": "Ivory Coast",
+            "graph_count": 926,
+            "map_count": 0
+        },
+        {
+            "iso3": "CMR",
+            "country": "Cameroon",
+            "graph_count": 987,
+            "map_count": 0
+        },
+        {
+            "iso3": "COD",
+            "country": "Democratic Republic of Congo",
+            "graph_count": 981,
+            "map_count": 0
+        },
+        {
+            "iso3": "COG",
+            "country": "Congo",
+            "graph_count": 921,
+            "map_count": 0
+        },
+        {
+            "iso3": "COK",
+            "country": "Cook Islands",
+            "graph_count": 190,
+            "map_count": 0
+        },
+        {
+            "iso3": "COL",
+            "country": "Colombia",
+            "graph_count": 1158,
+            "map_count": 0
+        },
+        {
+            "iso3": "COM",
+            "country": "Comoros",
+            "graph_count": 876,
+            "map_count": 0
+        },
+        {
+            "iso3": "CPV",
+            "country": "Cape Verde",
+            "graph_count": 853,
+            "map_count": 0
+        },
+        {
+            "iso3": "CRI",
+            "country": "Costa Rica",
+            "graph_count": 1052,
+            "map_count": 0
+        },
+        {
+            "iso3": "CUB",
+            "country": "Cuba",
+            "graph_count": 908,
+            "map_count": 0
+        },
+        {
+            "iso3": "CXR",
+            "country": "Christmas Island",
+            "graph_count": 7,
+            "map_count": 0
+        },
+        {
+            "iso3": "CYM",
+            "country": "Cayman Islands",
+            "graph_count": 94,
+            "map_count": 0
+        },
+        {
+            "iso3": "CYP",
+            "country": "Cyprus",
+            "graph_count": 1041,
+            "map_count": 0
+        },
+        {
+            "iso3": "CZE",
+            "country": "Czechia",
+            "graph_count": 1131,
+            "map_count": 0
         },
         {
             "iso3": "DEU",
             "country": "Germany",
-            "graph_count": 1,
-            "map_count": 1
+            "graph_count": 1124,
+            "map_count": 0
+        },
+        {
+            "iso3": "DJI",
+            "country": "Djibouti",
+            "graph_count": 857,
+            "map_count": 0
+        },
+        {
+            "iso3": "DMA",
+            "country": "Dominica",
+            "graph_count": 757,
+            "map_count": 0
+        },
+        {
+            "iso3": "DNK",
+            "country": "Denmark",
+            "graph_count": 1122,
+            "map_count": 0
+        },
+        {
+            "iso3": "DOM",
+            "country": "Dominican Republic",
+            "graph_count": 1051,
+            "map_count": 0
+        },
+        {
+            "iso3": "DZA",
+            "country": "Algeria",
+            "graph_count": 1016,
+            "map_count": 0
+        },
+        {
+            "iso3": "ECU",
+            "country": "Ecuador",
+            "graph_count": 1109,
+            "map_count": 0
+        },
+        {
+            "iso3": "EGY",
+            "country": "Egypt",
+            "graph_count": 1079,
+            "map_count": 0
+        },
+        {
+            "iso3": "ERI",
+            "country": "Eritrea",
+            "graph_count": 775,
+            "map_count": 0
+        },
+        {
+            "iso3": "ESH",
+            "country": "Western Sahara",
+            "graph_count": 103,
+            "map_count": 0
+        },
+        {
+            "iso3": "ESP",
+            "country": "Spain",
+            "graph_count": 1136,
+            "map_count": 0
+        },
+        {
+            "iso3": "EST",
+            "country": "Estonia",
+            "graph_count": 1125,
+            "map_count": 0
+        },
+        {
+            "iso3": "ETH",
+            "country": "Ethiopia",
+            "graph_count": 1034,
+            "map_count": 0
+        },
+        {
+            "iso3": "FIN",
+            "country": "Finland",
+            "graph_count": 1122,
+            "map_count": 0
+        },
+        {
+            "iso3": "FJI",
+            "country": "Fiji",
+            "graph_count": 917,
+            "map_count": 0
+        },
+        {
+            "iso3": "FRA",
+            "country": "France",
+            "graph_count": 1136,
+            "map_count": 0
+        },
+        {
+            "iso3": "FRO",
+            "country": "Faroe Islands",
+            "graph_count": 58,
+            "map_count": 0
+        },
+        {
+            "iso3": "FSM",
+            "country": "Micronesia",
+            "graph_count": 586,
+            "map_count": 0
+        },
+        {
+            "iso3": "GAB",
+            "country": "Gabon",
+            "graph_count": 901,
+            "map_count": 0
         },
         {
             "iso3": "GBR",
             "country": "United Kingdom",
-            "graph_count": 1,
-            "map_count": 1
+            "graph_count": 1131,
+            "map_count": 0
+        },
+        {
+            "iso3": "GEO",
+            "country": "Georgia",
+            "graph_count": 1077,
+            "map_count": 0
+        },
+        {
+            "iso3": "GGY",
+            "country": "Guernsey",
+            "graph_count": 30,
+            "map_count": 0
+        },
+        {
+            "iso3": "GHA",
+            "country": "Ghana",
+            "graph_count": 1021,
+            "map_count": 0
+        },
+        {
+            "iso3": "GIB",
+            "country": "Gibraltar",
+            "graph_count": 65,
+            "map_count": 0
+        },
+        {
+            "iso3": "GIN",
+            "country": "Guinea",
+            "graph_count": 921,
+            "map_count": 0
+        },
+        {
+            "iso3": "GLP",
+            "country": "Guadeloupe",
+            "graph_count": 56,
+            "map_count": 0
+        },
+        {
+            "iso3": "GMB",
+            "country": "Gambia",
+            "graph_count": 960,
+            "map_count": 0
+        },
+        {
+            "iso3": "GNB",
+            "country": "Guinea Bissau",
+            "graph_count": 870,
+            "map_count": 0
+        },
+        {
+            "iso3": "GNQ",
+            "country": "Equatorial Guinea",
+            "graph_count": 825,
+            "map_count": 0
+        },
+        {
+            "iso3": "GRC",
+            "country": "Greece",
+            "graph_count": 1095,
+            "map_count": 0
+        },
+        {
+            "iso3": "GRD",
+            "country": "Grenada",
+            "graph_count": 757,
+            "map_count": 0
+        },
+        {
+            "iso3": "GRL",
+            "country": "Greenland",
+            "graph_count": 351,
+            "map_count": 0
+        },
+        {
+            "iso3": "GTM",
+            "country": "Guatemala",
+            "graph_count": 1053,
+            "map_count": 0
+        },
+        {
+            "iso3": "GUF",
+            "country": "French Guiana",
+            "graph_count": 153,
+            "map_count": 0
+        },
+        {
+            "iso3": "GUM",
+            "country": "Guam",
+            "graph_count": 123,
+            "map_count": 0
+        },
+        {
+            "iso3": "GUY",
+            "country": "Guyana",
+            "graph_count": 947,
+            "map_count": 0
+        },
+        {
+            "iso3": "HKG",
+            "country": "Hong Kong",
+            "graph_count": 212,
+            "map_count": 0
+        },
+        {
+            "iso3": "HMD",
+            "country": "Heard Island and McDonald Islands",
+            "graph_count": 6,
+            "map_count": 0
+        },
+        {
+            "iso3": "HND",
+            "country": "Honduras",
+            "graph_count": 995,
+            "map_count": 0
+        },
+        {
+            "iso3": "HRV",
+            "country": "Croatia",
+            "graph_count": 1104,
+            "map_count": 0
+        },
+        {
+            "iso3": "HTI",
+            "country": "Haiti",
+            "graph_count": 881,
+            "map_count": 0
+        },
+        {
+            "iso3": "HUN",
+            "country": "Hungary",
+            "graph_count": 1102,
+            "map_count": 0
+        },
+        {
+            "iso3": "IDN",
+            "country": "Indonesia",
+            "graph_count": 1120,
+            "map_count": 0
+        },
+        {
+            "iso3": "IMN",
+            "country": "Isle of Man",
+            "graph_count": 43,
+            "map_count": 0
+        },
+        {
+            "iso3": "IND",
+            "country": "India",
+            "graph_count": 1141,
+            "map_count": 0
+        },
+        {
+            "iso3": "IOT",
+            "country": "British Indian Ocean Territory",
+            "graph_count": 5,
+            "map_count": 0
+        },
+        {
+            "iso3": "IRL",
+            "country": "Ireland",
+            "graph_count": 1095,
+            "map_count": 0
+        },
+        {
+            "iso3": "IRN",
+            "country": "Iran",
+            "graph_count": 997,
+            "map_count": 0
+        },
+        {
+            "iso3": "IRQ",
+            "country": "Iraq",
+            "graph_count": 1010,
+            "map_count": 0
+        },
+        {
+            "iso3": "ISL",
+            "country": "Iceland",
+            "graph_count": 1036,
+            "map_count": 0
+        },
+        {
+            "iso3": "ISR",
+            "country": "Israel",
+            "graph_count": 1033,
+            "map_count": 0
+        },
+        {
+            "iso3": "ITA",
+            "country": "Italy",
+            "graph_count": 1147,
+            "map_count": 0
+        },
+        {
+            "iso3": "JAM",
+            "country": "Jamaica",
+            "graph_count": 925,
+            "map_count": 0
+        },
+        {
+            "iso3": "JEY",
+            "country": "Jersey",
+            "graph_count": 35,
+            "map_count": 0
+        },
+        {
+            "iso3": "JOR",
+            "country": "Jordan",
+            "graph_count": 974,
+            "map_count": 0
+        },
+        {
+            "iso3": "JPN",
+            "country": "Japan",
+            "graph_count": 1095,
+            "map_count": 0
+        },
+        {
+            "iso3": "KAZ",
+            "country": "Kazakhstan",
+            "graph_count": 1126,
+            "map_count": 0
+        },
+        {
+            "iso3": "KEN",
+            "country": "Kenya",
+            "graph_count": 1023,
+            "map_count": 0
+        },
+        {
+            "iso3": "KGZ",
+            "country": "Kyrgyzstan",
+            "graph_count": 1041,
+            "map_count": 0
+        },
+        {
+            "iso3": "KHM",
+            "country": "Cambodia",
+            "graph_count": 983,
+            "map_count": 0
+        },
+        {
+            "iso3": "KIR",
+            "country": "Kiribati",
+            "graph_count": 718,
+            "map_count": 0
+        },
+        {
+            "iso3": "KNA",
+            "country": "Saint Kitts and Nevis",
+            "graph_count": 675,
+            "map_count": 0
+        },
+        {
+            "iso3": "KOR",
+            "country": "South Korea",
+            "graph_count": 1077,
+            "map_count": 0
+        },
+        {
+            "iso3": "KWT",
+            "country": "Kuwait",
+            "graph_count": 971,
+            "map_count": 0
+        },
+        {
+            "iso3": "LAO",
+            "country": "Laos",
+            "graph_count": 933,
+            "map_count": 0
+        },
+        {
+            "iso3": "LBN",
+            "country": "Lebanon",
+            "graph_count": 929,
+            "map_count": 0
+        },
+        {
+            "iso3": "LBR",
+            "country": "Liberia",
+            "graph_count": 914,
+            "map_count": 0
+        },
+        {
+            "iso3": "LBY",
+            "country": "Libya",
+            "graph_count": 870,
+            "map_count": 0
+        },
+        {
+            "iso3": "LCA",
+            "country": "Saint Lucia",
+            "graph_count": 810,
+            "map_count": 0
+        },
+        {
+            "iso3": "LIE",
+            "country": "Liechtenstein",
+            "graph_count": 322,
+            "map_count": 0
+        },
+        {
+            "iso3": "LKA",
+            "country": "Sri Lanka",
+            "graph_count": 1038,
+            "map_count": 0
+        },
+        {
+            "iso3": "LSO",
+            "country": "Lesotho",
+            "graph_count": 896,
+            "map_count": 0
+        },
+        {
+            "iso3": "LTU",
+            "country": "Lithuania",
+            "graph_count": 1127,
+            "map_count": 0
+        },
+        {
+            "iso3": "LUX",
+            "country": "Luxembourg",
+            "graph_count": 1064,
+            "map_count": 0
+        },
+        {
+            "iso3": "LVA",
+            "country": "Latvia",
+            "graph_count": 1114,
+            "map_count": 0
+        },
+        {
+            "iso3": "MAC",
+            "country": "Macao",
+            "graph_count": 129,
+            "map_count": 0
+        },
+        {
+            "iso3": "MAF",
+            "country": "Saint Martin (French part)",
+            "graph_count": 39,
+            "map_count": 0
+        },
+        {
+            "iso3": "MAR",
+            "country": "Morocco",
+            "graph_count": 1078,
+            "map_count": 0
+        },
+        {
+            "iso3": "MCO",
+            "country": "Monaco",
+            "graph_count": 514,
+            "map_count": 0
+        },
+        {
+            "iso3": "MDA",
+            "country": "Moldova",
+            "graph_count": 1033,
+            "map_count": 0
+        },
+        {
+            "iso3": "MDG",
+            "country": "Madagascar",
+            "graph_count": 976,
+            "map_count": 0
+        },
+        {
+            "iso3": "MDV",
+            "country": "Maldives",
+            "graph_count": 877,
+            "map_count": 0
+        },
+        {
+            "iso3": "MEX",
+            "country": "Mexico",
+            "graph_count": 1177,
+            "map_count": 0
+        },
+        {
+            "iso3": "MHL",
+            "country": "Marshall Islands",
+            "graph_count": 642,
+            "map_count": 0
+        },
+        {
+            "iso3": "MKD",
+            "country": "North Macedonia",
+            "graph_count": 1064,
+            "map_count": 0
+        },
+        {
+            "iso3": "MLI",
+            "country": "Mali",
+            "graph_count": 979,
+            "map_count": 0
+        },
+        {
+            "iso3": "MLT",
+            "country": "Malta",
+            "graph_count": 979,
+            "map_count": 0
+        },
+        {
+            "iso3": "MMR",
+            "country": "Myanmar",
+            "graph_count": 969,
+            "map_count": 0
+        },
+        {
+            "iso3": "MNE",
+            "country": "Montenegro",
+            "graph_count": 978,
+            "map_count": 0
+        },
+        {
+            "iso3": "MNG",
+            "country": "Mongolia",
+            "graph_count": 987,
+            "map_count": 0
+        },
+        {
+            "iso3": "MNP",
+            "country": "Northern Mariana Islands",
+            "graph_count": 97,
+            "map_count": 0
+        },
+        {
+            "iso3": "MOZ",
+            "country": "Mozambique",
+            "graph_count": 985,
+            "map_count": 0
+        },
+        {
+            "iso3": "MRT",
+            "country": "Mauritania",
+            "graph_count": 893,
+            "map_count": 0
+        },
+        {
+            "iso3": "MSR",
+            "country": "Montserrat",
+            "graph_count": 67,
+            "map_count": 0
+        },
+        {
+            "iso3": "MTQ",
+            "country": "Martinique",
+            "graph_count": 62,
+            "map_count": 0
+        },
+        {
+            "iso3": "MUS",
+            "country": "Mauritius",
+            "graph_count": 971,
+            "map_count": 0
+        },
+        {
+            "iso3": "MWI",
+            "country": "Malawi",
+            "graph_count": 956,
+            "map_count": 0
+        },
+        {
+            "iso3": "MYS",
+            "country": "Malaysia",
+            "graph_count": 1097,
+            "map_count": 0
+        },
+        {
+            "iso3": "MYT",
+            "country": "Mayotte",
+            "graph_count": 42,
+            "map_count": 0
+        },
+        {
+            "iso3": "NAM",
+            "country": "Namibia",
+            "graph_count": 968,
+            "map_count": 0
+        },
+        {
+            "iso3": "NCL",
+            "country": "New Caledonia",
+            "graph_count": 285,
+            "map_count": 0
+        },
+        {
+            "iso3": "NER",
+            "country": "Niger",
+            "graph_count": 963,
+            "map_count": 0
+        },
+        {
+            "iso3": "NFK",
+            "country": "Norfolk Island",
+            "graph_count": 12,
+            "map_count": 0
+        },
+        {
+            "iso3": "NGA",
+            "country": "Nigeria",
+            "graph_count": 1015,
+            "map_count": 0
+        },
+        {
+            "iso3": "NIC",
+            "country": "Nicaragua",
+            "graph_count": 937,
+            "map_count": 0
+        },
+        {
+            "iso3": "NIU",
+            "country": "Niue",
+            "graph_count": 163,
+            "map_count": 0
+        },
+        {
+            "iso3": "NLD",
+            "country": "Netherlands",
+            "graph_count": 1114,
+            "map_count": 0
+        },
+        {
+            "iso3": "NOR",
+            "country": "Norway",
+            "graph_count": 1083,
+            "map_count": 0
+        },
+        {
+            "iso3": "NPL",
+            "country": "Nepal",
+            "graph_count": 959,
+            "map_count": 0
+        },
+        {
+            "iso3": "NRU",
+            "country": "Nauru",
+            "graph_count": 670,
+            "map_count": 0
+        },
+        {
+            "iso3": "NZL",
+            "country": "New Zealand",
+            "graph_count": 1064,
+            "map_count": 0
+        },
+        {
+            "iso3": "OMN",
+            "country": "Oman",
+            "graph_count": 1006,
+            "map_count": 0
+        },
+        {
+            "iso3": "PAK",
+            "country": "Pakistan",
+            "graph_count": 1050,
+            "map_count": 0
+        },
+        {
+            "iso3": "PAN",
+            "country": "Panama",
+            "graph_count": 1027,
+            "map_count": 0
+        },
+        {
+            "iso3": "PCN",
+            "country": "Pitcairn",
+            "graph_count": 11,
+            "map_count": 0
+        },
+        {
+            "iso3": "PER",
+            "country": "Peru",
+            "graph_count": 1168,
+            "map_count": 0
+        },
+        {
+            "iso3": "PHL",
+            "country": "Philippines",
+            "graph_count": 1123,
+            "map_count": 0
+        },
+        {
+            "iso3": "PLW",
+            "country": "Palau",
+            "graph_count": 626,
+            "map_count": 0
+        },
+        {
+            "iso3": "PNG",
+            "country": "Papua New Guinea",
+            "graph_count": 903,
+            "map_count": 0
+        },
+        {
+            "iso3": "POL",
+            "country": "Poland",
+            "graph_count": 1131,
+            "map_count": 0
+        },
+        {
+            "iso3": "PRI",
+            "country": "Puerto Rico",
+            "graph_count": 529,
+            "map_count": 0
+        },
+        {
+            "iso3": "PRK",
+            "country": "North Korea",
+            "graph_count": 711,
+            "map_count": 0
+        },
+        {
+            "iso3": "PRT",
+            "country": "Portugal",
+            "graph_count": 1106,
+            "map_count": 0
+        },
+        {
+            "iso3": "PRY",
+            "country": "Paraguay",
+            "graph_count": 1045,
+            "map_count": 0
+        },
+        {
+            "iso3": "PYF",
+            "country": "French Polynesia",
+            "graph_count": 102,
+            "map_count": 0
+        },
+        {
+            "iso3": "QAT",
+            "country": "Qatar",
+            "graph_count": 991,
+            "map_count": 0
+        },
+        {
+            "iso3": "ROU",
+            "country": "Romania",
+            "graph_count": 1133,
+            "map_count": 0
+        },
+        {
+            "iso3": "RUS",
+            "country": "Russia",
+            "graph_count": 1113,
+            "map_count": 0
+        },
+        {
+            "iso3": "RWA",
+            "country": "Rwanda",
+            "graph_count": 980,
+            "map_count": 0
+        },
+        {
+            "iso3": "SAU",
+            "country": "Saudi Arabia",
+            "graph_count": 1031,
+            "map_count": 0
+        },
+        {
+            "iso3": "SDN",
+            "country": "Sudan",
+            "graph_count": 903,
+            "map_count": 0
+        },
+        {
+            "iso3": "SEN",
+            "country": "Senegal",
+            "graph_count": 1013,
+            "map_count": 0
+        },
+        {
+            "iso3": "SGP",
+            "country": "Singapore",
+            "graph_count": 977,
+            "map_count": 0
+        },
+        {
+            "iso3": "SGS",
+            "country": "South Georgia and the South Sandwich Islands",
+            "graph_count": 7,
+            "map_count": 0
+        },
+        {
+            "iso3": "SJM",
+            "country": "Svalbard and Jan Mayen",
+            "graph_count": 12,
+            "map_count": 0
+        },
+        {
+            "iso3": "SLB",
+            "country": "Solomon Islands",
+            "graph_count": 815,
+            "map_count": 0
+        },
+        {
+            "iso3": "SLE",
+            "country": "Sierra Leone",
+            "graph_count": 946,
+            "map_count": 0
+        },
+        {
+            "iso3": "SLV",
+            "country": "El Salvador",
+            "graph_count": 1047,
+            "map_count": 0
+        },
+        {
+            "iso3": "SMR",
+            "country": "San Marino",
+            "graph_count": 545,
+            "map_count": 0
+        },
+        {
+            "iso3": "SOM",
+            "country": "Somalia",
+            "graph_count": 853,
+            "map_count": 0
+        },
+        {
+            "iso3": "SPM",
+            "country": "Saint Pierre and Miquelon",
+            "graph_count": 43,
+            "map_count": 0
+        },
+        {
+            "iso3": "SRB",
+            "country": "Serbia",
+            "graph_count": 1049,
+            "map_count": 0
+        },
+        {
+            "iso3": "SSD",
+            "country": "South Sudan",
+            "graph_count": 796,
+            "map_count": 0
+        },
+        {
+            "iso3": "STP",
+            "country": "Sao Tome and Principe",
+            "graph_count": 811,
+            "map_count": 0
+        },
+        {
+            "iso3": "SUR",
+            "country": "Suriname",
+            "graph_count": 886,
+            "map_count": 0
+        },
+        {
+            "iso3": "SVK",
+            "country": "Slovakia",
+            "graph_count": 1103,
+            "map_count": 0
+        },
+        {
+            "iso3": "SVN",
+            "country": "Slovenia",
+            "graph_count": 1114,
+            "map_count": 0
+        },
+        {
+            "iso3": "SWE",
+            "country": "Sweden",
+            "graph_count": 1111,
+            "map_count": 0
+        },
+        {
+            "iso3": "SWZ",
+            "country": "Eswatini",
+            "graph_count": 926,
+            "map_count": 0
+        },
+        {
+            "iso3": "SXM",
+            "country": "Sint Maarten (Dutch part)",
+            "graph_count": 52,
+            "map_count": 0
+        },
+        {
+            "iso3": "SYC",
+            "country": "Seychelles",
+            "graph_count": 831,
+            "map_count": 0
+        },
+        {
+            "iso3": "SYR",
+            "country": "Syria",
+            "graph_count": 845,
+            "map_count": 0
+        },
+        {
+            "iso3": "TCA",
+            "country": "Turks and Caicos Islands",
+            "graph_count": 97,
+            "map_count": 0
+        },
+        {
+            "iso3": "TCD",
+            "country": "Chad",
+            "graph_count": 918,
+            "map_count": 0
+        },
+        {
+            "iso3": "TGO",
+            "country": "Togo",
+            "graph_count": 974,
+            "map_count": 0
+        },
+        {
+            "iso3": "THA",
+            "country": "Thailand",
+            "graph_count": 1139,
+            "map_count": 0
+        },
+        {
+            "iso3": "TJK",
+            "country": "Tajikistan",
+            "graph_count": 989,
+            "map_count": 0
+        },
+        {
+            "iso3": "TKL",
+            "country": "Tokelau",
+            "graph_count": 97,
+            "map_count": 0
+        },
+        {
+            "iso3": "TKM",
+            "country": "Turkmenistan",
+            "graph_count": 894,
+            "map_count": 0
+        },
+        {
+            "iso3": "TLS",
+            "country": "Timor-Leste",
+            "graph_count": 882,
+            "map_count": 0
+        },
+        {
+            "iso3": "TON",
+            "country": "Tonga",
+            "graph_count": 808,
+            "map_count": 0
+        },
+        {
+            "iso3": "TTO",
+            "country": "Trinidad and Tobago",
+            "graph_count": 977,
+            "map_count": 0
+        },
+        {
+            "iso3": "TUN",
+            "country": "Tunisia",
+            "graph_count": 1016,
+            "map_count": 0
+        },
+        {
+            "iso3": "TUR",
+            "country": "Turkey",
+            "graph_count": 1120,
+            "map_count": 0
+        },
+        {
+            "iso3": "TUV",
+            "country": "Tuvalu",
+            "graph_count": 634,
+            "map_count": 0
+        },
+        {
+            "iso3": "TWN",
+            "country": "Taiwan",
+            "graph_count": 34,
+            "map_count": 0
+        },
+        {
+            "iso3": "TZA",
+            "country": "Tanzania",
+            "graph_count": 1037,
+            "map_count": 0
+        },
+        {
+            "iso3": "UGA",
+            "country": "Uganda",
+            "graph_count": 968,
+            "map_count": 0
+        },
+        {
+            "iso3": "UKR",
+            "country": "Ukraine",
+            "graph_count": 1054,
+            "map_count": 0
+        },
+        {
+            "iso3": "URY",
+            "country": "Uruguay",
+            "graph_count": 1017,
+            "map_count": 0
         },
         {
             "iso3": "USA",
             "country": "United States",
-            "graph_count": 1,
-            "map_count": 1
+            "graph_count": 1209,
+            "map_count": 0
+        },
+        {
+            "iso3": "UZB",
+            "country": "Uzbekistan",
+            "graph_count": 1086,
+            "map_count": 0
+        },
+        {
+            "iso3": "VCT",
+            "country": "Saint Vincent and the Grenadines",
+            "graph_count": 774,
+            "map_count": 0
+        },
+        {
+            "iso3": "VEN",
+            "country": "Venezuela",
+            "graph_count": 952,
+            "map_count": 0
+        },
+        {
+            "iso3": "VNM",
+            "country": "Vietnam",
+            "graph_count": 1062,
+            "map_count": 0
+        },
+        {
+            "iso3": "VUT",
+            "country": "Vanuatu",
+            "graph_count": 829,
+            "map_count": 0
+        },
+        {
+            "iso3": "WLF",
+            "country": "Wallis and Futuna",
+            "graph_count": 56,
+            "map_count": 0
+        },
+        {
+            "iso3": "WSM",
+            "country": "Samoa",
+            "graph_count": 834,
+            "map_count": 0
+        },
+        {
+            "iso3": "YEM",
+            "country": "Yemen",
+            "graph_count": 890,
+            "map_count": 0
+        },
+        {
+            "iso3": "ZAF",
+            "country": "South Africa",
+            "graph_count": 1109,
+            "map_count": 0
+        },
+        {
+            "iso3": "ZMB",
+            "country": "Zambia",
+            "graph_count": 943,
+            "map_count": 0
+        },
+        {
+            "iso3": "ZWE",
+            "country": "Zimbabwe",
+            "graph_count": 998,
+            "map_count": 0
         }
     ],
-    "continents": []
+    "continents": [
+        {
+            "continent": "Africa",
+            "map_count": 118673
+        },
+        {
+            "continent": "Asia",
+            "map_count": 118377
+        },
+        {
+            "continent": "Europe",
+            "map_count": 119256
+        },
+        {
+            "continent": "North America",
+            "map_count": 118307
+        },
+        {
+            "continent": "Oceania",
+            "map_count": 118560
+        },
+        {
+            "continent": "South America",
+            "map_count": 118504
+        },
+        {
+            "continent": "World",
+            "map_count": 119940
+        }
+    ]
 }
