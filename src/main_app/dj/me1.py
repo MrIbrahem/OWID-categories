@@ -32,9 +32,10 @@ logger = logging.getLogger(__name__)
 # wiki text parsers
 # -----------------------------------------
 users_redirects = {
-    "vinoda mamatharai":"Vinoda mamatharai",
-    "Cbrescia":"Felino Volador",
+    "vinoda mamatharai": "Vinoda mamatharai",
+    "Cbrescia": "Felino Volador",
 }
+
 
 def get_section_by_heading(wikitext, heading):
     """Use wikitextparser to find a section by its heading text."""
@@ -144,6 +145,7 @@ def get_last_edit_timestamp(site, page_title):
 
     return None
 
+
 def get_page_creator(site, page_title):
     """Username of the oldest revision (i.e. who created the page)."""
     logger.info(f"Fetching page creator of {page_title}...")
@@ -187,7 +189,6 @@ def get_global_editcounts(site, users) -> dict[str, int]:
         logger.error("API request failed %s", str(e))
         data = {}
 
-
     result = data.get("query", {}).get("globalusers", [])
     # [ { "centralid": 4327653, "name": "Mr. Ibrahem", "editcount": 2017792 }, ... ]
 
@@ -225,7 +226,7 @@ def main() -> None:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
         user_name = sub.replace("(2nd Application)", "").split("/")[0].strip()
-        username = users_redirects.get(user_name) or user_name # get_page_creator(site, full_title)
+        username = users_redirects.get(user_name) or user_name  # get_page_creator(site, full_title)
         data.append(
             {
                 "full_title": full_title,
