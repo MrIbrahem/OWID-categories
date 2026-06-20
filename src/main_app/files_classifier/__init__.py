@@ -26,6 +26,7 @@ CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oce
 
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
+GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),\s*(\w+)\.svg$")
 
 # Map pattern: country/region name followed by a single year
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
@@ -35,6 +36,12 @@ MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\
 
 MAP_PATTERN_FULL = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?-*(\d+)(?: \(cropped\))?\.svg$")
 MAP_PATTERN_BCE = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?([\d,]+)\s*BCE(?: \(cropped\))?\.svg$")
+
+
+def extract_indicator(base_name: str) -> str:
+    first_comma = base_name.find(",")
+    indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
+    return indicator
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
@@ -51,19 +58,36 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
     """
     # Try graph pattern first
     graph_match = GRAPH_PATTERN.search(title)
+    graph_match_plain = GRAPH_PATTERN_PLAIN.search(title)
+
     if graph_match:
         start_year, end_year, iso3 = graph_match.groups()
+        start_year = int(start_year)
+        end_year = int(end_year)
 
         # Extract indicator (everything before the first comma in the normalized name)
         base_name = normalize_title(title)
-        first_comma = base_name.find(",")
-        indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
+        indicator = extract_indicator(base_name)
 
         return "graph", {
             "iso3": iso3,
             "indicator": indicator,
-            "start_year": int(start_year),
-            "end_year": int(end_year),
+            "start_year": start_year,
+            "end_year": end_year,
+        }
+
+    if graph_match_plain:
+        indicator, iso3 = graph_match_plain.groups()
+
+        # Extract indicator (everything before the first comma in the normalized name)
+        base_name = normalize_title(title)
+        indicator = extract_indicator(base_name)
+
+        return "graph", {
+            "iso3": iso3,
+            "indicator": indicator,
+            "start_year": None,
+            "end_year": None,
         }
 
     # Try map pattern
@@ -75,8 +99,7 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
 
         # Extract indicator
         base_name = normalize_title(title)
-        first_comma = base_name.find(",")
-        indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
+        indicator = extract_indicator(base_name)
 
         # Check if region is a continent
         if region in CONTINENTS:
