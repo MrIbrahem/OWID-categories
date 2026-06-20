@@ -110,7 +110,7 @@ def write_summary_json(
     logger.info(f"Summary JSON written to {SUMMARY_FILE}")
 
 
-def write_not_matched_files(not_matched: List[str]) -> None:
+def write_not_matched_files(not_matched: List[str] | Dict[str, List[str]]) -> None:
     """
     Write a text file listing files that could not be matched.
 
@@ -121,11 +121,8 @@ def write_not_matched_files(not_matched: List[str]) -> None:
         logger.info("No unmatched files to write.")
         return
 
-    not_matched_file = OUTPUT_DIR / "not_matched_files.txt"
-
-    with open(not_matched_file, "w", encoding="utf-8") as f:
-        for title in not_matched:
-            f.write(f"{title}\n")
+    not_matched_file = OUTPUT_DIR / "not_matched_files.json"
+    dump_to_file(not_matched, not_matched_file)
 
     logger.info(f"Unmatched files written to {not_matched_file}")
 

@@ -21,20 +21,17 @@ from .files_dumper import (
     write_not_matched_files,
     write_summary_json,
 )
-from .owid_config import load_credentials
+from .owid_config import CATEGORY_NAME, load_credentials
 from .owid_country_codes import get_country_from_iso3
 
 logger = logging.getLogger(__name__)
-
-# Configuration
-CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
 
 
 @dataclass
 class FilesClassess:
     countries: Dict[str, Dict]
     continents: Dict[str, Dict]
-    not_matched: List[str]
+    not_matched: Dict[str, List[str]]
 
 
 def build_file_page_url(title: str) -> str:
@@ -50,7 +47,14 @@ def build_file_page_url(title: str) -> str:
     return "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")
 
 
-def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], List[str]]:
+data_type = Tuple[
+    Dict[str, Dict],
+    Dict[str, Dict],
+    Dict[str, List[str]],
+]
+
+
+def fetch_files(files: List[str]) -> data_type:
     """
     Process all files and aggregate them by country and continent.
 
@@ -81,6 +85,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
     }
 
     not_matched = []
+
     for title in files:
 
         file_type, parsed_data = classify_and_parse_file(title)
@@ -174,7 +179,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
     logger.info(f"  Countries with data: {len(countries)}")
     logger.info(f"  Continents with data: {len(continents)}")
 
-    return countries, continents, not_matched
+    return countries, continents, not_matched_data
 
 
 def fetch_files_new(files: List[str]) -> FilesClassess:

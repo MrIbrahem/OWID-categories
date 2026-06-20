@@ -20,6 +20,10 @@ try:
 except Exception as e:
     logger.warning(f"Failed to load .env file: {e}")
 
+# Configuration
+CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
+
+
 main_dir = os.getenv("MAIN_DIR", "")
 MAIN_DIR = Path(main_dir) if main_dir else Path()
 
@@ -76,4 +80,5 @@ __all__ = [
     "LOGGER_LEVEL",
     "SUMMARY_FILE",
     "SUMMARY_FILE_BACKUP",
+    "CATEGORY_NAME",
 ]
