@@ -33,7 +33,11 @@ logger = logging.getLogger(__name__)
 # -----------------------------------------
 users_redirects = {
     "vinoda mamatharai": "Vinoda mamatharai",
-    "Cbrescia": "Felino Volador",
+    "cbrescia": "Felino Volador",
+    "abubakar a gwanki": "Gwanki",
+    "sardeeq": "Sardeeq",
+    "muralikrishna m": "Muralikrishna m",
+    "brazal.dang": "Ballardmaize",
 }
 
 
@@ -226,7 +230,9 @@ def main() -> None:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
         user_name = sub.replace("(2nd Application)", "").split("/")[0].strip()
-        username = users_redirects.get(user_name) or user_name  # get_page_creator(site, full_title)
+        username = users_redirects.get(user_name.lower()) or user_name  # get_page_creator(site, full_title)
+        # first letter upper
+        username = username[0].upper() + username[1:]
         data.append(
             {
                 "full_title": full_title,
