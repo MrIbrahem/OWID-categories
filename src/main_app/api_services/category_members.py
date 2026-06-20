@@ -10,7 +10,7 @@ import mwclient
 import requests
 from mwclient.client import Site
 from tqdm import tqdm
-
+from ..owid_config import USER_AGENT
 logger = logging.getLogger(__name__)
 
 # Configuration
@@ -26,7 +26,7 @@ def get_category_count(category_name: str) -> int:
     params = {"action": "query", "titles": category_name, "prop": "categoryinfo", "format": "json"}
 
     # Always include a descriptive User-Agent header per Wikipedia API guidelines
-    headers = {"User-Agent": "CategoryCounterBot/1.0 (your_email@example.com)"}
+    headers = {"User-Agent": USER_AGENT}
 
     try:
         response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -40,7 +40,12 @@ def get_category_count(category_name: str) -> int:
     pages = data.get("query", {}).get("pages", {})
     if not pages:
         return 0
-    page_id = list(pages.keys())[0]
+
+    # page_id = list(pages.keys())[0]
+    page_id = next(iter(pages), None)
+    if page_id is None:
+        logger.warning("No page payload returned for category %s", category_name)
+        return 0
 
     info = pages[page_id].get("categoryinfo", {})
     # {'size': 354, 'pages': 1, 'files': 309, 'subcats': 44}

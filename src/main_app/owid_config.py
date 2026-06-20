@@ -23,6 +23,9 @@ except Exception as e:
 # Configuration
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
 
+# User-Agent header (required by Wikimedia)
+USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
+
 
 main_dir = os.getenv("MAIN_DIR", "")
 MAIN_DIR = Path(main_dir) if main_dir else Path()
@@ -81,4 +84,5 @@ __all__ = [
     "SUMMARY_FILE",
     "SUMMARY_FILE_BACKUP",
     "CATEGORY_NAME",
+    "USER_AGENT",
 ]

@@ -12,16 +12,13 @@ from typing import Optional
 import mwclient
 from mwclient import Site
 
+from ..owid_config import USER_AGENT
 from ..api_services import MwClientPage
 
 logger = logging.getLogger(__name__)
 
-# User-Agent header (required by Wikimedia)
-USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
-
 # Rate limiting: delay between edits in seconds
 EDIT_DELAY = 1
-
 
 def connect_to_commons(username: str, password: str) -> Optional[Site]:
     """
