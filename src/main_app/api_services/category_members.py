@@ -9,6 +9,7 @@ import time
 import mwclient
 import requests
 from mwclient.client import Site
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,6 @@ def get_category_count(category_name):
     size = info.get("size") or 0
     return size
 
-
 def get_category_members_titles(
     site: Site,
     category_name: str,
@@ -50,11 +50,11 @@ def get_category_members_titles(
     Returns:
         List of file titles (strings).
     """
-    page_count = 0
     delay = 0.1  # seconds
     max_delay = 8.0
 
-    logger.info(f"Starting to fetch files from {category_name}")
+    total_pages = get_category_count(category_name)
+    logger.info(f"Starting to fetch files from {category_name}, total members: {total_pages}")
 
     params = {
         # "action": "query",
@@ -76,10 +76,9 @@ def get_category_members_titles(
     all_files = []
     first_request = True
     cmcontinue = None
+
     while first_request or cmcontinue is not None:
         first_request = False
-        if len(all_files) % 1000 == 0:
-            logger.info(f"loaded {len(all_files)} members")
 
         if cmcontinue:
             params["cmcontinue"] = cmcontinue
@@ -88,9 +87,8 @@ def get_category_members_titles(
             data = site.get("query", **params)
             members = data.get("query", {}).get("categorymembers", [])
             all_files.extend([x.get("title", "") for x in members])
-            page_count += 1
 
-            logger.debug(f"Fetched category members {page_count}: {len(members)} page, (total: {len(all_files)})")
+            logger.debug(f"Fetched category members: {len(members)} page, (total: {len(all_files)}/{total_pages})")
 
             if "continue" in data:
                 cmcontinue = data["continue"].get("cmcontinue")
@@ -110,7 +108,7 @@ def get_category_members_titles(
                 time.sleep(delay)
                 continue
 
-    logger.info(f"Finished fetching {len(all_files)} files in {page_count} pages")
+    logger.info(f"Finished fetching {len(all_files)} pages.")
     return all_files
 
 
