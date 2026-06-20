@@ -6,7 +6,6 @@ This script demonstrates the functionality without requiring network access.
 """
 
 import os
-import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -21,11 +20,6 @@ system_temp_dir = Path(tempfile.gettempdir())
 # Now correctly combine it with "test" and set the environment variable
 os.environ["SUMMARY_FILE_BACKUP"] = str(system_temp_dir / "summary_file_backup.json")
 os.environ["MAIN_DIR"] = str(system_temp_dir / "test")
-
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 
 @pytest.fixture(autouse=True)
 def stop_nets(request):
