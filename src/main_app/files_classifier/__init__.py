@@ -35,6 +35,7 @@ MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\
 # ",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d\d,\s*)?(\d+)(?: \(cropped\))?\.svg"
 
 MAP_PATTERN_FULL = re.compile(rf",\s*{CONTINENTS_STR},\s*(?:\w\w\w \d+,\s*)?(\d+)(?: \(cropped\))?\.svg$")
+MAP_PATTERN_BCE = re.compile(rf",\s*{CONTINENTS_STR},\s*(?:\w\w\w \d+,\s*)?([\d,]+)\s*BCE(?: \(cropped\))?\.svg$")
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:

@@ -58,8 +58,12 @@ class TestProcessFiles:
         # Mock file loading
         with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
             with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
+                with patch(
+                    "src.main_app.main_run_categorize.get_category_members_titles",
+                    return_value=[],
+                ):
+                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                        stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
 
         # Assertions
         assert stats["added"] >= 0, "Should have processed some files"
@@ -93,8 +97,12 @@ class TestProcessFiles:
         # Mock file loading
         with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
             with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
+                with patch(
+                    "src.main_app.main_run_categorize.get_category_members_titles",
+                    return_value=[],
+                ):
+                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                        stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
 
         # Should only process 3 files
         assert stats["added"] + stats["skipped"] <= 3, "Should respect per-country limit"
@@ -194,8 +202,12 @@ class TestDryRunSimulation:
         # Process first 3 countries in dry-run
         for json_file in sorted(json_files)[:3]:
             with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                    stats = process_files(mock_site, json_file, dry_run=True)
+                with patch(
+                    "src.main_app.main_run_categorize.get_category_members_titles",
+                    return_value=[],
+                ):
+                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
+                        stats = process_files(mock_site, json_file, dry_run=True)
 
             # Basic assertions
             assert isinstance(stats, dict), "Should return stats dictionary"
