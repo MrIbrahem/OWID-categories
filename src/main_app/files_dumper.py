@@ -4,7 +4,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from .owid_config import (
     CONTINENTS_DIR,
@@ -67,8 +67,7 @@ def write_continent_json_files(continents: Dict[str, Dict]):
 def write_summary_json(
     countries: Dict[str, Dict],
     continents: Dict[str, Dict],
-    total_pages: int = 0,
-    not_matched: int = 0,
+    files_summary: Dict[str, Any],
 ) -> None:
     """
     Write global summary JSON file including countries and continents.
@@ -78,11 +77,7 @@ def write_summary_json(
         continents: Dictionary of continent data keyed by continent name
     """
     summary = {
-        "files": {
-            "total": total_pages,
-            "matched": not_matched,
-            "not_matched": total_pages - not_matched,
-        },
+        "files": files_summary,
         "countries": [],
         "continents": [],
     }

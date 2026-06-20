@@ -228,12 +228,16 @@ def fetch_files_entry(
     # Process and aggregate files by country and continent
     fetch_data = fetch_files(files)
 
+    files_summary = {
+        "total": total_pages,
+        "matched": len(fetch_data.not_matched),
+        "not_matched": {x: len(v) for x, v in fetch_data.not_matched_data.items()},
+    }
     # Write output files
     write_summary_json(
         fetch_data.countries,
         fetch_data.continents,
-        total_pages=total_pages,
-        not_matched=len(fetch_data.not_matched),
+        files_summary=files_summary,
     )
 
     write_country_json_files(fetch_data.countries)

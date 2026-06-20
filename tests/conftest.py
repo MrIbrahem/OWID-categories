@@ -26,4 +26,3 @@ def stop_nets(request):
         return
     # Otherwise, disable the socket for all other tests
     disable_socket(allow_unix_socket=True)
-
