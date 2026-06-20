@@ -1,9 +1,9 @@
 {
     "files": {
         "total": 1633016,
-        "matched": 1023636,
+        "matched": 1400668,
         "not_matched": {
-            "unknown": 609380,
+            "unknown": 232348,
             "unresolved_region": 0
         }
     },
@@ -1422,31 +1422,31 @@
     "continents": [
         {
             "continent": "Africa",
-            "map_count": 118673
+            "map_count": 172922
         },
         {
             "continent": "Asia",
-            "map_count": 118377
+            "map_count": 167975
         },
         {
             "continent": "Europe",
-            "map_count": 119256
+            "map_count": 173417
         },
         {
             "continent": "North America",
-            "map_count": 118307
+            "map_count": 175185
         },
         {
             "continent": "Oceania",
-            "map_count": 118560
+            "map_count": 174026
         },
         {
             "continent": "South America",
-            "map_count": 118504
+            "map_count": 173355
         },
         {
             "continent": "World",
-            "map_count": 119940
+            "map_count": 171769
         }
     ]
 }

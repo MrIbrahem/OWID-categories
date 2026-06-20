@@ -64,7 +64,7 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         }
 
     # Try map pattern
-    map_match = MAP_PATTERN.search(title)# or MAP_PATTERN_FULL.search(title)
+    map_match = MAP_PATTERN.search(title) or MAP_PATTERN_FULL.search(title)
     if map_match:
         region, year = map_match.groups()
         region = region.strip()
