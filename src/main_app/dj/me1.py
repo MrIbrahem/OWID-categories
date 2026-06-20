@@ -22,7 +22,7 @@ from ..owid_config import USER_AGENT, load_credentials
 
 API_URL = "https://meta.wikimedia.org/w/api.php"
 BASE_PAGE = "Hardware donation program"
-SECTION_HEADING = "Messaged to update application"
+SECTION_HEADING = "Current donation requests"
 OUTPUT_FILE = Path(__file__).parent / "file.wiki"
 OUTPUT_FILE_TABLE = Path(__file__).parent / "table.wiki"
 
@@ -213,6 +213,7 @@ def main() -> None:
         return
 
     full_wikitext = get_page_wikitext(site, BASE_PAGE)
+    full_wikitext = full_wikitext.replace("_", " ")
     section = get_section_by_heading(full_wikitext, SECTION_HEADING)
     subpages = extract_subpage_links(section, BASE_PAGE)
 
