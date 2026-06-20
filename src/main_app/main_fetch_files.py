@@ -24,7 +24,7 @@ from .files_dumper import (
     write_summary_json,
 )
 from .owid_config import CATEGORY_NAME, load_credentials
-from .owid_country_codes import get_country_from_iso3
+from .owid_country_codes import get_country_from_iso3, ISO3_TO_COUNTRY_NOT_READY
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +126,9 @@ def fetch_files(files: List[str]) -> FilesClassess:
             logger.debug(f"Could not resolve region: {title}")
             not_matched.append(title)
             not_matched_data["unresolved_region"].append(title)
+            continue
+
+        if iso3 in ISO3_TO_COUNTRY_NOT_READY:
             continue
 
         # Initialize country entry if needed

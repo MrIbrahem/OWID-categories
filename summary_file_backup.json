@@ -69,12 +69,6 @@
             "map_count": 0
         },
         {
-            "iso3": "ATF",
-            "country": null,
-            "graph_count": 12,
-            "map_count": 0
-        },
-        {
             "iso3": "ATG",
             "country": "Antigua and Barbuda",
             "graph_count": 1010,
@@ -201,12 +195,6 @@
             "map_count": 0
         },
         {
-            "iso3": "BVT",
-            "country": null,
-            "graph_count": 5,
-            "map_count": 0
-        },
-        {
             "iso3": "BWA",
             "country": "Botswana",
             "graph_count": 1309,
@@ -300,12 +288,6 @@
             "iso3": "CUB",
             "country": "Cuba",
             "graph_count": 1249,
-            "map_count": 0
-        },
-        {
-            "iso3": "CXR",
-            "country": null,
-            "graph_count": 8,
             "map_count": 0
         },
         {
@@ -549,12 +531,6 @@
             "map_count": 0
         },
         {
-            "iso3": "HMD",
-            "country": null,
-            "graph_count": 8,
-            "map_count": 0
-        },
-        {
             "iso3": "HND",
             "country": "Honduras",
             "graph_count": 1394,
@@ -594,12 +570,6 @@
             "iso3": "IND",
             "country": "India",
             "graph_count": 1564,
-            "map_count": 0
-        },
-        {
-            "iso3": "IOT",
-            "country": null,
-            "graph_count": 6,
             "map_count": 0
         },
         {
@@ -939,12 +909,6 @@
             "map_count": 0
         },
         {
-            "iso3": "NFK",
-            "country": null,
-            "graph_count": 15,
-            "map_count": 0
-        },
-        {
             "iso3": "NGA",
             "country": "Nigeria",
             "graph_count": 1420,
@@ -1008,12 +972,6 @@
             "iso3": "PAN",
             "country": "Panama",
             "graph_count": 1425,
-            "map_count": 0
-        },
-        {
-            "iso3": "PCN",
-            "country": null,
-            "graph_count": 20,
             "map_count": 0
         },
         {
@@ -1122,24 +1080,6 @@
             "iso3": "SGP",
             "country": "Singapore",
             "graph_count": 1326,
-            "map_count": 0
-        },
-        {
-            "iso3": "SGS",
-            "country": null,
-            "graph_count": 9,
-            "map_count": 0
-        },
-        {
-            "iso3": "SHN",
-            "country": null,
-            "graph_count": 1,
-            "map_count": 0
-        },
-        {
-            "iso3": "SJM",
-            "country": null,
-            "graph_count": 14,
             "map_count": 0
         },
         {
@@ -1323,12 +1263,6 @@
             "map_count": 0
         },
         {
-            "iso3": "TWN",
-            "country": null,
-            "graph_count": 63,
-            "map_count": 0
-        },
-        {
             "iso3": "TZA",
             "country": "Tanzania",
             "graph_count": 1421,
@@ -1344,12 +1278,6 @@
             "iso3": "UKR",
             "country": "Ukraine",
             "graph_count": 1434,
-            "map_count": 0
-        },
-        {
-            "iso3": "UMI",
-            "country": null,
-            "graph_count": 1,
             "map_count": 0
         },
         {

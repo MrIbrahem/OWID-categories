@@ -23,6 +23,9 @@ OWID_COUNTRY_CODES_NOT_READY = {
     "Heard Island and McDonald Islands": "HMD",
 }
 
+# Create reverse mapping for O(1) lookups
+ISO3_TO_COUNTRY_NOT_READY = {code: country for country, code in OWID_COUNTRY_CODES_NOT_READY.items()}
+
 OWID_COUNTRY_CODES = {
     "Afghanistan": "AFG",
     "Albania": "ALB",
