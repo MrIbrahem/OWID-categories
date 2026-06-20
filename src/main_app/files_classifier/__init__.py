@@ -23,6 +23,7 @@ CONTINENTS = {
     "World",
 }
 CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oceania|Americas|World)"
+
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 
@@ -32,10 +33,8 @@ GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 
 MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\.svg$")
 
-# ",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d\d,\s*)?(\d+)(?: \(cropped\))?\.svg"
-
-MAP_PATTERN_FULL = re.compile(rf",\s*{CONTINENTS_STR},\s*(?:\w\w\w \d+,\s*)?(\d+)(?: \(cropped\))?\.svg$")
-MAP_PATTERN_BCE = re.compile(rf",\s*{CONTINENTS_STR},\s*(?:\w\w\w \d+,\s*)?([\d,]+)\s*BCE(?: \(cropped\))?\.svg$")
+MAP_PATTERN_FULL = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?-*(\d+)(?: \(cropped\))?\.svg$")
+MAP_PATTERN_BCE = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?([\d,]+)\s*BCE(?: \(cropped\))?\.svg$")
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
@@ -68,9 +67,10 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         }
 
     # Try map pattern
-    map_match = MAP_PATTERN_FULL.search(title) or MAP_PATTERN.search(title)
+    map_match = MAP_PATTERN_FULL.search(title) or MAP_PATTERN.search(title) or MAP_PATTERN_BCE.search(title)
     if map_match:
         region, year = map_match.groups()
+        year = year.replace(",", "")
         region = region.strip()
 
         # Extract indicator
