@@ -22,7 +22,6 @@ from ..owid_config import USER_AGENT, load_credentials
 
 API_URL = "https://meta.wikimedia.org/w/api.php"
 BASE_PAGE = "Hardware donation program"
-SECTION_HEADING = "Current donation requests"
 OUTPUT_FILE = Path(__file__).parent / "file.wiki"
 OUTPUT_FILE_TABLE = Path(__file__).parent / "table.wiki"
 
@@ -218,53 +217,65 @@ def main() -> None:
 
     full_wikitext = get_page_wikitext(site, BASE_PAGE)
     full_wikitext = full_wikitext.replace("_", " ")
-    section = get_section_by_heading(full_wikitext, SECTION_HEADING)
-    subpages = extract_subpage_links(section, BASE_PAGE)
 
-    lines = [f"=== {SECTION_HEADING} ===", ""]
-    rows = []
+    SECTION_HEADINGS = [
+        "Updated as of May 1st 2026",
+        "Messaged to update application",
+        "Draft requests",
+    ]
+    full_text = ""
+    full_text_table = ""
 
-    data = []
+    for srction_title in SECTION_HEADINGS:
+        section = get_section_by_heading(full_wikitext, srction_title)
+        subpages = extract_subpage_links(section, BASE_PAGE)
 
-    for sub in subpages:
-        full_title = f"{BASE_PAGE}/{sub}"
-        last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
-        user_name = sub.replace("(2nd Application)", "").split("/")[0].strip()
-        username = users_redirects.get(user_name.lower()) or user_name  # get_page_creator(site, full_title)
-        # first letter upper
-        username = username[0].upper() + username[1:]
-        data.append(
-            {
-                "full_title": full_title,
-                "last_edit": last_edit,
-                "username": username,
-            }
-        )
+        lines = [f"=== {srction_title} ===", ""]
+        rows = []
 
-    users = [x["username"] for x in data if x["username"]]
+        data = []
 
-    editcounts = get_global_editcounts(site, users)
+        for sub in subpages:
+            full_title = f"{BASE_PAGE}/{sub}"
+            last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
+            user_name = sub.replace("(2nd Application)", "").split("/")[0].strip()
+            username = users_redirects.get(user_name.lower()) or user_name  # get_page_creator(site, full_title)
+            # first letter upper
+            username = username[0].upper() + username[1:]
+            data.append(
+                {
+                    "full_title": full_title,
+                    "last_edit": last_edit,
+                    "username": username,
+                }
+            )
 
-    for sub in data:
-        full_title = sub["full_title"]
-        last_edit = sub["last_edit"]
-        username = sub["username"]
-        editcount = editcounts.get(username) if username else None
-        editcount_str = f"{editcount:,}" if isinstance(editcount, int) else "unknown"
+        users = [x["username"] for x in data if x["username"]]
 
-        line = f"*[[{full_title}]] (Last edited: {last_edit}, {username or 'unknown'} global edits: {editcount_str})"
-        lines.append(line)
+        editcounts = get_global_editcounts(site, users)
 
-        page_link = f"[[{full_title}]]"
-        user_link = f"[[User:{username}]]" if username else "unknown"
+        for sub in data:
+            full_title = sub["full_title"]
+            last_edit = sub["last_edit"]
+            username = sub["username"]
+            editcount = editcounts.get(username) if username else None
+            editcount_str = f"{editcount:,}" if isinstance(editcount, int) else "unknown"
 
-        rows.append((page_link, last_edit, user_link, editcount_str))
+            line = f"*[[{full_title}]] (Last edited: {last_edit}, {username or 'unknown'} global edits: {editcount_str})"
+            lines.append(line)
 
-    table = build_wikitable(rows)
-    output_table = f"=== {SECTION_HEADING} ===\n\n{table}\n"
-    OUTPUT_FILE_TABLE.write_text(output_table, encoding="utf-8")
+            page_link = f"[[{full_title}]]"
+            user_link = f"[[User:{username}]]" if username else "unknown"
 
-    output_text = "\n".join(lines) + "\n"
-    OUTPUT_FILE.write_text(output_text, encoding="utf-8")
+            rows.append((page_link, last_edit, user_link, editcount_str))
+
+        table = build_wikitable(rows)
+        full_text_table += f"=== {srction_title} ===\n\n{table}\n"
+
+        output_text = "\n".join(lines) + "\n"
+        full_text += f"=== {srction_title} ===\n\n{output_text}\n"
+
+    OUTPUT_FILE.write_text(full_text, encoding="utf-8")
+    OUTPUT_FILE_TABLE.write_text(full_text_table, encoding="utf-8")
 
     logger.info(f"Saved to {OUTPUT_FILE}")
