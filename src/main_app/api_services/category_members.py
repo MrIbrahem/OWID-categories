@@ -39,10 +39,12 @@ def get_category_count(category_name):
     size = info.get("size") or 0
     return size
 
+
 def get_category_members_titles(
     site: Site,
     category_name: str,
     namespace: int | None = None,
+    total_pages: int | None = None,
 ) -> list[str]:
     """
     Fetch all file titles from the OWID category using MediaWiki API with pagination.
@@ -53,7 +55,7 @@ def get_category_members_titles(
     delay = 0.1  # seconds
     max_delay = 8.0
 
-    total_pages = get_category_count(category_name)
+    total_pages = total_pages or get_category_count(category_name)
     logger.info(f"Starting to fetch files from {category_name}, total members: {total_pages}")
 
     params = {
@@ -77,36 +79,44 @@ def get_category_members_titles(
     first_request = True
     cmcontinue = None
 
-    while first_request or cmcontinue is not None:
-        first_request = False
+    # Initialize tqdm with the total expected items
+    with tqdm(total=total_pages, desc="Fetching members", unit="item") as pbar:
+        while first_request or cmcontinue is not None:
+            first_request = False
 
-        if cmcontinue:
-            params["cmcontinue"] = cmcontinue
+            if cmcontinue:
+                params["cmcontinue"] = cmcontinue
 
-        try:
-            data = site.get("query", **params)
-            members = data.get("query", {}).get("categorymembers", [])
-            all_files.extend([x.get("title", "") for x in members])
+            try:
+                data = site.get("query", **params)
+                members = data.get("query", {}).get("categorymembers", [])
 
-            logger.debug(f"Fetched category members: {len(members)} page, (total: {len(all_files)}/{total_pages})")
+                # Extract titles
+                new_titles = [x.get("title", "") for x in members]
+                all_files.extend(new_titles)
 
-            if "continue" in data:
-                cmcontinue = data["continue"].get("cmcontinue")
-                time.sleep(delay)
-            else:
-                break
+                # Update the progress bar by the number of items fetched in this batch
+                pbar.update(len(new_titles))
 
-        except mwclient.errors.APIError as e:
-            if e.code == "invalidcategory":
-                logger.warning(f"Invalid category: {category_name}")
-                break
+                logger.debug(f"Fetched category members: {len(members)} page, (total: {len(all_files)}/{total_pages})")
 
-        except Exception as e:
-            logger.error("API request failed %s", str(e))
-            if delay < max_delay:
-                delay = min(delay * 2, max_delay)
-                time.sleep(delay)
-                continue
+                if "continue" in data:
+                    cmcontinue = data["continue"].get("cmcontinue")
+                    time.sleep(delay)
+                else:
+                    break
+
+            except mwclient.errors.APIError as e:
+                if e.code == "invalidcategory":
+                    logger.warning(f"Invalid category: {category_name}")
+                    break
+
+            except Exception as e:
+                logger.error("API request failed %s", str(e))
+                if delay < max_delay:
+                    delay = min(delay * 2, max_delay)
+                    time.sleep(delay)
+                    continue
 
     logger.info(f"Finished fetching {len(all_files)} pages.")
     return all_files

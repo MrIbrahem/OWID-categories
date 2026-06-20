@@ -11,7 +11,7 @@ import logging
 import re
 from typing import Dict, List, Optional, Tuple
 
-from .api_services import get_category_members_titles
+from .api_services import get_category_count, get_category_members_titles
 from .categorize import (
     connect_to_commons,
 )
@@ -325,7 +325,17 @@ def fetch_files_entry() -> None:
         return
 
     # Fetch all files from the category
-    files = get_category_members_titles(site, CATEGORY_NAME, namespace=6)
+    total_pages = get_category_count(CATEGORY_NAME)
+    files = get_category_members_titles(
+        site,
+        CATEGORY_NAME,
+        namespace=6,
+    )
+
+    if len(files) == total_pages:
+        logger.info(f"Successfully fetched {len(files)} files from the category")
+    else:
+        logger.warning(f"Only fetched {len(files)} out of {total_pages} files from the category")
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)
