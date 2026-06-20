@@ -8,13 +8,14 @@ and, for each linked subpage, prints:
 
 import logging
 from pathlib import Path
+from typing import Optional
 
 import mwclient
 import mwclient.errors
 import wikitextparser as wtp
+from mwclient.client import Site
 
-from ..categorize import connect_to_commons
-from ..owid_config import load_credentials
+from ..owid_config import USER_AGENT, load_credentials
 
 API_URL = "https://meta.wikimedia.org/w/api.php"
 BASE_PAGE = "Hardware donation program"
@@ -23,6 +24,34 @@ OUTPUT_FILE = Path(__file__).parent / "file.wiki"
 OUTPUT_FILE_TABLE = Path(__file__).parent / "table.wiki"
 
 logger = logging.getLogger(__name__)
+
+
+def connect_to_meta(username: str, password: str) -> Optional[Site]:
+    """
+    Connect to Wikimedia Commons using mwclient.
+
+    Args:
+        username: Bot username
+        password: Bot password
+
+    Returns:
+        Connected Site object or None on failure
+    """
+    try:
+        logger.info("Connecting to meta.wikimedia.org...")
+        site = Site("meta.wikimedia.org", clients_useragent=USER_AGENT)
+
+        logger.info(f"Logging in as {username}...")
+        site.login(username, password)
+
+        logger.info("Successfully connected and logged in")
+        return site
+    except mwclient.errors.LoginError as e:
+        logger.error(f"Login failed: {e}")
+        return None
+    except Exception as e:
+        logger.exception(f"Failed to connect to meta.wikimedia.org: {e}")
+        return None
 
 
 def get_page_wikitext(site, page_title):
@@ -156,7 +185,7 @@ def main() -> None:
         return
 
     # Connect to Commons
-    site = connect_to_commons(username, password)
+    site = connect_to_meta(username, password)
     if not site:
         logger.error("Failed to connect to Wikimedia Commons")
         return
