@@ -33,14 +33,18 @@ LOG_DIR = MAIN_DIR / "logs"
 
 # Ensure log directory exists
 LOG_DIR.parent.mkdir(parents=True, exist_ok=True)
-OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
-
-COUNTRIES_DIR = OUTPUT_DIR / "countries"
-CONTINENTS_DIR = OUTPUT_DIR / "continents"
 
 LOG_FILE_COUNTRIES = LOG_DIR / "categorize_countries.log"
 LOG_FILE_CONTINENTS = LOG_DIR / "categorize_continents.log"
 LOG_FILE_FETCH_COMMONS = LOG_DIR / "fetch_commons.log"
+
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+COUNTRIES_DIR = OUTPUT_DIR / "countries"
+CONTINENTS_DIR = OUTPUT_DIR / "continents"
+SUMMARY_FILE = OUTPUT_DIR / "owid_summary.json"
+
+COUNTRIES_DIR.mkdir(parents=True, exist_ok=True)
+CONTINENTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_credentials() -> tuple[Optional[str], Optional[str]]:
@@ -69,4 +73,5 @@ __all__ = [
     "LOG_FILE_COUNTRIES",
     "LOG_FILE_CONTINENTS",
     "LOGGER_LEVEL",
+    "SUMMARY_FILE",
 ]

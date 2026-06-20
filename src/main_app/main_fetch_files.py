@@ -6,24 +6,28 @@ This script fetches all files from Category:Uploaded_by_OWID_importer_tool on Wi
 classifies them as graphs or maps, extracts country codes, and generates JSON output files.
 """
 
-import json
 import logging
 import re
 from typing import Dict, List, Optional, Tuple
 
 from .api_services import get_category_count, get_category_members_titles
-from .categorize import (
-    connect_to_commons,
-)
-from .owid_config import COUNTRIES_DIR, OUTPUT_DIR, load_credentials
+from .categorize import connect_to_commons
+from .owid_config import load_credentials
 from .owid_country_codes import get_country_from_iso3, get_iso3_from_country
 from .utils import normalize_title
+
+from .files_dumper import (
+    write_country_json_files,
+    write_continent_json_files,
+    write_summary_json,
+    write_not_matched_files,
+    save_category_members,
+)
 
 logger = logging.getLogger(__name__)
 
 # Configuration
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
-SUMMARY_FILE = OUTPUT_DIR / "owid_summary.json"
 
 # List of continents for classification
 CONTINENTS = {
@@ -214,100 +218,6 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
 
     return countries, continents, not_matched
 
-
-def write_country_json_files(countries: Dict[str, Dict]):
-    """
-    Write individual JSON files for each country.
-
-    Args:
-        countries: Dictionary of country data keyed by ISO3
-    """
-    COUNTRIES_DIR.mkdir(parents=True, exist_ok=True)
-
-    logger.info(f"Writing {len(countries)} country JSON files")
-
-    for iso3, data in countries.items():
-        file_path = COUNTRIES_DIR / f"{iso3}.json"
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-
-    logger.info(f"Country JSON files written to {COUNTRIES_DIR}")
-
-
-def write_continent_json_files(continents: Dict[str, Dict]):
-    """
-    Write individual JSON files for each continent.
-
-    Args:
-        continents: Dictionary of continent data keyed by continent name
-    """
-    CONTINENTS_DIR = OUTPUT_DIR / "continents"
-    CONTINENTS_DIR.mkdir(parents=True, exist_ok=True)
-
-    logger.info(f"Writing {len(continents)} continent JSON files")
-
-    for continent, data in continents.items():
-        # Use continent name as filename (replace spaces with underscores)
-        safe_name = continent.replace(" ", "_")
-        file_path = CONTINENTS_DIR / f"{safe_name}.json"
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-
-    logger.info(f"Continent JSON files written to {CONTINENTS_DIR}")
-
-
-def write_summary_json(countries: Dict[str, Dict], continents: Dict[str, Dict]) -> None:
-    """
-    Write global summary JSON file including countries and continents.
-
-    Args:
-        countries: Dictionary of country data keyed by ISO3
-        continents: Dictionary of continent data keyed by continent name
-    """
-    summary = {"countries": [], "continents": []}
-
-    for iso3, data in sorted(countries.items()):
-        summary["countries"].append(
-            {
-                "iso3": iso3,
-                "country": data["country"],
-                "graph_count": len(data["graphs"]),
-                "map_count": len(data["maps"]),
-            }
-        )
-
-    for continent, data in sorted(continents.items()):
-        summary["continents"].append({"continent": continent, "map_count": len(data["maps"])})
-
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
-
-    logger.info(f"Summary JSON written to {SUMMARY_FILE}")
-
-
-def write_not_matched_files(not_matched: List[str]) -> None:
-    """
-    Write a text file listing files that could not be matched.
-
-    Args:
-        not_matched: List of file titles that were not matched
-    """
-    if not not_matched:
-        logger.info("No unmatched files to write.")
-        return
-
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    not_matched_file = OUTPUT_DIR / "not_matched_files.txt"
-
-    with open(not_matched_file, "w", encoding="utf-8") as f:
-        for title in not_matched:
-            f.write(f"{title}\n")
-
-    logger.info(f"Unmatched files written to {not_matched_file}")
-
-
 def fetch_files_entry() -> None:
     """Main execution function."""
 
@@ -333,9 +243,8 @@ def fetch_files_entry() -> None:
     )
 
     if len(files) == total_pages:
+        save_category_members(files)
         logger.info(f"Successfully fetched {len(files)} files from the category")
-    else:
-        logger.warning(f"Only fetched {len(files)} out of {total_pages} files from the category")
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)
