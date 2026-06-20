@@ -6,11 +6,12 @@ import logging
 from typing import Dict, List
 
 from .owid_config import (
-    COUNTRIES_DIR,
     CONTINENTS_DIR,
+    COUNTRIES_DIR,
     OUTPUT_DIR,
     SUMMARY_FILE,
 )
+
 logger = logging.getLogger(__name__)
 
 # List of continents for classification

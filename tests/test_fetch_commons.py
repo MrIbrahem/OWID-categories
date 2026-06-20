@@ -9,9 +9,11 @@ import json
 
 import pytest
 
-from src.main_app.main_fetch_files import (
+from src.main_app.files_dumper import (
     COUNTRIES_DIR,
     OUTPUT_DIR,
+)
+from src.main_app.main_fetch_files import (
     classify_and_parse_file,
     fetch_files,
     write_country_json_files,

@@ -12,17 +12,16 @@ from typing import Dict, List, Optional, Tuple
 
 from .api_services import get_category_count, get_category_members_titles
 from .categorize import connect_to_commons
+from .files_dumper import (
+    save_category_members,
+    write_continent_json_files,
+    write_country_json_files,
+    write_not_matched_files,
+    write_summary_json,
+)
 from .owid_config import load_credentials
 from .owid_country_codes import get_country_from_iso3, get_iso3_from_country
 from .utils import normalize_title
-
-from .files_dumper import (
-    write_country_json_files,
-    write_continent_json_files,
-    write_summary_json,
-    write_not_matched_files,
-    save_category_members,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -217,6 +216,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
     logger.info(f"  Continents with data: {len(continents)}")
 
     return countries, continents, not_matched
+
 
 def fetch_files_entry() -> None:
     """Main execution function."""
