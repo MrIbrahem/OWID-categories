@@ -120,6 +120,7 @@ def get_page_wikitext(site, page_title):
 
 
 def get_last_edit_timestamp(site, page_title):
+    logger.info(f"Fetching last edit timestamp of {page_title}...")
     params = {
         "prop": "revisions",
         "titles": page_title,
@@ -143,6 +144,7 @@ def get_last_edit_timestamp(site, page_title):
 
 def get_page_creator(site, page_title):
     """Username of the oldest revision (i.e. who created the page)."""
+    logger.info(f"Fetching page creator of {page_title}...")
     params = {
         "prop": "revisions",
         "titles": page_title,
@@ -167,6 +169,7 @@ def get_page_creator(site, page_title):
 
 
 def get_global_editcount(site, username):
+    logger.info(f"Fetching global edit count of {username}...")
     params = {
         "list": "globalusers",
         "gusprop": "editcount",
@@ -231,7 +234,3 @@ def main() -> None:
     OUTPUT_FILE.write_text(output_text, encoding="utf-8")
     print(output_text)
     print(f"Saved to {OUTPUT_FILE}")
-
-
-if __name__ == "__main__":
-    main()
