@@ -173,10 +173,8 @@ def main() -> None:
         username = get_page_creator(site, full_title)
         editcount = get_global_editcount(site, username) if username else None
         editcount_str = f"{editcount:,}" if isinstance(editcount, int) else "unknown"
-
-        lines.append(
-            f"*[[{full_title}]] (Last edited: {last_edit}, " f"{username or 'unknown'} global edits: {editcount_str})"
-        )
+        line = f"*[[{full_title}]] (Last edited: {last_edit}, {username or 'unknown'} global edits: {editcount_str})"
+        lines.append(line)
 
         page_link = f"[[{full_title}]]"
         user_link = f"[[User:{username}]]" if username else "unknown"
