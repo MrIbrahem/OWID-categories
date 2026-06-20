@@ -5,6 +5,7 @@ OWID Commons File Fetcher and Processor
 
 import logging
 import time
+from typing import Any
 
 import mwclient
 import requests
@@ -190,8 +191,46 @@ def get_category_members(
         return []
 
 
+def get_subcats_informations(
+    site: Site,
+    category_name: str,
+) -> dict[str, Any]:
+    """ """
+    logger.info(f"Starting to fetch informations of {category_name} subcats")
+
+    params = {
+        # "action": "query",
+        "format": "json",
+        "prop": "categoryinfo",
+        "generator": "categorymembers",
+        "formatversion": "2",
+        "gcmtitle": category_name,
+        "gcmtype": "subcat",
+        "gcmlimit": "max",
+    }
+
+    data = {}
+
+    try:
+        data = site.get("query", **params)
+    except mwclient.errors.APIError as e:
+        if e.code == "invalidcategory":
+            logger.warning(f"Invalid category: {category_name}")
+
+    except Exception as e:
+        logger.error("API request failed %s", str(e))
+
+    pages = data.get("query", {}).get("pages", [])
+
+    # "categoryinfo": { "size": 12, "pages": 0, "files": 12, "subcats": 0, "hidden": false }
+    data = {x["title"]: x.get("categoryinfo", {}) for x in pages if x.get("title")}
+
+    return data
+
+
 __all__ = [
     "get_category_count",
     "get_category_members_titles",
     "get_category_members",
+    "get_subcats_informations",
 ]

@@ -63,6 +63,7 @@ def normalize_country_name(country: str) -> str:
         "Solomon Islands",
         "Comoros",
         "Gambia",
+        "Faroe Islands",
         "Vatican City",
         # Note: "Vatican" is included to handle the variant name used in OWID country codes,
         # even though "Vatican City" is the standard form

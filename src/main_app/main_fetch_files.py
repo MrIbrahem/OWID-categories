@@ -12,17 +12,19 @@ from typing import Any, Dict, List, Tuple
 
 from .api_services import get_category_count, get_category_members_titles
 from .categorize import connect_to_commons
+from .categorize.wikitext_report import create_wikitext_report, make_report_data
 from .files_classifier import classify_and_parse_file
 from .files_dumper import (
     load_category_members_from_json,
     save_category_members,
+    save_wikitext_report,
     write_continent_json_files,
     write_country_json_files,
     write_not_matched_files,
     write_summary_json,
 )
 from .owid_config import CATEGORY_NAME, load_credentials
-from .owid_country_codes import get_country_from_iso3
+from .owid_country_codes import get_country_from_iso3, ISO3_TO_COUNTRY_NOT_READY
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +113,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "year": parsed_data["year"],
                 "file_page": file_page,
             }
             continents[continent]["maps"].append(entry)
@@ -125,6 +126,9 @@ def fetch_files(files: List[str]) -> FilesClassess:
             logger.debug(f"Could not resolve region: {title}")
             not_matched.append(title)
             not_matched_data["unresolved_region"].append(title)
+            continue
+
+        if iso3 in ISO3_TO_COUNTRY_NOT_READY:
             continue
 
         # Initialize country entry if needed
@@ -148,8 +152,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "start_year": parsed_data["start_year"],
-                "end_year": parsed_data["end_year"],
                 "file_page": file_page,
             }
             countries[iso3]["graphs"].append(entry)
@@ -159,7 +161,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "year": parsed_data["year"],
                 "region": parsed_data["region"],
                 "file_page": file_page,
             }
@@ -224,6 +225,21 @@ def load_files(load_from_json: bool) -> Tuple[List[str], int]:
     return files, total_pages
 
 
+def get_site() -> None | Any:
+    username, password = load_credentials()
+    if not username or not password:
+        logger.error("Failed to load credentials from .env file")
+        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
+        return None
+
+    # Connect to Commons
+    site = connect_to_commons(username, password)
+    if not site:
+        logger.error("Failed to connect to Wikimedia Commons")
+        return None
+    return site
+
+
 def fetch_files_entry(
     load_from_json: bool = False,
 ) -> None:
@@ -249,6 +265,17 @@ def fetch_files_entry(
     write_country_json_files(fetch_data.countries)
     write_continent_json_files(fetch_data.continents)
     write_not_matched_files(fetch_data.not_matched_data)
+
+    site = get_site()
+
+    report_data = make_report_data(
+        site,
+        fetch_data.countries,
+        fetch_data.continents,
+    )
+
+    wikitext = create_wikitext_report(report_data)
+    save_wikitext_report(report_data, wikitext)
 
     logger.info("Processing complete!")
 
