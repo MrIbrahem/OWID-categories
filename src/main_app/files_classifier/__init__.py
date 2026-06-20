@@ -22,9 +22,11 @@ CONTINENTS = {
     "Americas",
     "World",
 }
+
 CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oceania|Americas|World)"
 
 DATE_FORMAT = r"\d+|\w\w\w \d+,\s* \d+|[\d,]+ BCE"
+
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(rf",\s*({DATE_FORMAT})\s+to\s+({DATE_FORMAT}),\s*(\w+)\.svg$")
 
@@ -34,11 +36,7 @@ GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),\s*([a-zA-Z]{3})\.svg$")
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
 # Note: Hyphen is at the end of character class to avoid being interpreted as a range
 
-MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\.svg$")
-
-MAP_PATTERN_FULL = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?-*(\d+)(?: \(cropped\))?\.svg$")
-MAP_PATTERN_BCE = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(?:\w\w\w \d+,\s*)?([\d,]+)\s*BCE(?: \(cropped\))?\.svg$")
-
+MAP_PATTERN_FULL = re.compile(rf",\s*([A-Z][A-Za-z \(\)-]+),\s*({DATE_FORMAT})(?: \(cropped\))?\.svg$")
 
 def extract_indicator(base_name: str) -> str:
     first_comma = base_name.find(",")
@@ -87,10 +85,9 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         }
 
     # Try map pattern
-    map_match = MAP_PATTERN_FULL.search(title) or MAP_PATTERN.search(title) or MAP_PATTERN_BCE.search(title)
+    map_match = MAP_PATTERN_FULL.search(title)
     if map_match:
-        region, year = map_match.groups()
-        year = year.replace(",", "")
+        region, _ = map_match.groups()
         region = region.strip()
 
         # Extract indicator
@@ -102,7 +99,6 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
             return "continent_map", {
                 "continent": region,
                 "indicator": indicator,
-                "year": int(year),
             }
 
         # Try to resolve region to ISO3
@@ -112,7 +108,6 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
             "iso3": iso3,
             "region": region,
             "indicator": indicator,
-            "year": int(year),
         }
     # Unknown file type
     return None, None

@@ -111,7 +111,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "year": parsed_data["year"],
                 "file_page": file_page,
             }
             continents[continent]["maps"].append(entry)
@@ -157,7 +156,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "year": parsed_data["year"],
                 "region": parsed_data["region"],
                 "file_page": file_page,
             }

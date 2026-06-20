@@ -51,7 +51,6 @@ def test_classification():
     assert file_type == "map", "Should classify as map"
     assert parsed_data is not None, "Should parse data successfully"
     assert parsed_data["region"] == "Canada", "Should extract correct region"
-    assert parsed_data["year"] == 1990, "Should extract correct year"
     assert "indicator" in parsed_data, "Should have indicator field"
 
     # Test map file with country name (United States)
@@ -59,7 +58,6 @@ def test_classification():
     assert file_type == "map", "Should classify as map"
     assert parsed_data is not None
     assert parsed_data["region"] == "United States", "Should extract correct region"
-    assert parsed_data["year"] == 2020, "Should extract correct year"
 
     # Test unknown file type
     file_type, parsed_data = classify_and_parse_file("File:Some other file.png")
