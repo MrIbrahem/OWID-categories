@@ -16,7 +16,7 @@ import mwclient
 
 from .api_services import (
     get_category_count,
-    get_category_members,
+    get_category_members_titles,
 )
 from .categorize import (
     add_category_to_page,
@@ -144,7 +144,7 @@ def process_files(
         return stats
 
     # check for members in the category
-    existing_titles = get_category_members(site, category, namespace=6)
+    existing_titles = get_category_members_titles(site, category, namespace=6)
 
     logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
 

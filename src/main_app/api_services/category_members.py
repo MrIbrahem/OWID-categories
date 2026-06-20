@@ -122,7 +122,8 @@ def get_category_members(
     """
     Retrieve all members of a specified category from a MediaWiki site.
     """
-    logger.debug(f"load category members for {category_title}")
+    logger.info(f"load category members for {category_title}")
+
     try:
         category = site.pages[category_title]
         # Use list comprehension for efficiency - consumes the generator
