@@ -25,8 +25,9 @@ CONTINENTS = {
 CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oceania|Americas|World)"
 
 # Regex patterns for classification
-GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),(?: OWID)?\s*(\w+)\.svg$")
-GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),(?: OWID)?\s*([a-zA-Z]{3})\.svg$")
+GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
+GRAPH_PATTERN_LONG_DATE = re.compile(r",\s*(?:\w\w\w \d+,\s*)?(\d+)\s+to\s+(?:\w\w\w \d+,\s*)?(\d+),\s*(\w+)\.svg$")
+GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),\s*([a-zA-Z]{3})\.svg$")
 
 # Map pattern: country/region name followed by a single year
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
@@ -57,7 +58,7 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         - parsed_data is a dict with extracted fields
     """
     # Try graph pattern first
-    graph_match = GRAPH_PATTERN.search(title)
+    graph_match = GRAPH_PATTERN.search(title) or GRAPH_PATTERN_LONG_DATE.search(title)
     graph_match_plain = GRAPH_PATTERN_PLAIN.search(title)
 
     if graph_match:
