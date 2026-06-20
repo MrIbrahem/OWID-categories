@@ -5,7 +5,6 @@ OWID Commons File Fetcher and Processor
 
 import logging
 import time
-from re import X
 from typing import Any
 
 import mwclient
