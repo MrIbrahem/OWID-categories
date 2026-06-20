@@ -31,7 +31,8 @@ logger = logging.getLogger(__name__)
 class FilesClassess:
     countries: Dict[str, Dict]
     continents: Dict[str, Dict]
-    not_matched: Dict[str, List[str]]
+    not_matched: List[str]
+    not_matched_data: Dict[str, List[str]]
 
 
 def build_file_page_url(title: str) -> str:
@@ -47,14 +48,7 @@ def build_file_page_url(title: str) -> str:
     return "https://commons.wikimedia.org/wiki/" + title.replace(" ", "_")
 
 
-data_type = Tuple[
-    Dict[str, Dict],
-    Dict[str, Dict],
-    Dict[str, List[str]],
-]
-
-
-def fetch_files(files: List[str]) -> data_type:
+def fetch_files(files: List[str]) -> FilesClassess:
     """
     Process all files and aggregate them by country and continent.
 
@@ -179,15 +173,11 @@ def fetch_files(files: List[str]) -> data_type:
     logger.info(f"  Countries with data: {len(countries)}")
     logger.info(f"  Continents with data: {len(continents)}")
 
-    return countries, continents, not_matched_data
-
-
-def fetch_files_new(files: List[str]) -> FilesClassess:
-    countries, continents, not_matched = fetch_files(files)
     return FilesClassess(
         countries=countries,
         continents=continents,
         not_matched=not_matched,
+        not_matched_data=not_matched_data,
     )
 
 
@@ -236,18 +226,18 @@ def fetch_files_entry(
     files, total_pages = load_files(load_from_json, site)
 
     # Process and aggregate files by country and continent
-    fetch_data = fetch_files_new(files)
+    fetch_data = fetch_files(files)
 
     # Write output files
     write_country_json_files(fetch_data.countries)
     write_continent_json_files(fetch_data.continents)
-    write_not_matched_files(fetch_data.not_matched)
+    write_not_matched_files(fetch_data.not_matched_data)
 
     write_summary_json(
         fetch_data.countries,
         fetch_data.continents,
         total_pages=total_pages,
-        not_matched=len(fetch_data.not_matched),
+        not_matched=len(fetch_data.not_matched_data),
     )
 
     logger.info("Processing complete!")

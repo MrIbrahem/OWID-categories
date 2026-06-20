@@ -15,7 +15,7 @@ from src.main_app.files_dumper import (
 )
 from src.main_app.main_fetch_files import (
     classify_and_parse_file,
-    fetch_files_new,
+    fetch_files,
     write_country_json_files,
     write_summary_json,
 )
@@ -81,7 +81,7 @@ def test_processing():
 
     # Process files
 
-    fetch_data = fetch_files_new(sample_files)
+    fetch_data = fetch_files(sample_files)
 
     countries = fetch_data.countries
     continents = fetch_data.continents
