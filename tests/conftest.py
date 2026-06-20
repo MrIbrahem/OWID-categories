@@ -19,7 +19,7 @@ from pytest_socket import disable_socket
 system_temp_dir = Path(tempfile.gettempdir())
 
 # Now correctly combine it with "test" and set the environment variable
-os.environ.setdefault("MAIN_DIR", str(system_temp_dir / "test"))
+os.environ["MAIN_DIR"] = str(system_temp_dir / "test")
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
