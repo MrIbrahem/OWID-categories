@@ -1,5 +1,9 @@
 {
-    "total_pages": 1633016,
+    "files": {
+        "total": 1633016,
+        "matched": 609380,
+        "not_matched": 1023636
+    },
     "countries": [
         {
             "iso3": "ABW",

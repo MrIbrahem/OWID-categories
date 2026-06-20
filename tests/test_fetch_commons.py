@@ -15,7 +15,7 @@ from src.main_app.files_dumper import (
 )
 from src.main_app.main_fetch_files import (
     classify_and_parse_file,
-    fetch_files,
+    fetch_files_new,
     write_country_json_files,
     write_summary_json,
 )
@@ -80,7 +80,11 @@ def test_processing():
     assert len(sample_files) == 10, "Should have 10 sample files"
 
     # Process files
-    countries, continents, not_matched = fetch_files(sample_files)
+
+    fetch_data = fetch_files_new(sample_files)
+
+    countries = fetch_data.countries
+    continents = fetch_data.continents
 
     # Assertions on processed data
     assert len(countries) > 0, "Should process at least one country"

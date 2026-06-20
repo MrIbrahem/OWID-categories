@@ -8,6 +8,7 @@ classifies them as graphs or maps, extracts country codes, and generates JSON ou
 
 import logging
 import re
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 from .api_services import get_category_count, get_category_members_titles
@@ -48,6 +49,13 @@ GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
 # The region/country name should start with a letter and can contain letters, spaces, hyphens, and parentheses
 # Note: Hyphen is at the end of character class to avoid being interpreted as a range
 MAP_PATTERN = re.compile(r",\s*([A-Z][A-Za-z \(\)-]+),\s*(\d+)(?: \(cropped\))?\.svg$")
+
+
+@dataclass
+class FilesClassess:
+    countries: Dict[str, Dict]
+    continents: Dict[str, Dict]
+    not_matched: List[str]
 
 
 def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
@@ -149,6 +157,11 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
 
     logger.info("Starting file classification and aggregation")
 
+    not_matched_data = {
+        "unknown": [],
+        "unresolved_region": [],
+    }
+
     not_matched = []
     for title in files:
 
@@ -158,6 +171,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
             stats["unknown_count"] += 1
             logger.debug(f"Unknown file type: {title}")
             not_matched.append(title)
+            not_matched_data["unknown"].append(title)
             continue
 
         # Handle continent maps separately
@@ -191,6 +205,7 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
             stats["unresolved_region_count"] += 1
             logger.debug(f"Could not resolve region: {title}")
             not_matched.append(title)
+            not_matched_data["unresolved_region"].append(title)
             continue
 
         # Initialize country entry if needed
@@ -244,6 +259,15 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
     return countries, continents, not_matched
 
 
+def fetch_files_new(files: List[str]) -> FilesClassess:
+    countries, continents, not_matched = fetch_files(files)
+    return FilesClassess(
+        countries=countries,
+        continents=continents,
+        not_matched=not_matched,
+    )
+
+
 def fetch_files_entry(
     load_from_json: bool = False,
 ) -> None:
@@ -284,18 +308,18 @@ def fetch_files_entry(
             logger.info(f"Successfully fetched {len(files)} files from the category")
 
     # Process and aggregate files by country and continent
-    countries, continents, not_matched = fetch_files(files)
+    fetch_data = fetch_files_new(files)
 
     # Write output files
-    write_country_json_files(countries)
-    write_continent_json_files(continents)
-    write_not_matched_files(not_matched)
+    write_country_json_files(fetch_data.countries)
+    write_continent_json_files(fetch_data.continents)
+    write_not_matched_files(fetch_data.not_matched)
 
     write_summary_json(
-        countries,
-        continents,
+        fetch_data.countries,
+        fetch_data.continents,
         total_pages=total_pages,
-        not_matched=len(not_matched),
+        not_matched=len(fetch_data.not_matched),
     )
 
     logger.info("Processing complete!")
