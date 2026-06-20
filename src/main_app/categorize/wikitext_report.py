@@ -42,6 +42,7 @@ def make_report_data(
     continents_data["World"]["count"] = get_category_count("Category:Our_World_in_Data_maps_of_the_world")
 
     countries_data = {}
+
     for country, data in countries.items():
         len_graphs = len(data["graphs"])
         category = build_category_name(country)
