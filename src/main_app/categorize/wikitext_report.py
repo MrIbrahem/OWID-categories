@@ -43,7 +43,8 @@ def make_report_data(
 
     countries_data = {}
 
-    for country, data in countries.items():
+    for _, data in countries.items():
+        country = data["country"]
         len_graphs = len(data["graphs"])
         category = build_category_name(country)
         countries_data[country] = {"new": len_graphs, "count": countries_real.get(category) or 0}
