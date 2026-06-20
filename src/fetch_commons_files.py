@@ -32,6 +32,7 @@ setup_logging(
     use_console=False,
 )
 
+
 def main():
 
     parser = argparse.ArgumentParser(description="Fetch ")

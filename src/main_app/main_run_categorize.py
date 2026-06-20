@@ -38,16 +38,6 @@ from .utils import (
 
 logger = logging.getLogger(__name__)
 
-# List of continents to process
-CONTINENTS = [
-    "Africa",
-    "Asia",
-    "Europe",
-    "North America",
-    "South America",
-    "Oceania",
-]
-
 
 def process_files(
     site: mwclient.Site,

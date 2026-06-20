@@ -72,7 +72,12 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         first_comma = base_name.find(",")
         indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name
 
-        return "graph", {"iso3": iso3, "indicator": indicator, "start_year": int(start_year), "end_year": int(end_year)}
+        return "graph", {
+            "iso3": iso3,
+            "indicator": indicator,
+            "start_year": int(start_year),
+            "end_year": int(end_year),
+        }
 
     # Try map pattern
     map_match = MAP_PATTERN.search(title)
@@ -87,12 +92,21 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
 
         # Check if region is a continent
         if region in CONTINENTS:
-            return "continent_map", {"continent": region, "indicator": indicator, "year": int(year)}
+            return "continent_map", {
+                "continent": region,
+                "indicator": indicator,
+                "year": int(year),
+            }
 
         # Try to resolve region to ISO3
         iso3 = get_iso3_from_country(region)
 
-        return "map", {"iso3": iso3, "region": region, "indicator": indicator, "year": int(year)}
+        return "map", {
+            "iso3": iso3,
+            "region": region,
+            "indicator": indicator,
+            "year": int(year),
+        }
     # Unknown file type
     return None, None
 
@@ -152,7 +166,12 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
 
             # Initialize continent entry if needed
             if continent not in continents:
-                continents[continent] = {"continent": continent, "graphs": [], "maps": [], "unknowns": []}
+                continents[continent] = {
+                    "continent": continent,
+                    "graphs": [],
+                    "maps": [],
+                    "unknowns": [],
+                }
 
             # Build entry
             file_page = build_file_page_url(title)
@@ -180,7 +199,13 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
             if not country_name:
                 logger.warning(f"Unknown ISO3 code: {iso3}")
 
-            countries[iso3] = {"iso3": iso3, "country": country_name, "graphs": [], "maps": [], "unknowns": []}
+            countries[iso3] = {
+                "iso3": iso3,
+                "country": country_name,
+                "graphs": [],
+                "maps": [],
+                "unknowns": [],
+            }
 
         # Build entry
         file_page = build_file_page_url(title)
@@ -239,9 +264,12 @@ def fetch_files_entry(
 
     files = []
 
+    total_pages = 0
+
     # Fetch all files from the category
     if load_from_json:
         files = load_category_members_from_json()
+        total_pages = len(files)
 
     if not files:
         total_pages = get_category_count(CATEGORY_NAME)
@@ -261,8 +289,13 @@ def fetch_files_entry(
     # Write output files
     write_country_json_files(countries)
     write_continent_json_files(continents)
-    write_summary_json(countries, continents)
     write_not_matched_files(not_matched)
+
+    write_summary_json(
+        countries,
+        continents,
+        total_pages=total_pages,
+    )
 
     logger.info("Processing complete!")
 

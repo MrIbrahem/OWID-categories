@@ -3,6 +3,7 @@
 
 import json
 import logging
+from pathlib import Path
 from typing import Dict, List
 
 from .owid_config import (
@@ -10,22 +11,21 @@ from .owid_config import (
     COUNTRIES_DIR,
     OUTPUT_DIR,
     SUMMARY_FILE,
+    SUMMARY_FILE_BACKUP,
 )
 
 logger = logging.getLogger(__name__)
 
-# List of continents for classification
-CONTINENTS = {
-    "Africa",
-    "Antarctica",
-    "Asia",
-    "Europe",
-    "North America",
-    "South America",
-    "Oceania",
-    "Americas",
-    "World",
-}
+
+def dump_to_file(
+    data,
+    file: Path,
+) -> None:
+    try:
+        with open(file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.error(f"Failed to write data JSON to {file}: {e}")
 
 
 def write_country_json_files(countries: Dict[str, Dict]):
@@ -40,8 +40,7 @@ def write_country_json_files(countries: Dict[str, Dict]):
 
     for iso3, data in countries.items():
         file_path = COUNTRIES_DIR / f"{iso3}.json"
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        dump_to_file(data, file_path)
 
     logger.info(f"Country JSON files written to {COUNTRIES_DIR}")
 
@@ -60,8 +59,7 @@ def write_continent_json_files(continents: Dict[str, Dict]):
         # Use continent name as filename (replace spaces with underscores)
         safe_name = continent.replace(" ", "_")
         file_path = CONTINENTS_DIR / f"{safe_name}.json"
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        dump_to_file(data, file_path)
 
     logger.info(f"Continent JSON files written to {CONTINENTS_DIR}")
 
@@ -69,6 +67,7 @@ def write_continent_json_files(continents: Dict[str, Dict]):
 def write_summary_json(
     countries: Dict[str, Dict],
     continents: Dict[str, Dict],
+    total_pages: int = 0,
 ) -> None:
     """
     Write global summary JSON file including countries and continents.
@@ -77,7 +76,11 @@ def write_summary_json(
         countries: Dictionary of country data keyed by ISO3
         continents: Dictionary of continent data keyed by continent name
     """
-    summary = {"countries": [], "continents": []}
+    summary = {
+        "total_pages": total_pages,
+        "countries": [],
+        "continents": [],
+    }
 
     for iso3, data in sorted(countries.items()):
         summary["countries"].append(
@@ -92,8 +95,12 @@ def write_summary_json(
     for continent, data in sorted(continents.items()):
         summary["continents"].append({"continent": continent, "map_count": len(data["maps"])})
 
-    with open(SUMMARY_FILE, "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2, ensure_ascii=False)
+    dump_to_file(summary, SUMMARY_FILE)
+
+    if SUMMARY_FILE_BACKUP:
+        file_path = Path(SUMMARY_FILE_BACKUP)
+        logger.info(f"Writing summary JSON backup to {file_path}")
+        dump_to_file(summary, file_path)
 
     logger.info(f"Summary JSON written to {SUMMARY_FILE}")
 
@@ -123,11 +130,7 @@ def save_category_members(data: list[str]) -> None:
     file_path = OUTPUT_DIR / "category_members.json"
 
     logger.info(f"Writing {len(data)} files into category_members.json")
-    try:
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-    except Exception as e:
-        logger.error(f"Failed to write category members to {file_path}: {e}")
+    dump_to_file(data, file_path)
 
 
 def load_category_members_from_json() -> list[str]:
@@ -147,6 +150,7 @@ def load_category_members_from_json() -> list[str]:
         logger.error(f"Failed to load category members from {file_path}: {e}")
 
     return []
+
 
 __all__ = [
     "write_country_json_files",
