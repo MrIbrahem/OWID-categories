@@ -65,11 +65,25 @@ def make_report_data(
 
 
 def create_wikitext_report(
-    data: dict[str, dict],
+    all_data: dict[str, dict],
 ) -> str:
     """ """
-    text = ""
-    return text
+    text = [
+    ]
+    for key, data in all_data.items():
+        text.append(f"\n== {key} ==")
+        text.append('{| class="wikitable sortable"')
+        text.append('|-')
+        text.append('! Category !! Currect members !! New members')
+        text.append('|-')
+
+        for category, v in data.items():
+            text.append(f"| {category} || {v['count']} || {v['new']}")
+            text.append("|-")
+
+        text.append("|}")
+
+    return "\n".join(text)
 
 
 __all__ = [
