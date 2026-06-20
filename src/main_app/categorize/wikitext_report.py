@@ -78,7 +78,7 @@ def create_wikitext_report(
         text.append('|-')
 
         for category, v in data.items():
-            text.append(f"| {category} || {v['count']} || {v['new']}")
+            text.append(f"| [[:{category}]] || {v['count']} || {v['new']}")
             text.append("|-")
 
         text.append("|}")
