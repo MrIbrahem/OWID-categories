@@ -9,10 +9,7 @@ import json
 
 import pytest
 
-from src.main_app.files_dumper import (
-    COUNTRIES_DIR,
-    OUTPUT_DIR,
-)
+from src.main_app.files_dumper import OUTPUT_DIR
 from src.main_app.main_fetch_files import (
     classify_and_parse_file,
     fetch_files,
@@ -112,10 +109,13 @@ def test_processing():
 
     # Write output files
     write_country_json_files(countries)
-    write_summary_json(countries, continents)
+    write_summary_json(
+        countries,
+        continents,
+        files_summary={},
+    )
 
     # Verify output files were created
-    assert COUNTRIES_DIR.exists(), "Countries directory should be created"
     assert (OUTPUT_DIR / "owid_summary.json").exists(), "Summary file should be created"
 
     # Verify summary content

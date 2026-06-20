@@ -17,7 +17,10 @@ from . import wikitext_utils
 logger = logging.getLogger(__name__)
 
 
-def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
+def get_redirect_target(
+    site: mwclient.Site,
+    category: str,
+) -> Optional[str]:
     """
     Get the redirect target for a category if it exists.
 
@@ -41,7 +44,11 @@ def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
     return None
 
 
-def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
+def resolve_category_redirect(
+    site: mwclient.Site,
+    category: str,
+    max_depth: int = 5,
+) -> str:
     """
     Resolve category redirects. If the category has a {{Category redirect}} template,
     return the target category name.

@@ -74,7 +74,11 @@ def normalize_country_name(country: str) -> str:
     return country
 
 
-def build_category_name(entity_name: str, category_type: str = "country", files_type: str = "graphs") -> str:
+def build_category_name(
+    entity_name: str,
+    category_type: str = "country",
+    files_type: str = "graphs",
+) -> str:
     """
     Build the category name for a country or continent.
 

@@ -5,11 +5,21 @@ Test script for OWID Commons processing with sample data.
 This script demonstrates the functionality without requiring network access.
 """
 
+import os
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import tempfile
 import pytest
+
 from pytest_socket import disable_socket
+
+# tempfile.gettempdir() returns the path to the system's directory for temporary files
+system_temp_dir = Path(tempfile.gettempdir())
+
+# Now correctly combine it with "test" and set the environment variable
+os.environ.setdefault("MAIN_DIR", str(system_temp_dir / "test"))
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -26,3 +36,36 @@ def stop_nets(request):
         return
     # Otherwise, disable the socket for all other tests
     disable_socket(allow_unix_socket=True)
+
+
+@pytest.fixture#(autouse=True)
+def mock_dump_to_file(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    # src/main_app/files_dumper.py
+    monkeypatch.setattr("src.main_app.files_dumper.dump_to_file", lambda *args, **kwargs: None)
+    return MagicMock()
+
+# ── mwclient_page fixtures ───────────────────────────────────────────────────────────────────
+
+
+@pytest.fixture
+def mock_site() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_page() -> MagicMock:
+    return MagicMock()
+
+
+@pytest.fixture
+def mock_site_pages(mock_site, mock_page):
+    def _factory(page_exists: bool) -> MagicMock:
+        mock_page.exists = page_exists
+
+        mock_pages = MagicMock()
+        mock_pages.__getitem__ = MagicMock(return_value=mock_page)
+
+        mock_site.pages = mock_pages
+        return mock_site
+
+    return _factory

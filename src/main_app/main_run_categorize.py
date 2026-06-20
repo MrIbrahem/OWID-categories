@@ -39,6 +39,23 @@ from .utils import (
 logger = logging.getLogger(__name__)
 
 
+def make_category_name(
+    site: mwclient.Site,
+    files_type: str,
+    country_or_continent: str,
+    entity: str,
+) -> str:
+    category = build_category_name(
+        entity_name=entity,
+        category_type=country_or_continent,
+        files_type=files_type,
+    )
+
+    # Resolve category redirect if any
+    category = resolve_category_redirect(site, category)
+    return category
+
+
 def process_files(
     site: mwclient.Site,
     file_path: Path,
@@ -91,10 +108,7 @@ def process_files(
         return stats
 
     # Build category name
-    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=files_type)
-
-    # Resolve category redirect if any
-    category = resolve_category_redirect(site, category)
+    category = make_category_name(site, files_type, country_or_continent, entity)
 
     if country_or_continent == "country":
         iso3 = data.get("iso3")
@@ -120,27 +134,29 @@ def process_files(
             f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files"
         )
 
-    # Apply per-country/continent file limit if specified
-    if files_per_one:
         remaining_slots = files_per_one - current_member_count
         files = files[:remaining_slots]
         logger.info(f"Limiting to {remaining_slots} file(s) for this country")
 
     # Ensure the category page exists before adding files to it
     parent_category = get_parent_category(category_type=country_or_continent, files_type=files_type)
+
     if not ensure_category_exists(site, category, parent_category, entity, dry_run):
         logger.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
         stats["errors"] += 1
         return stats
 
     # check for members in the category
-    existing_titles = get_category_members_titles(site, category, namespace=6)
+    category_titles = get_category_members_titles(site, category, namespace=6)
+    existing_titles = set(category_titles)
 
     logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
 
     # Filter out files that are already in the category
     original_file_count = len(files)
+
     files = [file for file in files if file.get("title") not in existing_titles]
+
     stats["skipped"] += original_file_count - len(files)
     logger.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
 
