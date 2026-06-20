@@ -39,7 +39,7 @@ users_redirects = {
 def get_section_by_heading(wikitext, heading):
     """Use wikitextparser to find a section by its heading text."""
     parsed = wtp.parse(wikitext)
-    for section in parsed.get_sections(include_subsections=False):
+    for section in parsed.get_sections(include_subsections=True):
         if section.title and section.title.strip() == heading:
             return section
     raise ValueError(f"Section '{heading}' not found")
