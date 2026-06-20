@@ -196,7 +196,7 @@ def load_files(load_from_json: bool) -> Tuple[List[str], int]:
     if files:
         return files, total_pages
 
-    total_pages = get_category_count(CATEGORY_NAME)
+    total_pages = get_category_count(CATEGORY_NAME) or 0
 
     # Load credentials
     username, password = load_credentials()

@@ -33,7 +33,7 @@ def stop_nets(request):
     disable_socket(allow_unix_socket=True)
 
 
-@pytest.fixture  # (autouse=True)
+@pytest.fixture
 def mock_dump_to_file(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     # src/main_app/files_dumper.py
     monkeypatch.setattr("src.main_app.files_dumper.dump_to_file", lambda *args, **kwargs: None)
