@@ -4,6 +4,9 @@ https://meta.wikimedia.org/wiki/Hardware_donation_program
 and, for each linked subpage, prints:
   - last edit timestamp of that subpage
   - the global edit count of the user who created it
+
+python -m src.main_app.dj.me1
+
 """
 
 import logging
@@ -24,6 +27,47 @@ OUTPUT_FILE = Path(__file__).parent / "file.wiki"
 OUTPUT_FILE_TABLE = Path(__file__).parent / "table.wiki"
 
 logger = logging.getLogger(__name__)
+
+# -----------------------------------------
+# wiki text parsers
+# -----------------------------------------
+
+
+def get_section_by_heading(wikitext, heading):
+    """Use wikitextparser to find a section by its heading text."""
+    parsed = wtp.parse(wikitext)
+    for section in parsed.get_sections(include_subsections=False):
+        if section.title and section.title.strip() == heading:
+            return section
+    raise ValueError(f"Section '{heading}' not found")
+
+
+def extract_subpage_links(section, base_page):
+    """Use wikitextparser's wikilinks to pull out 'Base/Sub' page names."""
+    prefix = base_page + "/"
+    seen = []
+    for link in section.wikilinks:
+        title = link.title.strip()
+        if title.startswith(prefix):
+            name = title[len(prefix) :]
+            if name not in seen:
+                seen.append(name)
+    return seen
+
+
+def build_wikitable(rows):
+    """rows: list of (page_link, last_edit, user_link, editcount_str) tuples."""
+    lines = ['{| class="wikitable sortable"', "! Page !! Last edited !! User !! Global edits"]
+    for page_link, last_edit, user_link, editcount_str in rows:
+        lines.append("|-")
+        lines.append(f"| {page_link} || {last_edit} || {user_link} || {editcount_str}")
+    lines.append("|}")
+    return "\n".join(lines)
+
+
+# -----------------------------------------
+# API
+# -----------------------------------------
 
 
 def connect_to_meta(username: str, password: str) -> Optional[Site]:
@@ -56,6 +100,7 @@ def connect_to_meta(username: str, password: str) -> Optional[Site]:
 
 def get_page_wikitext(site, page_title):
     """Fetch the full raw wikitext of a page via the API."""
+    logger.info(f"Fetching wikitext of {page_title}...")
     params = {
         "prop": "revisions",
         "titles": page_title,
@@ -72,28 +117,6 @@ def get_page_wikitext(site, page_title):
     pages = data.get("query", {}).get("pages", [])
 
     return pages[0]["revisions"][0]["slots"]["main"]["content"]
-
-
-def get_section_by_heading(wikitext, heading):
-    """Use wikitextparser to find a section by its heading text."""
-    parsed = wtp.parse(wikitext)
-    for section in parsed.get_sections(include_subsections=False):
-        if section.title and section.title.strip() == heading:
-            return section
-    raise ValueError(f"Section '{heading}' not found")
-
-
-def extract_subpage_links(section, base_page):
-    """Use wikitextparser's wikilinks to pull out 'Base/Sub' page names."""
-    prefix = base_page + "/"
-    seen = []
-    for link in section.wikilinks:
-        title = link.title.strip()
-        if title.startswith(prefix):
-            name = title[len(prefix) :]
-            if name not in seen:
-                seen.append(name)
-    return seen
 
 
 def get_last_edit_timestamp(site, page_title):
@@ -162,16 +185,6 @@ def get_global_editcount(site, username):
     if users:
         return users[0].get("editcount")
     return None
-
-
-def build_wikitable(rows):
-    """rows: list of (page_link, last_edit, user_link, editcount_str) tuples."""
-    lines = ['{| class="wikitable sortable"', "! Page !! Last edited !! User !! Global edits"]
-    for page_link, last_edit, user_link, editcount_str in rows:
-        lines.append("|-")
-        lines.append(f"| {page_link} || {last_edit} || {user_link} || {editcount_str}")
-    lines.append("|}")
-    return "\n".join(lines)
 
 
 def main() -> None:

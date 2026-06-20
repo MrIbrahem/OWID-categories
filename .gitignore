@@ -59,3 +59,5 @@ temp/
 /_works_files
 /.commandcode
 src/main_app/dj/find_owid_bad_moves.py
+src/main_app/dj/file.wiki
+src/main_app/dj/table.wiki
