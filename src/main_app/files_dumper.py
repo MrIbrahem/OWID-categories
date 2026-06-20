@@ -64,8 +64,11 @@ def write_continent_json_files(continents: Dict[str, Dict]):
     logger.info(f"Continent JSON files written to {CONTINENTS_DIR}")
 
 
-def save_wikitext_report(text: str) -> None:
+def save_wikitext_report(report_data: dict, text: str) -> None:
     logger.info("Writing wiki text report.")
+
+    file_json = OUTPUT_DIR / "report.json"
+    dump_to_file(report_data, file_json)
 
     file = OUTPUT_DIR / "report.wiki"
     with open(file, "w", encoding="utf-8") as f:

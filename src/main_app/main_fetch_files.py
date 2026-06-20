@@ -272,7 +272,7 @@ def fetch_files_entry(
     )
 
     wikitext = create_wikitext_report(report_data)
-    save_wikitext_report(wikitext)
+    save_wikitext_report(report_data, wikitext)
 
     logger.info("Processing complete!")
 
