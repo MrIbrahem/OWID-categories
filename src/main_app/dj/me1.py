@@ -31,7 +31,10 @@ logger = logging.getLogger(__name__)
 # -----------------------------------------
 # wiki text parsers
 # -----------------------------------------
-
+users_redirects = {
+    "vinoda mamatharai":"Vinoda mamatharai",
+    "Cbrescia":"Felino Volador",
+}
 
 def get_section_by_heading(wikitext, heading):
     """Use wikitextparser to find a section by its heading text."""
@@ -221,7 +224,7 @@ def main() -> None:
     for sub in subpages:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
-        username = sub # get_page_creator(site, full_title)
+        username = users_redirects.get(sub) or sub # get_page_creator(site, full_title)
         data.append(
             {
                 "full_title": full_title,
