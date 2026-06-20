@@ -64,6 +64,7 @@ def main() -> None:
         log_file=str(log_file),
         use_colorlog=False,
         overwrite=True,
+        use_console=False,
     )
 
     run_categories_entry(

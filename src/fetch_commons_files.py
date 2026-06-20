@@ -28,6 +28,7 @@ setup_logging(
     log_file=str(LOG_FILE_FETCH_COMMONS),
     use_colorlog=False,
     overwrite=True,
+    use_console=False,
 )
 
 if __name__ == "__main__":

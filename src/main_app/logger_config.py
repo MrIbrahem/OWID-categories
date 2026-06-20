@@ -49,6 +49,7 @@ def setup_logging(
     error_log_file: str | None = None,
     use_colorlog: bool = False,
     overwrite: bool = False,
+    use_console: bool = True,
 ) -> None:
     """
     Configure logging for the entire project namespace only.
@@ -61,31 +62,31 @@ def setup_logging(
     numeric_level = getattr(logging, level.upper(), logging.INFO) if isinstance(level, str) else level
     project_logger.setLevel(numeric_level)
     project_logger.propagate = False
+    if use_console:
+        if use_colorlog:
+            console_formatter = colorlog.ColoredFormatter(
+                # Standard format: Time - Name - Level - [File:Line] - Message
+                fmt="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(filename)s:%(lineno)d] - %(message)s",
+                datefmt="%H:%M:%S",
+                log_colors={
+                    "DEBUG": "cyan",
+                    "INFO": "green",
+                    "WARNING": "yellow",
+                    "ERROR": "red",
+                    "CRITICAL": "red,bg_white",
+                },
+            )
+        else:
+            console_formatter = logging.Formatter(
+                # Standard format: Time - Name - Level - [File:Line] - Message
+                fmt="%(asctime)s - %(name)s - %(levelname)-s - [%(filename)s:%(lineno)d] - %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
 
-    if use_colorlog:
-        console_formatter = colorlog.ColoredFormatter(
-            # Standard format: Time - Name - Level - [File:Line] - Message
-            fmt="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(filename)s:%(lineno)d] - %(message)s",
-            datefmt="%H:%M:%S",
-            log_colors={
-                "DEBUG": "cyan",
-                "INFO": "green",
-                "WARNING": "yellow",
-                "ERROR": "red",
-                "CRITICAL": "red,bg_white",
-            },
-        )
-    else:
-        console_formatter = logging.Formatter(
-            # Standard format: Time - Name - Level - [File:Line] - Message
-            fmt="%(asctime)s - %(name)s - %(levelname)-s - [%(filename)s:%(lineno)d] - %(message)s",
-            datefmt="%Y-%m-%d %H:%M:%S",
-        )
-
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(console_formatter)
-    console_handler.setLevel(numeric_level)
-    project_logger.addHandler(console_handler)
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(console_formatter)
+        console_handler.setLevel(numeric_level)
+        project_logger.addHandler(console_handler)
 
     project_logger.debug("Setting up logging for '%s' with level '%s'", name, level)
 
