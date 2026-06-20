@@ -1,0 +1,149 @@
+"""
+Logging configuration with colored output.
+"""
+
+import logging
+import os
+import sys
+from logging.handlers import WatchedFileHandler
+from pathlib import Path
+
+import colorlog
+
+
+def prepare_log_file(log_file: str | None, project_logger: logging.Logger) -> Path | None:
+    """
+    Prepare the log file path and create parent directories if needed.
+    """
+    if not log_file:
+        return None
+    log_file_path = os.path.expandvars(str(log_file))
+    log_file_path = Path(log_file_path).expanduser()
+
+    try:
+        log_file_path.parent.mkdir(parents=True, exist_ok=True)
+    except Exception as e:
+        project_logger.error("Failed to create log directory: %s", e)
+        log_file_path = None
+    return log_file_path
+
+
+def setup_file_handler(project_logger: logging.Logger, log_file: Path, level: int) -> None:
+    """
+    Set up a file handler for logging to a file.
+    """
+    if not log_file:
+        return
+    file_formatter = logging.Formatter(
+        fmt="%(asctime)s - %(name)s - %(levelname)-8s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    # file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+
+    try:
+        file_handler = WatchedFileHandler(log_file, mode="a", encoding="utf-8")
+    except OSError as exc:
+        project_logger.warning("Falling back to console logging for %s: %s", log_file, exc)
+        return
+
+    file_handler.setFormatter(file_formatter)
+    file_handler.setLevel(level)
+    project_logger.addHandler(file_handler)
+
+
+def setup_logging(
+    level: str | int = "WARNING",
+    name: str = "main_app",
+    log_file: str | None = None,
+    error_log_file: str | None = None,
+    use_colorlog: bool = False,
+    overwrite: bool = False,
+    use_console: bool = True,
+) -> None:
+    """
+    Configure logging for the entire project namespace only.
+    """
+    project_logger = logging.getLogger(name)
+
+    if project_logger.handlers and not overwrite:
+        return
+
+    numeric_level = getattr(logging, level.upper(), logging.INFO) if isinstance(level, str) else level
+    project_logger.setLevel(numeric_level)
+    project_logger.propagate = False
+    if use_console:
+        if use_colorlog:
+            console_formatter = colorlog.ColoredFormatter(
+                # Standard format: Time - Name - Level - [File:Line] - Message
+                # [%(filename)s:%(lineno)d]
+                fmt="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(lineno)d] - %(message)s",
+                datefmt="%H:%M:%S",
+                log_colors={
+                    "DEBUG": "cyan",
+                    "INFO": "green",
+                    "WARNING": "yellow",
+                    "ERROR": "red",
+                    "CRITICAL": "red,bg_white",
+                },
+            )
+        else:
+            console_formatter = logging.Formatter(
+                # Standard format: Time - Name - Level - [File:Line] - Message
+                # [%(filename)s:%(lineno)d]
+                fmt="%(asctime)s - %(name)s - %(levelname)-s - [%(lineno)d] - %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S",
+            )
+
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setFormatter(console_formatter)
+        console_handler.setLevel(numeric_level)
+        project_logger.addHandler(console_handler)
+
+    project_logger.debug("Setting up logging for '%s' with level '%s'", name, level)
+
+    if log_file:
+        log_file_path = prepare_log_file(log_file, project_logger)
+        if log_file_path:
+            setup_file_handler(project_logger, log_file_path, numeric_level)
+
+    if error_log_file:
+        error_log_file_path = prepare_log_file(error_log_file, project_logger)
+        if error_log_file_path:
+            setup_file_handler(project_logger, error_log_file_path, logging.WARNING)
+
+
+def configure_logging(
+    level: str | int,
+    log_dir: Path,
+    use_colorlog: bool = False,
+) -> None:
+    """ """
+    if not log_dir.exists():
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+        except OSError as exc:
+            setup_logging(level=level, name="main_app", use_colorlog=use_colorlog)
+            logging.getLogger("main_app").warning(
+                "Falling back to console logging; could not create log directory %s: %s", log_dir, exc
+            )
+            return
+
+    # Define paths
+    all_log_path = str(log_dir / "app.log")
+    error_log_path = str(log_dir / "errors.log")
+
+    setup_logging(
+        level=level,
+        name="main_app",
+        log_file=all_log_path,
+        error_log_file=error_log_path,
+        use_colorlog=use_colorlog,
+    )
+
+
+__all__ = [
+    "prepare_log_file",
+    "setup_logging",
+    "setup_file_handler",
+    "configure_logging",
+]

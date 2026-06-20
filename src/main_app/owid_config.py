@@ -13,30 +13,46 @@ from typing import Optional
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 logger = logging.getLogger(__name__)
 
-MAIN_DIR = Path()
+try:
+    load_dotenv()
+except Exception as e:
+    logger.warning(f"Failed to load .env file: {e}")
 
-if os.getenv("MAIN_DIR", ""):
-    MAIN_DIR = Path(os.getenv("MAIN_DIR"))
+# Configuration
+CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
+
+# User-Agent header (required by Wikimedia)
+USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
+
+
+main_dir = os.getenv("MAIN_DIR", "")
+MAIN_DIR = Path(main_dir) if main_dir else Path()
 
 WIKIPEDIA_BOT_USERNAME = os.getenv("WIKIPEDIA_BOT_USERNAME")
 WIKIPEDIA_BOT_PASSWORD = os.getenv("WIKIPEDIA_BOT_PASSWORD")
+SUMMARY_FILE_BACKUP = os.getenv("SUMMARY_FILE_BACKUP")
+
+LOGGER_LEVEL = os.getenv("LOGGER_LEVEL", "WARNING")
 
 OUTPUT_DIR = MAIN_DIR / "output"
 LOG_DIR = MAIN_DIR / "logs"
 
 # Ensure log directory exists
 LOG_DIR.parent.mkdir(parents=True, exist_ok=True)
-OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
-
-COUNTRIES_DIR = OUTPUT_DIR / "countries"
-CONTINENTS_DIR = OUTPUT_DIR / "continents"
 
 LOG_FILE_COUNTRIES = LOG_DIR / "categorize_countries.log"
 LOG_FILE_CONTINENTS = LOG_DIR / "categorize_continents.log"
+LOG_FILE_FETCH_COMMONS = LOG_DIR / "fetch_commons.log"
+
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+COUNTRIES_DIR = OUTPUT_DIR / "countries"
+CONTINENTS_DIR = OUTPUT_DIR / "continents"
+SUMMARY_FILE = OUTPUT_DIR / "owid_summary.json"
+
+COUNTRIES_DIR.mkdir(parents=True, exist_ok=True)
+CONTINENTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def load_credentials() -> tuple[Optional[str], Optional[str]]:
@@ -64,4 +80,9 @@ __all__ = [
     "CONTINENTS_DIR",
     "LOG_FILE_COUNTRIES",
     "LOG_FILE_CONTINENTS",
+    "LOGGER_LEVEL",
+    "SUMMARY_FILE",
+    "SUMMARY_FILE_BACKUP",
+    "CATEGORY_NAME",
+    "USER_AGENT",
 ]

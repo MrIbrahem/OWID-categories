@@ -11,12 +11,16 @@ from typing import Optional
 
 import mwclient
 
-from . import wiki, wikitext_utils
+from ..api_services import MwClientPage
+from . import wikitext_utils
 
 logger = logging.getLogger(__name__)
 
 
-def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
+def get_redirect_target(
+    site: mwclient.Site,
+    category: str,
+) -> Optional[str]:
     """
     Get the redirect target for a category if it exists.
 
@@ -27,8 +31,9 @@ def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
     Returns:
         Redirect target with 'Category:' prefix, or None if no redirect
     """
-    page_text = wiki.get_page_text(site, category)
-    if not page_text:
+    page = MwClientPage(category, site)
+    page_text = page.get_text()
+    if page_text is None:
         return None
 
     target = wikitext_utils.extract_redirect_target(page_text)
@@ -39,7 +44,11 @@ def get_redirect_target(site: mwclient.Site, category: str) -> Optional[str]:
     return None
 
 
-def resolve_category_redirect(site: mwclient.Site, category: str, max_depth: int = 5) -> str:
+def resolve_category_redirect(
+    site: mwclient.Site,
+    category: str,
+    max_depth: int = 5,
+) -> str:
     """
     Resolve category redirects. If the category has a {{Category redirect}} template,
     return the target category name.
@@ -85,7 +94,9 @@ def add_category_to_page(
         True if category was added (or would be added in dry-run), False otherwise
     """
     # Get current page text via wiki module
-    current_text = wiki.get_page_text(site, title)
+    page = MwClientPage(title, site)
+    current_text = page.get_text()
+
     if current_text is None:
         logger.warning(f"Page does not exist or could not be retrieved: {title}")
         return False
@@ -104,4 +115,13 @@ def add_category_to_page(
 
     # Make the edit via wiki module
     edit_summary = f"Adding [[:{category}]]"
-    return wiki.save_page(site, title, new_text, edit_summary)
+
+    save = page.edit(new_text, edit_summary)
+    return save.get("success") is True
+
+
+__all__ = [
+    "get_redirect_target",
+    "resolve_category_redirect",
+    "add_category_to_page",
+]

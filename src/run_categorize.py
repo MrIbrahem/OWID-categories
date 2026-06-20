@@ -14,291 +14,26 @@ Requirements:
 - Valid Wikimedia Commons bot credentials in .env file
 
 Usage:
-    python run_categorize.py                                            # Process all countries
-    python run_categorize.py --dry-run                                  # Test without making edits
-    python run_categorize.py --limit 5                                  # Process first 5 countries only
-    python run_categorize.py --files-per-item 10                        # Process 10 files per country
-    python run_categorize.py --work-path continents --files-type maps   # Process continents and maps
-    python run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
+    python src/run_categorize.py                                            # Process all countries
+    python src/run_categorize.py --dry-run                                  # Test without making edits
+    python src/run_categorize.py --limit 5                                  # Process first 5 countries only
+    python src/run_categorize.py --files-per-item 10                        # Process 10 files per country
+    python src/run_categorize.py --work-path continents --files-type maps   # Process continents and maps
+    python src/run_categorize.py --work-path continents --files-type maps --dry-run --files-per-item 1
 """
 
 import argparse
 import logging
-import sys
-from pathlib import Path
-from typing import Dict, Optional
 
-import mwclient
-
-from categorize import (
-    add_category_to_page,
-    connect_to_commons,
-    ensure_category_exists,
-    get_category_member_count,
-    get_category_members,
-    resolve_category_redirect,
-)
-from owid_config import (
-    CONTINENTS_DIR,
-    COUNTRIES_DIR,
-    LOG_FILE_CONTINENTS,
-    LOG_FILE_COUNTRIES,
-    load_credentials,
-)
-from utils import (
-    build_category_name,
-    get_parent_category,
-    load_json_file,
-    normalize_country_name,
-    setup_logging,
-)
+from main_app.logger_config import setup_logging
+from main_app.main_run_categorize import run_categories_entry
+from main_app.owid_config import LOG_FILE_CONTINENTS, LOG_FILE_COUNTRIES
 
 logger = logging.getLogger(__name__)
 
-# List of continents to process
-CONTINENTS = [
-    "Africa",
-    "Asia",
-    "Europe",
-    "North America",
-    "South America",
-    "Oceania",
-]
 
+def main() -> None:
 
-def process_files(
-    site: mwclient.Site,
-    file_path: Path,
-    dry_run: bool = False,
-    files_type: str = "graphs",
-    files_per_one: Optional[int] = None,
-    country_or_continent: str = "country",
-) -> Dict[str, int]:
-    """
-    Process a single country/continent JSON file and add categories to its files.
-
-    Args:
-        site: Connected mwclient Site
-        file_path: Path to country/continent JSON file
-        dry_run: If True, don't actually make edits
-        files_type: Whether to process 'graphs' or 'maps'
-        files_per_one: Optional limit on number of files to process per country/continent
-        country_or_continent: Specify whether processing 'country' or 'continent'
-
-    Returns:
-        Dictionary with statistics (added, skipped, errors)
-    """
-    logger.info("-" * 20)
-    logger.info(f"process_files: {files_type}")
-
-    stats = {"added": 0, "skipped": 0, "errors": 0}
-
-    if files_type not in ["graphs", "maps"]:
-        logger.error(f"Invalid files_type value: {files_type}")
-        stats["errors"] += 1
-        return stats
-
-    if country_or_continent not in ["country", "continent"]:
-        logger.error(f"Invalid country_or_continent value: {country_or_continent}")
-        stats["errors"] += 1
-        return stats
-
-    # Load country/continent data
-    data = load_json_file(file_path)
-    if not data:
-        stats["errors"] += 1
-        return stats
-
-    entity = data.get(country_or_continent)
-    files = data.get(files_type, [])
-
-    if not entity:
-        logger.error(f"No country/continent name in {file_path}")
-        stats["errors"] += 1
-        return stats
-
-    # Build category name
-    category = build_category_name(entity_name=entity, category_type=country_or_continent, files_type=files_type)
-
-    # Resolve category redirect if any
-    category = resolve_category_redirect(site, category)
-
-    if country_or_continent == "country":
-        iso3 = data.get("iso3")
-        # Normalize country name
-        normalized_country = normalize_country_name(entity)
-        log_line = f"{iso3} ({normalized_country})"
-    else:
-        log_line = f"{entity}"
-
-    logger.info(f"\n\t\t Processing {log_line}: {len(files)} files")
-
-    # Check if category already has enough files when files_per_one is set
-    if files_per_one:
-        current_member_count = get_category_member_count(site, category)
-        if current_member_count >= files_per_one:
-            logger.info(
-                f"\n\t\t Skipping {log_line}: Category already has {current_member_count} files (>= {files_per_one} requested)"
-            )
-            return stats
-
-        remaining_slots = files_per_one - current_member_count
-        logger.info(
-            f"\n\t\t Processing {log_line}: Category has {current_member_count} files, will add up to {remaining_slots} files"
-        )
-
-    # Apply per-country/continent file limit if specified
-    if files_per_one:
-        remaining_slots = files_per_one - current_member_count
-        files = files[:remaining_slots]
-        logger.info(f"Limiting to {remaining_slots} file(s) for this country")
-
-    # Ensure the category page exists before adding files to it
-    parent_category = get_parent_category(category_type=country_or_continent, files_type=files_type)
-    if not ensure_category_exists(site, category, parent_category, entity, dry_run):
-        logger.error(f"Failed to ensure category '{category}' exists for {log_line}, skipping this country/continent")
-        stats["errors"] += 1
-        return stats
-
-    # check for members in the category
-    existing_members = get_category_members(site, category, namespace=6)
-    existing_titles = {page.name for page in existing_members}
-
-    logger.info(f"Category '{category}' currently has {len(existing_titles)} existing members")
-
-    # Filter out files that are already in the category
-    original_file_count = len(files)
-    files = [file for file in files if file.get("title") not in existing_titles]
-    stats["skipped"] += original_file_count - len(files)
-    logger.info(f"After filtering, {len(files)} file(s) remain to be processed for {log_line}")
-
-    # Process files
-    for file in files:
-        title = file.get("title")
-        if not title:
-            logger.warning(f"File missing title in {file_path}")
-            stats["errors"] += 1
-            continue
-
-        # Add category
-        if add_category_to_page(site, title, category, dry_run):
-            stats["added"] += 1
-        else:
-            stats["skipped"] += 1
-
-    return stats
-
-
-def main(
-    dry_run: bool = False,
-    limit: Optional[int] = None,
-    files_per_one: Optional[int] = None,
-    work_path: str = "countries",
-    files_type: str = "graphs",
-):
-    """
-    Main execution function for countries/continents categorization.
-
-    Args:
-        dry_run: If True, don't actually make edits
-        limit: Optional limit on number of countries/continents to process
-        files_per_one: Optional limit on number of files to process per country/continent
-        work_path: Specify whether processing 'countries' or 'continents'
-        files_type: Specify whether processing 'graphs' or 'maps'
-    """
-
-    work_dirs = {"countries": COUNTRIES_DIR, "continents": CONTINENTS_DIR}
-
-    work_dir = work_dirs.get(work_path)
-
-    country_or_continent = "country" if work_path == "countries" else "continent"
-
-    if not work_dir:
-        logger.error(f"Invalid work_path: {work_path}")
-        sys.exit(1)
-
-    setup_logging(LOG_FILE_COUNTRIES if work_path == "countries" else LOG_FILE_CONTINENTS)
-
-    logger.info("=" * 80)
-    logger.info("OWID Commons Countries/Continents Categorizer")
-    logger.info("=" * 80)
-
-    if dry_run:
-        logger.info("Running in DRY RUN mode - no actual edits will be made")
-
-    if files_per_one:
-        logger.info(f"Processing {files_per_one} file(s) per item")
-
-    # Load credentials
-    username, password = load_credentials()
-    if not username or not password:
-        logger.error("Failed to load credentials from .env file")
-        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
-        sys.exit(1)
-
-    # Connect to Commons
-    site = connect_to_commons(username, password)
-    if not site:
-        logger.error("Failed to connect to Wikimedia Commons")
-        sys.exit(1)
-
-    # Check if Countries/Continents directory exists
-    if not work_dir.exists():
-        logger.error(f"Countries/Continents directory not found: {work_dir}")
-        logger.error("Please run Phase 1 (fetch_commons_files.py) first")
-        sys.exit(1)
-
-    # Get all item JSON files
-    files = sorted(work_dir.glob("*.json"))
-
-    if not files:
-        logger.error(f"No item JSON files found in {work_dir}")
-        sys.exit(1)
-
-    logger.info(f"Found {len(files)} item files")
-
-    # Apply limit if specified
-    if limit:
-        files = files[:limit]
-        logger.info(f"Processing limited to first {limit} Countries/Continents")  # Process each item file
-    total_stats = {"added": 0, "skipped": 0, "errors": 0, "total_processed": 0, "total_skipped": 0}
-
-    for file_path in files:
-        stats = process_files(
-            site,
-            file_path,
-            dry_run=dry_run,
-            files_type=files_type,
-            files_per_one=files_per_one,
-            country_or_continent=country_or_continent,
-        )
-
-        # If no files were added or skipped, the item was skipped entirely
-        if stats["added"] == 0 and stats["skipped"] == 0 and stats["errors"] == 0:
-            total_stats["total_skipped"] += 1
-        else:
-            total_stats["added"] += stats["added"]
-            total_stats["skipped"] += stats["skipped"]
-            total_stats["errors"] += stats["errors"]
-            total_stats["total_processed"] += 1
-
-    # Final summary
-    logger.info("\n" + "=" * 80)
-    logger.info("FINAL SUMMARY")
-    logger.info("=" * 80)
-    logger.info(f"Countries/Continents processed: {total_stats['total_processed']}")
-    logger.info(f"Countries/Continents skipped (already have enough files): {total_stats['total_skipped']}")
-    logger.info(f"Categories added: {total_stats['added']}")
-    logger.info(f"Already had category (skipped): {total_stats['skipped']}")
-    logger.info(f"Errors: {total_stats['errors']}")
-    logger.info("=" * 80)
-
-    if dry_run:
-        logger.info("\nThis was a DRY RUN - no actual edits were made")
-        logger.info("Run without --dry-run flag to make actual edits")
-
-
-if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Add categories to OWID graph files on Wikimedia Commons")
     parser.add_argument("--dry-run", action="store_true", help="Run in dry-run mode (no actual edits)")
     parser.add_argument("--limit", type=int, help="Limit processing to first N items (for testing)")
@@ -321,10 +56,25 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    main(
+    log_file = LOG_FILE_COUNTRIES if args.work_path == "countries" else LOG_FILE_CONTINENTS
+
+    setup_logging(
+        level="INFO",
+        name="main_app",
+        log_file=str(log_file),
+        use_colorlog=False,
+        overwrite=True,
+        use_console=False,
+    )
+
+    run_categories_entry(
         dry_run=args.dry_run,
         limit=args.limit,
         files_per_one=args.files_per_item,
         work_path=args.work_path,
         files_type=args.files_type,
     )
+
+
+if __name__ == "__main__":
+    main()

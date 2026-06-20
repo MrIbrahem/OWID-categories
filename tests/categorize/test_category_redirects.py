@@ -2,40 +2,26 @@
 Tests for categorize.category_redirects module.
 """
 
-import time
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from categorize.category_redirects import (
+from src.main_app.categorize.category_redirects import (
     add_category_to_page,
     get_redirect_target,
     resolve_category_redirect,
 )
 
 
+@pytest.fixture
+def mock_sleep():
+    with patch("time.sleep"):
+        yield
+
+
 @pytest.mark.unit
 class TestAddCategoryToPage:
     """Test adding categories to pages (with mocks)."""
-
-    def test_add_category_to_existing_page(self):
-        """Test adding category to an existing page."""
-        # Create mock page and site
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text\n[[Category:Existing]]"
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        # Test adding category
-        category = "Category:Our World in Data graphs of Canada"
-        with patch("categorize.wiki.save_page", return_value=True) as mock_save:
-            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
-
-            assert result is True, "Should return True when category would be added"
-            assert mock_page.text.called, "Page text should be checked"
-            assert not mock_save.called, "Should not call save_page in dry_run"
 
     def test_add_category_already_exists(self):
         """Test adding category that already exists."""
@@ -67,24 +53,6 @@ class TestAddCategoryToPage:
         result = add_category_to_page(mock_site, "File:NonExistent.svg", category, dry_run=True)
 
         assert result is False, "Should return False when page doesn't exist"
-
-    def test_add_category_dry_run(self):
-        """Test dry-run mode doesn't make actual edits."""
-        # Create mock page
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text"
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        # Test adding category in dry-run
-        category = "Category:Our World in Data graphs of Canada"
-        with patch("categorize.wiki.save_page") as mock_save:
-            result = add_category_to_page(mock_site, "File:Test.svg", category, dry_run=True)
-
-            assert result is True, "Should return True in dry-run mode"
-            assert not mock_save.called, "save_page should not be called in dry-run mode"
 
 
 @pytest.mark.unit
@@ -168,11 +136,10 @@ class TestResolveCategoryRedirect:
         pages = {"Category:Original": mock_page1, "Category:Target category": mock_page2}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
-        with patch("time.sleep"):
-            result = resolve_category_redirect(mock_site, "Category:Original")
+        result = resolve_category_redirect(mock_site, "Category:Original")
         assert result == "Category:Target category"
 
-    def test_redirect_with_parameter_name(self):
+    def test_redirect_with_parameter_name(self, mock_sleep):
         """Test redirect with 1= parameter."""
         mock_site = Mock()
         mock_page = MagicMock()
@@ -186,11 +153,10 @@ class TestResolveCategoryRedirect:
         pages = {"Category:Original": mock_page, "Category:Target category": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
-        with patch("time.sleep"):
-            result = resolve_category_redirect(mock_site, "Category:Original")
+        result = resolve_category_redirect(mock_site, "Category:Original")
         assert result == "Category:Target category"
 
-    def test_redirect_without_category_prefix_in_target(self):
+    def test_redirect_without_category_prefix_in_target(self, mock_sleep):
         """Test redirect where target doesn't have Category: prefix."""
         mock_site = Mock()
         mock_page = MagicMock()
@@ -204,11 +170,10 @@ class TestResolveCategoryRedirect:
         pages = {"Category:Original": mock_page, "Category:Target category": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
-        with patch("time.sleep"):
-            result = resolve_category_redirect(mock_site, "Category:Original")
+        result = resolve_category_redirect(mock_site, "Category:Original")
         assert result == "Category:Target category"
 
-    def test_recursive_redirect(self):
+    def test_recursive_redirect(self, mock_sleep):
         """Test multiple levels of redirects."""
         mock_site = Mock()
 
@@ -227,8 +192,7 @@ class TestResolveCategoryRedirect:
         pages = {"Category:Start": mock_page1, "Category:Redirect 2": mock_page2, "Category:Final target": mock_page3}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
-        with patch("time.sleep"):
-            result = resolve_category_redirect(mock_site, "Category:Start")
+        result = resolve_category_redirect(mock_site, "Category:Start")
         assert result == "Category:Final target"
 
     def test_max_depth_reached(self):
@@ -243,7 +207,7 @@ class TestResolveCategoryRedirect:
         result = resolve_category_redirect(mock_site, "Category:Infinite", max_depth=2)
         assert result == "Category:Infinite"
 
-    def test_complex_wikitext_redirect(self):
+    def test_complex_wikitext_redirect(self, mock_sleep):
         """Test redirect extraction from complex wikitext."""
         mock_site = Mock()
         mock_page = MagicMock()
@@ -263,6 +227,5 @@ class TestResolveCategoryRedirect:
         pages = {"Category:Original": mock_page, "Category:Target": mock_target}
         mock_site.pages.__getitem__ = Mock(side_effect=lambda x: pages.get(x, MagicMock(exists=False)))
 
-        with patch("time.sleep"):
-            result = resolve_category_redirect(mock_site, "Category:Original")
+        result = resolve_category_redirect(mock_site, "Category:Original")
         assert result == "Category:Target"

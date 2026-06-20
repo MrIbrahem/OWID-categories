@@ -14,7 +14,7 @@ python src/fetch_commons_files.py
 - `output/countries/*.json` - Per-country data files
 - `output/continents/*.json` - Per-continent data files
 - `output/owid_summary.json` - Global summary
-- `output/not_matched_files.txt` - Files that couldn't be classified
+- `output/not_matched_files.json` - Files that couldn't be classified
 - `output/fetch_commons.log` - Processing log
 
 ---

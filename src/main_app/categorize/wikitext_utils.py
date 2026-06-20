@@ -63,3 +63,9 @@ def category_exists_on_page(page_text: str, category: str) -> bool:
     # Match [[Category:Name]] or [[Category:Name|sortkey]] with case-insensitive "Category:"
     pattern = rf"\[\[\s*[Cc]ategory\s*:\s*{re.escape(category_simple)}\s*(?:\|[^\]]*)?]]"
     return bool(re.search(pattern, page_text))
+
+
+__all__ = [
+    "extract_redirect_target",
+    "category_exists_on_page",
+]

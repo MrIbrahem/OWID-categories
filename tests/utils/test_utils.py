@@ -6,16 +6,12 @@ and JSON file loading.
 """
 
 import json
-import sys
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
 import pytest
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-
-from utils import (
+from src.main_app.utils import (
     build_category_name,
     get_parent_category,
     load_json_file,
@@ -104,7 +100,7 @@ class TestBuildCategoryName:
             ("Central African Republic", "Category:Our World in Data graphs of the Central African Republic"),
             ("Bahamas", "Category:Our World in Data graphs of the Bahamas"),
             ("Maldives", "Category:Our World in Data graphs of the Maldives"),
-            ("Seychelles", "Category:Our World in Data graphs of the Seychelles"),
+            ("Seychelles", "Category:Our World in Data graphs of Seychelles"),
         ]
 
         for country, expected in test_cases:

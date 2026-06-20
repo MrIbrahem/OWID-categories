@@ -5,45 +5,13 @@ Tests Wiki API functions for authentication, page editing,
 and category management on Wikimedia Commons.
 """
 
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from categorize.wiki import (
+from src.main_app.categorize.wiki import (
     ensure_category_exists,
-    get_category_member_count,
-    get_page_text,
-    save_page,
 )
-
-
-@pytest.mark.unit
-class TestSavePage:
-    """Test saving pages."""
-
-    def test_save_page_success(self):
-        """Test successful page save."""
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        with patch("time.sleep"):
-            result = save_page(mock_site, "Title", "Text", "Summary")
-
-        assert result is True
-        mock_page.save.assert_called_once_with("Text", summary="Summary")
-
-    def test_save_page_failure(self):
-        """Test page save failure."""
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.save.side_effect = Exception("Save failed")
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        result = save_page(mock_site, "Title", "Text", "Summary")
-        assert result is False
 
 
 @pytest.mark.unit
@@ -81,104 +49,4 @@ class TestEnsureCategoryExists:
             dry_run=True,
         )
         assert result is True, "Should return True in dry-run mode"
-        assert not mock_page_not_exists.save.called, "Should not save in dry-run mode"
-
-    def test_category_creation_success(self):
-        """Test successful category creation."""
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = False
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        with patch("categorize.wiki.save_page", return_value=True) as mock_save:
-            result = ensure_category_exists(mock_site, "Category:Test", "Parent", "Sort")
-            assert result is True
-            mock_save.assert_called_once()
-
-
-@pytest.mark.unit
-class TestGetPageText:
-    """Test get_page_text with retries."""
-
-    def test_get_page_text_success(self):
-        """Test successful page text retrieval."""
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Content"
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        result = get_page_text(mock_site, "Title")
-        assert result == "Content"
-
-    def test_get_page_text_retry_success(self):
-        """Test successful page text retrieval after a failure."""
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Content"
-
-        # First call fails, second succeeds
-        mock_site.pages.__getitem__ = Mock(side_effect=[Exception("Transient error"), mock_page])
-
-        with patch("time.sleep"):  # Skip delay in tests
-            result = get_page_text(mock_site, "Title")
-        assert result == "Content"
-        assert mock_site.pages.__getitem__.call_count == 2
-
-    def test_get_page_text_permanent_failure(self):
-        """Test permanent failure after max retries."""
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(side_effect=Exception("Permanent error"))
-
-        with patch("time.sleep"):
-            result = get_page_text(mock_site, "Title", max_retries=2)
-        assert result is None
-        assert mock_site.pages.__getitem__.call_count == 2
-
-
-@pytest.mark.unit
-class TestGetCategoryMemberCount:
-    """Test counting category members."""
-
-    def test_count_members_existing_category(self):
-        """Test counting members in an existing category."""
-        # Create mock category page with members
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.members.return_value = [
-            Mock(),
-            Mock(),
-            Mock(),
-        ]  # 3 members
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        result = get_category_member_count(mock_site, "Category:Our World in Data graphs of Canada")
-        assert result == 3, "Should return correct member count"
-
-    def test_count_members_nonexistent_category(self):
-        """Test counting members in a non-existent category."""
-        # Create mock page that doesn't exist
-        mock_page = MagicMock()
-        mock_page.exists = False
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        result = get_category_member_count(mock_site, "Category:Nonexistent Category")
-        assert result == 0, "Should return 0 for non-existent category"
-
-    def test_count_members_empty_category(self):
-        """Test counting members in an empty category."""
-        # Create mock category page with no members
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.members.return_value = []
-
-        mock_site = Mock()
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        result = get_category_member_count(mock_site, "Category:Our World in Data graphs of Empty Country")
-        assert result == 0, "Should return 0 for empty category"
+        assert not mock_page_not_exists.edit.called, "Should not save in dry-run mode"

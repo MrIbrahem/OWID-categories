@@ -2,11 +2,9 @@
 Tests for categorize.wikitext_utils module.
 """
 
-import re
-
 import pytest
 
-from categorize.wikitext_utils import (
+from src.main_app.categorize.wikitext_utils import (
     category_exists_on_page,
     extract_redirect_target,
 )
@@ -56,7 +54,7 @@ Some file description here.
 
     def test_none_page_text(self):
         """Test with None page text."""
-        result = category_exists_on_page(None, "Category:Our World in Data graphs of Canada")
+        result = category_exists_on_page(None, "Category:Our World in Data graphs of Canada")  # type: ignore
         assert result is False, "Should return False for None page text"
 
 

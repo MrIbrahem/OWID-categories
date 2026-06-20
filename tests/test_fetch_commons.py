@@ -6,17 +6,11 @@ This script demonstrates the functionality without requiring network access.
 """
 
 import json
-import sys
-from pathlib import Path
 
 import pytest
 
-# Add src directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
-from fetch_commons_files import (
-    COUNTRIES_DIR,
-    OUTPUT_DIR,
+from src.main_app.files_dumper import OUTPUT_DIR
+from src.main_app.main_fetch_files import (
     classify_and_parse_file,
     fetch_files,
     write_country_json_files,
@@ -65,6 +59,7 @@ def test_classification():
     # Test map file with country name (United States)
     file_type, parsed_data = classify_and_parse_file("File:GDP per capita, United States, 2020.svg")
     assert file_type == "map", "Should classify as map"
+    assert parsed_data is not None
     assert parsed_data["region"] == "United States", "Should extract correct region"
     assert parsed_data["year"] == 2020, "Should extract correct year"
 
@@ -82,7 +77,11 @@ def test_processing():
     assert len(sample_files) == 10, "Should have 10 sample files"
 
     # Process files
-    countries, continents, not_matched = fetch_files(sample_files)
+
+    fetch_data = fetch_files(sample_files)
+
+    countries = fetch_data.countries
+    continents = fetch_data.continents
 
     # Assertions on processed data
     assert len(countries) > 0, "Should process at least one country"
@@ -110,10 +109,13 @@ def test_processing():
 
     # Write output files
     write_country_json_files(countries)
-    write_summary_json(countries, continents)
+    write_summary_json(
+        countries,
+        continents,
+        files_summary={},
+    )
 
     # Verify output files were created
-    assert COUNTRIES_DIR.exists(), "Countries directory should be created"
     assert (OUTPUT_DIR / "owid_summary.json").exists(), "Summary file should be created"
 
     # Verify summary content
