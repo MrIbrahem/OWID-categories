@@ -31,16 +31,23 @@ def make_report_data(
 ) -> dict:
     continents_real = continents_categories_data(site)
     countries_real = countries_categories_data(site)
-    continents_data = {}
+    world_category = "Category:Our World in Data maps of the world"
+
+    continents_data = {
+        world_category: {"new": 0, "count": 0},
+    }
 
     for continent, data in continents.items():
         category = f"Category:Our World in Data maps of {continent}"
+
+        if continent == "World":
+            category = world_category
+
         continents_data[category] = {
             "new": len(data["maps"]),
             "count": continents_real.get(category) or 0,
         }
 
-    world_category = "Category:Our World in Data maps of the world"
     continents_data[world_category]["count"] = get_category_count(world_category)
 
     countries_data = {}
