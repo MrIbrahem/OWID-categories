@@ -34,9 +34,10 @@ def make_report_data(
     continents_data = {}
 
     for continent, data in continents.items():
-        continents_data[continent] = {
+        category = f"Category:Our World in Data maps of {continent}"
+        continents_data[category] = {
             "new": len(data["maps"]),
-            "count": continents_real.get(f"Category:Our World in Data maps of {continent}") or 0,
+            "count": continents_real.get(category) or 0,
         }
 
     continents_data["World"]["count"] = get_category_count("Category:Our_World_in_Data_maps_of_the_world")
@@ -47,7 +48,7 @@ def make_report_data(
         country = data["country"]
         len_graphs = len(data["graphs"])
         category = build_category_name(country)
-        countries_data[country] = {"new": len_graphs, "count": countries_real.get(category) or 0}
+        countries_data[category] = {"new": len_graphs, "count": countries_real.get(category) or 0}
 
     return {
         "continents": continents_data,
