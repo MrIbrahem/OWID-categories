@@ -68,6 +68,7 @@ def write_summary_json(
     countries: Dict[str, Dict],
     continents: Dict[str, Dict],
     total_pages: int = 0,
+    not_matched: int = 0,
 ) -> None:
     """
     Write global summary JSON file including countries and continents.
@@ -77,7 +78,11 @@ def write_summary_json(
         continents: Dictionary of continent data keyed by continent name
     """
     summary = {
-        "total_pages": total_pages,
+        "files": {
+            "total": total_pages,
+            "matched": not_matched,
+            "not_matched": total_pages - not_matched,
+        },
         "countries": [],
         "continents": [],
     }

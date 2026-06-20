@@ -295,6 +295,7 @@ def fetch_files_entry(
         countries,
         continents,
         total_pages=total_pages,
+        not_matched=len(not_matched),
     )
 
     logger.info("Processing complete!")
