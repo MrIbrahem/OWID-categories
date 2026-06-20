@@ -70,7 +70,7 @@
         },
         {
             "iso3": "ATF",
-            "country": "French Southern Territories",
+            "country": null,
             "graph_count": 12,
             "map_count": 0
         },
@@ -202,7 +202,7 @@
         },
         {
             "iso3": "BVT",
-            "country": "Bouvet Island",
+            "country": null,
             "graph_count": 5,
             "map_count": 0
         },
@@ -304,7 +304,7 @@
         },
         {
             "iso3": "CXR",
-            "country": "Christmas Island",
+            "country": null,
             "graph_count": 8,
             "map_count": 0
         },
@@ -550,7 +550,7 @@
         },
         {
             "iso3": "HMD",
-            "country": "Heard Island and McDonald Islands",
+            "country": null,
             "graph_count": 8,
             "map_count": 0
         },
@@ -598,7 +598,7 @@
         },
         {
             "iso3": "IOT",
-            "country": "British Indian Ocean Territory",
+            "country": null,
             "graph_count": 6,
             "map_count": 0
         },
@@ -940,7 +940,7 @@
         },
         {
             "iso3": "NFK",
-            "country": "Norfolk Island",
+            "country": null,
             "graph_count": 15,
             "map_count": 0
         },
@@ -1012,7 +1012,7 @@
         },
         {
             "iso3": "PCN",
-            "country": "Pitcairn",
+            "country": null,
             "graph_count": 20,
             "map_count": 0
         },
@@ -1126,19 +1126,19 @@
         },
         {
             "iso3": "SGS",
-            "country": "South Georgia and the South Sandwich Islands",
+            "country": null,
             "graph_count": 9,
             "map_count": 0
         },
         {
             "iso3": "SHN",
-            "country": "Saint Helena, Ascension and Tristan da Cunha",
+            "country": null,
             "graph_count": 1,
             "map_count": 0
         },
         {
             "iso3": "SJM",
-            "country": "Svalbard and Jan Mayen",
+            "country": null,
             "graph_count": 14,
             "map_count": 0
         },
@@ -1324,7 +1324,7 @@
         },
         {
             "iso3": "TWN",
-            "country": "Taiwan",
+            "country": null,
             "graph_count": 63,
             "map_count": 0
         },
@@ -1348,7 +1348,7 @@
         },
         {
             "iso3": "UMI",
-            "country": "United States Minor Outlying Islands",
+            "country": null,
             "graph_count": 1,
             "map_count": 0
         },
