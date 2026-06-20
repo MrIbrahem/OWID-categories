@@ -13,7 +13,6 @@ import pytest
 from src.main_app.main_run_categorize import process_files
 from src.main_app.owid_config import COUNTRIES_DIR
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
