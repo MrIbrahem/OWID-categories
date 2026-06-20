@@ -38,6 +38,7 @@ GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),\s*([a-zA-Z]{3})\.svg$")
 
 MAP_PATTERN_FULL = re.compile(rf",\s*([A-Z][A-Za-z \(\)-]+),\s*({DATE_FORMAT})(?: \(cropped\))?\.svg$")
 
+
 def extract_indicator(base_name: str) -> str:
     first_comma = base_name.find(",")
     indicator = base_name[:first_comma].strip() if first_comma != -1 else base_name

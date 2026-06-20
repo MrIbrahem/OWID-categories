@@ -12,10 +12,12 @@ from typing import Any, Dict, List, Tuple
 
 from .api_services import get_category_count, get_category_members_titles
 from .categorize import connect_to_commons
+from .categorize.wikitext_report import create_wikitext_report, make_report_data
 from .files_classifier import classify_and_parse_file
 from .files_dumper import (
     load_category_members_from_json,
     save_category_members,
+    save_wikitext_report,
     write_continent_json_files,
     write_country_json_files,
     write_not_matched_files,
@@ -220,6 +222,21 @@ def load_files(load_from_json: bool) -> Tuple[List[str], int]:
     return files, total_pages
 
 
+def get_site() -> None | Any:
+    username, password = load_credentials()
+    if not username or not password:
+        logger.error("Failed to load credentials from .env file")
+        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
+        return None
+
+    # Connect to Commons
+    site = connect_to_commons(username, password)
+    if not site:
+        logger.error("Failed to connect to Wikimedia Commons")
+        return None
+    return site
+
+
 def fetch_files_entry(
     load_from_json: bool = False,
 ) -> None:
@@ -245,6 +262,17 @@ def fetch_files_entry(
     write_country_json_files(fetch_data.countries)
     write_continent_json_files(fetch_data.continents)
     write_not_matched_files(fetch_data.not_matched_data)
+
+    site = get_site()
+
+    report_data = make_report_data(
+        site,
+        fetch_data.countries,
+        fetch_data.continents,
+    )
+
+    wikitext = create_wikitext_report(report_data)
+    save_wikitext_report(wikitext)
 
     logger.info("Processing complete!")
 
