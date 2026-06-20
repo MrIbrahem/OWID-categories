@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 API_ENDPOINT = "https://commons.wikimedia.org/w/api.php"
 
 
-def get_category_count(category_name):
+def get_category_count(category_name: str) -> int:
     # Ensure the title has the proper prefix
     if not category_name.startswith("Category:"):
         category_name = f"Category:{category_name}"
@@ -28,10 +28,18 @@ def get_category_count(category_name):
     # Always include a descriptive User-Agent header per Wikipedia API guidelines
     headers = {"User-Agent": "CategoryCounterBot/1.0 (your_email@example.com)"}
 
-    response = requests.get(url, params=params, headers=headers).json()
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+    except (requests.RequestException, ValueError) as e:
+        logger.error(f"Failed to fetch category info for {category_name}: {e}")
+        return 0
 
     # Extract the page data dynamically since the page ID string changes
-    pages = response.get("query", {}).get("pages", {})
+    pages = data.get("query", {}).get("pages", {})
+    if not pages:
+        return 0
     page_id = list(pages.keys())[0]
 
     info = pages[page_id].get("categoryinfo", {})
@@ -45,6 +53,7 @@ def get_category_members_titles(
     category_name: str,
     namespace: int | None = None,
     total_pages: int | None = None,
+    max_items: int | None = None,
 ) -> list[str]:
     """
     Fetch all file titles from the OWID category using MediaWiki API with pagination.
@@ -55,7 +64,7 @@ def get_category_members_titles(
     delay = 0.1  # seconds
     max_delay = 8.0
 
-    total_pages = total_pages or get_category_count(category_name)
+    total_pages = max_items or total_pages or get_category_count(category_name)
     logger.info(f"Starting to fetch files from {category_name}, total members: {total_pages}")
 
     params = {
@@ -83,6 +92,8 @@ def get_category_members_titles(
     with tqdm(total=total_pages, desc="Fetching members", unit="item") as pbar:
         while first_request or cmcontinue is not None:
             first_request = False
+            if max_items and len(all_files) >= max_items:
+                break
 
             if cmcontinue:
                 params["cmcontinue"] = cmcontinue
