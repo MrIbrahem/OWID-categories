@@ -2,7 +2,10 @@
     "files": {
         "total": 1633016,
         "matched": 609380,
-        "not_matched": 1023636
+        "not_matched": {
+            "unknown": 609380,
+            "unresolved_region": 0
+        }
     },
     "countries": [
         {
