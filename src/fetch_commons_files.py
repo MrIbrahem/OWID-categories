@@ -14,6 +14,7 @@ Usage:
 
 """
 
+import argparse
 import logging
 
 from main_app.logger_config import setup_logging
@@ -31,5 +32,24 @@ setup_logging(
     use_console=False,
 )
 
+def main():
+
+    parser = argparse.ArgumentParser(description="Fetch ")
+
+    # add arg load_from_json with default true
+    parser.add_argument(
+        "--load_from_json",
+        action="store_true",
+        default=True,
+        help="Load from JSON file",
+    )
+
+    args = parser.parse_args()
+
+    fetch_files_entry(
+        load_from_json=args.load_from_json,
+    )
+
+
 if __name__ == "__main__":
-    fetch_files_entry()
+    main()

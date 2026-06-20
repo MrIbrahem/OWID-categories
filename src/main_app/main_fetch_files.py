@@ -13,6 +13,7 @@ from typing import Dict, List, Optional, Tuple
 from .api_services import get_category_count, get_category_members_titles
 from .categorize import connect_to_commons
 from .files_dumper import (
+    load_category_members_from_json,
     save_category_members,
     write_continent_json_files,
     write_country_json_files,
@@ -218,7 +219,9 @@ def fetch_files(files: List[str]) -> Tuple[Dict[str, Dict], Dict[str, Dict], Lis
     return countries, continents, not_matched
 
 
-def fetch_files_entry() -> None:
+def fetch_files_entry(
+    load_from_json: bool = False,
+) -> None:
     """Main execution function."""
 
     # Load credentials
@@ -234,17 +237,23 @@ def fetch_files_entry() -> None:
         logger.error("Failed to connect to Wikimedia Commons")
         return
 
-    # Fetch all files from the category
-    total_pages = get_category_count(CATEGORY_NAME)
-    files = get_category_members_titles(
-        site,
-        CATEGORY_NAME,
-        namespace=6,
-    )
+    files = []
 
-    if len(files) == total_pages:
-        save_category_members(files)
-        logger.info(f"Successfully fetched {len(files)} files from the category")
+    # Fetch all files from the category
+    if load_from_json:
+        files = load_category_members_from_json()
+
+    if not files:
+        total_pages = get_category_count(CATEGORY_NAME)
+        files = get_category_members_titles(
+            site,
+            CATEGORY_NAME,
+            namespace=6,
+        )
+
+        if len(files) == total_pages:
+            save_category_members(files)
+            logger.info(f"Successfully fetched {len(files)} files from the category")
 
     # Process and aggregate files by country and continent
     countries, continents, not_matched = fetch_files(files)

@@ -130,6 +130,24 @@ def save_category_members(data: list[str]) -> None:
         logger.error(f"Failed to write category members to {file_path}: {e}")
 
 
+def load_category_members_from_json() -> list[str]:
+    """ """
+    file_path = OUTPUT_DIR / "category_members.json"
+    logger.info("loading data files from category_members.json")
+
+    if not file_path.exists():
+        logger.info(f"{file_path} does not exist")
+        return []
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except Exception as e:
+        logger.error(f"Failed to load category members from {file_path}: {e}")
+
+    return []
+
 __all__ = [
     "write_country_json_files",
     "write_continent_json_files",
