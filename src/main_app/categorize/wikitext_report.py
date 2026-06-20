@@ -40,7 +40,8 @@ def make_report_data(
             "count": continents_real.get(category) or 0,
         }
 
-    continents_data["World"]["count"] = get_category_count("Category:Our_World_in_Data_maps_of_the_world")
+    world_category = "Category:Our World in Data maps of the world"
+    continents_data[world_category]["count"] = get_category_count(world_category)
 
     countries_data = {}
 
