@@ -14,119 +14,95 @@ from src.main_app.main_run_categorize import process_files
 from src.main_app.owid_config import COUNTRIES_DIR
 
 
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def mock_site():
+    """Create a mock mwclient site with page and category page lookups."""
+    mock = Mock()
+    mock_page = MagicMock()
+    mock_page.exists = True
+    mock_page.text.return_value = "Some page text"
+
+    mock_cat_page = MagicMock()
+    mock_cat_page.exists = True
+
+    def get_page(title):
+        return mock_cat_page if title.startswith("Category:") else mock_page
+
+    mock.pages.__getitem__ = Mock(side_effect=get_page)
+    return mock
+
+
+@pytest.fixture
+def mock_api_calls():
+    """Patch network-dependent calls used by process_files."""
+    with (
+        patch("src.main_app.main_run_categorize.get_category_count", return_value=0),
+        patch("src.main_app.main_run_categorize.get_category_members_titles", return_value=[]),
+        patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c),
+    ):
+        yield
+
+
+# ---------------------------------------------------------------------------
+# Unit tests – isolated processing logic
+# ---------------------------------------------------------------------------
+
+
 @pytest.mark.unit
 class TestProcessFiles:
     """Test processing country files."""
 
-    def test_process_files_basic(self):
+    def test_process_files_basic(self, mock_site, mock_api_calls):
         """Test basic file processing."""
-        # Create mock site
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text"
-        mock_site.pages.__getitem__ = Mock(return_value=mock_page)
-
-        # Mock category page
-        mock_cat_page = MagicMock()
-        mock_cat_page.exists = True
-
-        # Setup side_effect to return different pages based on title
-        def get_page(title):
-            if title.startswith("Category:"):
-                return mock_cat_page
-            return mock_page
-
-        mock_site.pages.__getitem__ = Mock(side_effect=get_page)
-
-        # Create test data
-        test_data = {
+        data = {
             "iso3": "CAN",
             "country": "Canada",
             "graphs": [
-                {
-                    "title": "File:Test Graph 1.svg",
-                    "indicator": "GDP",
-                },
-                {
-                    "title": "File:Test Graph 2.svg",
-                    "indicator": "Population",
-                },
+                {"title": "File:Test Graph 1.svg", "indicator": "GDP"},
+                {"title": "File:Test Graph 2.svg", "indicator": "Population"},
             ],
         }
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=data):
+            stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
 
-        # Mock file loading
-        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
-            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch(
-                    "src.main_app.main_run_categorize.get_category_members_titles",
-                    return_value=[],
-                ):
-                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                        stats = process_files(mock_site, COUNTRIES_DIR / "CAN.json", dry_run=True)
+        assert stats["added"] >= 0
+        assert stats["errors"] == 0
 
-        # Assertions
-        assert stats["added"] >= 0, "Should have processed some files"
-        assert stats["errors"] == 0, "Should have no errors"
-
-    def test_process_files_with_limit(self):
+    def test_process_files_with_limit(self, mock_site, mock_api_calls):
         """Test file processing with per-country limit."""
-        # Create mock site
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Some page text"
-
-        mock_cat_page = MagicMock()
-        mock_cat_page.exists = True
-
-        def get_page(title):
-            if title.startswith("Category:"):
-                return mock_cat_page
-            return mock_page
-
-        mock_site.pages.__getitem__ = Mock(side_effect=get_page)
-
-        # Create test data with many files
-        test_data = {
+        data = {
             "iso3": "USA",
             "country": "United States",
             "graphs": [{"title": f"File:Test Graph {i}.svg", "indicator": "Test"} for i in range(10)],
         }
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value=data):
+            stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
 
-        # Mock file loading
-        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
-            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch(
-                    "src.main_app.main_run_categorize.get_category_members_titles",
-                    return_value=[],
-                ):
-                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                        stats = process_files(mock_site, COUNTRIES_DIR / "USA.json", dry_run=True, files_per_one=3)
+        assert stats["added"] + stats["skipped"] <= 3
 
-        # Should only process 3 files
-        assert stats["added"] + stats["skipped"] <= 3, "Should respect per-country limit"
-
-    def test_process_files_missing_country(self):
+    def test_process_files_missing_country(self, mock_site):
         """Test processing file with missing country name."""
-        mock_site = Mock()
-
-        # Test data missing country name
-        test_data = {"iso3": "XXX", "graphs": []}
-
-        with patch("src.main_app.main_run_categorize.load_json_file", return_value=test_data):
+        with patch("src.main_app.main_run_categorize.load_json_file", return_value={"iso3": "XXX", "graphs": []}):
             stats = process_files(mock_site, COUNTRIES_DIR / "XXX.json", dry_run=True)
 
-        assert stats["errors"] > 0, "Should have error for missing country"
+        assert stats["errors"] > 0
 
-    def test_process_files_invalid_json(self):
-        """Test processing invalid JSON file."""
-        mock_site = Mock()
-
+    def test_process_files_invalid_json(self, mock_site):
+        """Test processing invalid JSON file (None returned by loader)."""
         with patch("src.main_app.main_run_categorize.load_json_file", return_value=None):
             stats = process_files(mock_site, COUNTRIES_DIR / "invalid.json", dry_run=True)
 
-        assert stats["errors"] > 0, "Should have error for invalid JSON"
+        assert stats["errors"] > 0
+
+
+# ---------------------------------------------------------------------------
+# Filesystem tests – real data structure validation
+# ---------------------------------------------------------------------------
 
 
 @pytest.mark.filesystem
@@ -135,82 +111,59 @@ class TestCountryFilesExist:
 
     def test_countries_directory_exists(self):
         """Test that countries directory exists."""
-        countries_dir = COUNTRIES_DIR
-        if not countries_dir.exists():
+        if not COUNTRIES_DIR.exists():
             pytest.skip("Countries directory not found. Run fetch_commons_files.py first.")
 
-        assert countries_dir.is_dir(), "Countries directory should exist"
+        assert COUNTRIES_DIR.is_dir()
 
     def test_country_json_structure(self):
         """Test structure of country JSON files."""
-        countries_dir = COUNTRIES_DIR
-
-        if not countries_dir.exists():
+        if not COUNTRIES_DIR.exists():
             pytest.skip("Countries directory not found")
 
-        json_files = list(countries_dir.glob("*.json"))
-
+        json_files = sorted(COUNTRIES_DIR.glob("*.json"))
         if not json_files:
             pytest.skip("No country JSON files found")
 
-        # Test first file
-        first_file = json_files[0]
-        with open(first_file, "r", encoding="utf-8") as f:
+        with open(json_files[0], encoding="utf-8") as f:
             data = json.load(f)
 
-        # Check required fields
-        assert "country" in data, "Country field should exist"
-        assert "iso3" in data, "ISO3 field should exist"
-        assert "graphs" in data, "Graphs field should exist"
-        assert "maps" in data, "Maps field should exist"
-        assert isinstance(data["graphs"], list), "Graphs should be a list"
-        assert isinstance(data["maps"], list), "Maps should be a list"
+        assert "country" in data
+        assert "iso3" in data
+        assert "graphs" in data
+        assert "maps" in data
+        assert isinstance(data["graphs"], list)
+        assert isinstance(data["maps"], list)
+
+
+# ---------------------------------------------------------------------------
+# Integration tests – dry-run with real data files
+# ---------------------------------------------------------------------------
 
 
 @pytest.mark.integration
 class TestDryRunSimulation:
     """Integration tests with dry-run simulation."""
 
-    def test_dry_run_with_sample_data(self):
+    def test_dry_run_with_sample_data(self, mock_site, mock_api_calls):
         """Test dry-run processing with sample data."""
-        countries_dir = COUNTRIES_DIR
-
-        if not countries_dir.exists():
+        if not COUNTRIES_DIR.exists():
             pytest.skip("Countries directory not found")
 
-        json_files = list(countries_dir.glob("*.json"))
-
+        json_files = sorted(COUNTRIES_DIR.glob("*.json"))
         if not json_files:
             pytest.skip("No country JSON files found")
 
-        # Create mock site
-        mock_site = Mock()
-        mock_page = MagicMock()
-        mock_page.exists = True
-        mock_page.text.return_value = "Test content"
+        for json_file in json_files[:3]:
+            with patch("src.main_app.main_run_categorize.load_json_file") as m:
+                m.return_value = {
+                    "iso3": json_file.stem,
+                    "country": json_file.stem,
+                    "graphs": [],
+                }
+                stats = process_files(mock_site, json_file, dry_run=True)
 
-        mock_cat_page = MagicMock()
-        mock_cat_page.exists = True
-
-        def get_page(title):
-            if title.startswith("Category:"):
-                return mock_cat_page
-            return mock_page
-
-        mock_site.pages.__getitem__ = Mock(side_effect=get_page)
-
-        # Process first 3 countries in dry-run
-        for json_file in sorted(json_files)[:3]:
-            with patch("src.main_app.main_run_categorize.get_category_count", return_value=0):
-                with patch(
-                    "src.main_app.main_run_categorize.get_category_members_titles",
-                    return_value=[],
-                ):
-                    with patch("src.main_app.main_run_categorize.resolve_category_redirect", side_effect=lambda s, c: c):
-                        stats = process_files(mock_site, json_file, dry_run=True)
-
-            # Basic assertions
-            assert isinstance(stats, dict), "Should return stats dictionary"
-            assert "added" in stats, "Stats should have 'added' key"
-            assert "skipped" in stats, "Stats should have 'skipped' key"
-            assert "errors" in stats, "Stats should have 'errors' key"
+            assert isinstance(stats, dict)
+            assert "added" in stats
+            assert "skipped" in stats
+            assert "errors" in stats
