@@ -24,7 +24,7 @@ from .files_dumper import (
     write_summary_json,
 )
 from .owid_config import CATEGORY_NAME, load_credentials
-from .owid_country_codes import get_country_from_iso3, ISO3_TO_COUNTRY_NOT_READY
+from .owid_country_codes import ISO3_TO_COUNTRY_NOT_READY, get_country_from_iso3
 
 logger = logging.getLogger(__name__)
 
