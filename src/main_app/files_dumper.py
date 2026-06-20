@@ -23,7 +23,7 @@ def dump_to_file(
 ) -> None:
     try:
         with open(file, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+            json.dump(data, f, indent=4, ensure_ascii=False)
     except Exception as e:
         logger.error(f"Failed to write data JSON to {file}: {e}")
 
