@@ -10,7 +10,9 @@ import mwclient
 import requests
 from mwclient.client import Site
 from tqdm import tqdm
+
 from ..owid_config import USER_AGENT
+
 logger = logging.getLogger(__name__)
 
 # Configuration
@@ -23,31 +25,37 @@ def get_category_count(category_name: str) -> int:
         category_name = f"Category:{category_name}"
 
     url = API_ENDPOINT
-    params = {"action": "query", "titles": category_name, "prop": "categoryinfo", "format": "json"}
+    params = {
+        "action": "query",
+        "format": "json",
+        "prop": "categoryinfo",
+        "titles": category_name,
+        "utf8": 1,
+        "formatversion": "2"
+    }
 
     # Always include a descriptive User-Agent header per Wikipedia API guidelines
     headers = {"User-Agent": USER_AGENT}
 
     try:
-        response = requests.get(url, params=params, headers=headers, timeout=10)
+        response = requests.get(
+            url,
+            params=params,
+            headers=headers,
+            timeout=10,
+        )
         response.raise_for_status()
         data = response.json()
     except (requests.RequestException, ValueError) as e:
         logger.error(f"Failed to fetch category info for {category_name}: {e}")
         return 0
-
+    # { "batchcomplete": true, "query": { "pages": [ { "pageid": 718741, "ns": 14, "title": "Category:Yemen", "categoryinfo": { "size": 19, "pages": 3, "files": 0, "subcats": 16, "hidden": false } } ] } }
     # Extract the page data dynamically since the page ID string changes
-    pages = data.get("query", {}).get("pages", {})
+    pages = data.get("query", {}).get("pages", [{}])
     if not pages:
         return 0
 
-    # page_id = list(pages.keys())[0]
-    page_id = next(iter(pages), None)
-    if page_id is None:
-        logger.warning("No page payload returned for category %s", category_name)
-        return 0
-
-    info = pages[page_id].get("categoryinfo", {})
+    info = pages[0].get("categoryinfo", {})
     # {'size': 354, 'pages': 1, 'files': 309, 'subcats': 44}
     size = info.get("size") or 0
     return size
@@ -129,10 +137,12 @@ def get_category_members_titles(
 
             except Exception as e:
                 logger.error("API request failed %s", str(e))
-                if delay < max_delay:
-                    delay = min(delay * 2, max_delay)
-                    time.sleep(delay)
-                    continue
+                if delay >= max_delay:
+                    break
+
+                time.sleep(delay)
+                delay = min(delay * 2, max_delay)
+                continue
 
     logger.info(f"Finished fetching {len(all_files)} pages.")
     return all_files

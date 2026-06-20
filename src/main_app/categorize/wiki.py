@@ -12,13 +12,14 @@ from typing import Optional
 import mwclient
 from mwclient import Site
 
-from ..owid_config import USER_AGENT
 from ..api_services import MwClientPage
+from ..owid_config import USER_AGENT
 
 logger = logging.getLogger(__name__)
 
 # Rate limiting: delay between edits in seconds
 EDIT_DELAY = 1
+
 
 def connect_to_commons(username: str, password: str) -> Optional[Site]:
     """
@@ -85,7 +86,7 @@ def ensure_category_exists(
     # Create the category page
     edit_summary = "Create category for OWID graphs"
 
-    save = category_page.edit(category_content, edit_summary)
+    save = category_page.create(category_content, edit_summary)
     return save.get("success") is True
 
 

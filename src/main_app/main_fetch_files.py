@@ -29,6 +29,8 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class FilesClassess:
+    """Aggregated file classification results."""
+
     countries: Dict[str, Dict]
     continents: Dict[str, Dict]
     not_matched: List[str]
@@ -181,7 +183,8 @@ def fetch_files(files: List[str]) -> FilesClassess:
     )
 
 
-def load_files(load_from_json) -> Tuple[List[str], Any | int]:
+def load_files(load_from_json: bool) -> Tuple[List[str], int]:
+    """Load category member titles from cache or Wikimedia Commons."""
     files = []
     total_pages = 0
 

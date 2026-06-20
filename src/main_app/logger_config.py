@@ -29,6 +29,9 @@ def prepare_log_file(log_file: str | None, project_logger: logging.Logger) -> Pa
 
 
 def setup_file_handler(project_logger: logging.Logger, log_file: Path, level: int) -> None:
+    """
+    Set up a file handler for logging to a file.
+    """
     if not log_file:
         return
     file_formatter = logging.Formatter(
@@ -36,7 +39,13 @@ def setup_file_handler(project_logger: logging.Logger, log_file: Path, level: in
         datefmt="%Y-%m-%d %H:%M:%S",
     )
     # file_handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
-    file_handler = WatchedFileHandler(log_file, mode="a", encoding="utf-8")
+
+    try:
+        file_handler = WatchedFileHandler(log_file, mode="a", encoding="utf-8")
+    except OSError as exc:
+        project_logger.warning("Falling back to console logging for %s: %s", log_file, exc)
+        return
+
     file_handler.setFormatter(file_formatter)
     file_handler.setLevel(level)
     project_logger.addHandler(file_handler)

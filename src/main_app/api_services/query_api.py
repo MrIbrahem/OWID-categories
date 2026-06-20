@@ -26,15 +26,27 @@ def get_template_pages(
         "formatversion": "2",
     }
 
-    result = site.get("query", titles=title, **params)
-    query_data = result.get("query", {})
-    query_pages = query_data.get("pages", {})
+    pages: list[str] = []
+    gti_continue: str | None = None
 
-    # { "pageid": 2973452, "ns": 100, "title": "title" }
-    pages: list[str] = [x["title"] for x in query_pages]
-    # ---
+    while True:
+        if gti_continue:
+            params["gticontinue"] = gti_continue
+
+        result = site.get("query", titles=title, **params)
+
+        query_data = result.get("query", {})
+        query_pages = query_data.get("pages", []) or []
+
+        # { "pageid": 2973452, "ns": 100, "title": "title" }
+        pages.extend(x["title"] for x in query_pages)
+
+        gti_continue = (result.get("continue") or {}).get("gticontinue")
+
+        if not gti_continue:
+            break
+
     logger.info(f"find {len(pages)} pages.")
-    # ---
     return pages
 
 
