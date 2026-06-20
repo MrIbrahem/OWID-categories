@@ -181,7 +181,7 @@ def fetch_files(files: List[str]) -> FilesClassess:
     )
 
 
-def load_files(load_from_json, site) -> Tuple[List[str], Any | int]:
+def load_files(load_from_json) -> Tuple[List[str], Any | int]:
     files = []
     total_pages = 0
 
@@ -190,17 +190,33 @@ def load_files(load_from_json, site) -> Tuple[List[str], Any | int]:
         files = load_category_members_from_json()
         total_pages = len(files)
 
-    if not files:
-        total_pages = get_category_count(CATEGORY_NAME)
-        files = get_category_members_titles(
-            site,
-            CATEGORY_NAME,
-            namespace=6,
-        )
+    if files:
+        return files, total_pages
 
-        if len(files) == total_pages:
-            save_category_members(files)
-            logger.info(f"Successfully fetched {len(files)} files from the category")
+    total_pages = get_category_count(CATEGORY_NAME)
+
+    # Load credentials
+    username, password = load_credentials()
+    if not username or not password:
+        logger.error("Failed to load credentials from .env file")
+        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
+        return [], total_pages
+
+    # Connect to Commons
+    site = connect_to_commons(username, password)
+    if not site:
+        logger.error("Failed to connect to Wikimedia Commons")
+        return [], total_pages
+
+    files = get_category_members_titles(
+        site,
+        CATEGORY_NAME,
+        namespace=6,
+    )
+
+    if len(files) == total_pages:
+        save_category_members(files)
+        logger.info(f"Successfully fetched {len(files)} files from the category")
 
     return files, total_pages
 
@@ -210,27 +226,14 @@ def fetch_files_entry(
 ) -> None:
     """Main execution function."""
 
-    # Load credentials
-    username, password = load_credentials()
-    if not username or not password:
-        logger.error("Failed to load credentials from .env file")
-        logger.error("Please create a .env file with WIKIPEDIA_BOT_USERNAME and WIKIPEDIA_BOT_PASSWORD")
-        return
-
-    # Connect to Commons
-    site = connect_to_commons(username, password)
-    if not site:
-        logger.error("Failed to connect to Wikimedia Commons")
-        return
-
-    files, total_pages = load_files(load_from_json, site)
+    files, total_pages = load_files(load_from_json)
 
     # Process and aggregate files by country and continent
     fetch_data = fetch_files(files)
 
     files_summary = {
         "total": total_pages,
-        "matched": len(fetch_data.not_matched),
+        "matched": total_pages - len(fetch_data.not_matched),
         "not_matched": {x: len(v) for x, v in fetch_data.not_matched_data.items()},
     }
     # Write output files
