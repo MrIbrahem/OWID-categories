@@ -57,3 +57,4 @@ temp/
 *.tmp
 /output
 /_works_files
+/.commandcode
