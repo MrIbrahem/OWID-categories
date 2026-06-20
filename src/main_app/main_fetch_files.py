@@ -229,16 +229,16 @@ def fetch_files_entry(
     fetch_data = fetch_files(files)
 
     # Write output files
-    write_country_json_files(fetch_data.countries)
-    write_continent_json_files(fetch_data.continents)
-    write_not_matched_files(fetch_data.not_matched_data)
-
     write_summary_json(
         fetch_data.countries,
         fetch_data.continents,
         total_pages=total_pages,
         not_matched=len(fetch_data.not_matched),
     )
+
+    write_country_json_files(fetch_data.countries)
+    write_continent_json_files(fetch_data.continents)
+    write_not_matched_files(fetch_data.not_matched_data)
 
     logger.info("Processing complete!")
 
