@@ -141,7 +141,6 @@ def get_last_edit_timestamp(site, page_title):
 
     return None
 
-
 def get_page_creator(site, page_title):
     """Username of the oldest revision (i.e. who created the page)."""
     logger.info(f"Fetching page creator of {page_title}...")
@@ -170,10 +169,12 @@ def get_page_creator(site, page_title):
 
 def get_global_editcounts(site, users) -> dict[str, int]:
     logger.info(f"Fetching global edit count of {len(users)}...")
+    logger.info(users)
+
     params = {
         "list": "globalusers",
         "gusprop": "editcount",
-        "gususers": users,
+        "gususers": "|".join(users),
         "formatversion": 2,
         "format": "json",
     }
@@ -186,10 +187,11 @@ def get_global_editcounts(site, users) -> dict[str, int]:
 
     logger.info(f"len of data: {len(data)}")
 
-    users = data.get("query", {}).get("globalusers", [])
+    result = data.get("query", {}).get("globalusers", [])
     # [ { "centralid": 4327653, "name": "Mr. Ibrahem", "editcount": 2017792 }, ... ]
+    print(result)
+    return {x["name"]: x["editcount"] for x in result if x.get("editcount")}
 
-    return { x["name"]: x["editcount"] for x in users }
 
 def main() -> None:
     # Load credentials
@@ -219,13 +221,14 @@ def main() -> None:
     for sub in subpages:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
-        username = get_page_creator(site, full_title)
-        data.append({
-            "full_title": full_title,
-            "last_edit": last_edit,
-            "username": username,
-        })
-
+        username = sub # get_page_creator(site, full_title)
+        data.append(
+            {
+                "full_title": full_title,
+                "last_edit": last_edit,
+                "username": username,
+            }
+        )
 
     users = [x["username"] for x in data if x["username"]]
 
@@ -252,5 +255,5 @@ def main() -> None:
 
     output_text = "\n".join(lines) + "\n"
     OUTPUT_FILE.write_text(output_text, encoding="utf-8")
-    print(output_text)
+
     print(f"Saved to {OUTPUT_FILE}")
