@@ -172,7 +172,6 @@ def get_page_creator(site, page_title):
 
 def get_global_editcounts(site, users) -> dict[str, int]:
     logger.info(f"Fetching global edit count of {len(users)}...")
-    logger.info(users)
 
     params = {
         "list": "globalusers",
@@ -188,11 +187,11 @@ def get_global_editcounts(site, users) -> dict[str, int]:
         logger.error("API request failed %s", str(e))
         data = {}
 
-    logger.info(f"len of data: {len(data)}")
 
     result = data.get("query", {}).get("globalusers", [])
     # [ { "centralid": 4327653, "name": "Mr. Ibrahem", "editcount": 2017792 }, ... ]
-    print(result)
+
+    logger.info(f"len of data: {len(result)}")
     return {x["name"]: x["editcount"] for x in result if x.get("editcount")}
 
 
@@ -225,7 +224,8 @@ def main() -> None:
     for sub in subpages:
         full_title = f"{BASE_PAGE}/{sub}"
         last_edit = get_last_edit_timestamp(site, full_title) or "unknown"
-        username = users_redirects.get(sub) or sub # get_page_creator(site, full_title)
+        user_name = sub.replace("(2nd Application)", "").split("/")[0].strip()
+        username = users_redirects.get(user_name) or user_name # get_page_creator(site, full_title)
         data.append(
             {
                 "full_title": full_title,
@@ -260,4 +260,4 @@ def main() -> None:
     output_text = "\n".join(lines) + "\n"
     OUTPUT_FILE.write_text(output_text, encoding="utf-8")
 
-    print(f"Saved to {OUTPUT_FILE}")
+    logger.info(f"Saved to {OUTPUT_FILE}")
