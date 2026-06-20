@@ -24,9 +24,10 @@ CONTINENTS = {
 }
 CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oceania|Americas|World)"
 
+DATE_FORMAT = r"\d+|\w\w\w \d+,\s* \d+|[\d,]+ BCE"
 # Regex patterns for classification
-GRAPH_PATTERN = re.compile(r",\s*(\d+)\s+to\s+(\d+),\s*(\w+)\.svg$")
-GRAPH_PATTERN_LONG_DATE = re.compile(r",\s*(?:\w\w\w \d+,\s*)?(\d+)\s+to\s+(?:\w\w\w \d+,\s*)?(\d+),\s*(\w+)\.svg$")
+GRAPH_PATTERN = re.compile(rf",\s*({DATE_FORMAT})\s+to\s+({DATE_FORMAT}),\s*(\w+)\.svg$")
+
 GRAPH_PATTERN_PLAIN = re.compile(r"^File:([^,]+),\s*([a-zA-Z]{3})\.svg$")
 
 # Map pattern: country/region name followed by a single year
@@ -58,13 +59,11 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         - parsed_data is a dict with extracted fields
     """
     # Try graph pattern first
-    graph_match = GRAPH_PATTERN.search(title) or GRAPH_PATTERN_LONG_DATE.search(title)
+    graph_match = GRAPH_PATTERN.search(title)
     graph_match_plain = GRAPH_PATTERN_PLAIN.search(title)
 
     if graph_match:
-        start_year, end_year, iso3 = graph_match.groups()
-        start_year = int(start_year)
-        end_year = int(end_year)
+        _, _, iso3 = graph_match.groups()
 
         # Extract indicator (everything before the first comma in the normalized name)
         base_name = normalize_title(title)
@@ -73,8 +72,6 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         return "graph", {
             "iso3": iso3,
             "indicator": indicator,
-            "start_year": start_year,
-            "end_year": end_year,
         }
 
     if graph_match_plain:
@@ -87,8 +84,6 @@ def classify_and_parse_file(title: str) -> Tuple[Optional[str], Optional[Dict]]:
         return "graph", {
             "iso3": iso3,
             "indicator": indicator,
-            "start_year": None,
-            "end_year": None,
         }
 
     # Try map pattern

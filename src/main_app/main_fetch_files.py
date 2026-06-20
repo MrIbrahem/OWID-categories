@@ -148,8 +148,6 @@ def fetch_files(files: List[str]) -> FilesClassess:
             entry = {
                 "title": title,
                 "indicator": parsed_data["indicator"],
-                "start_year": parsed_data["start_year"],
-                "end_year": parsed_data["end_year"],
                 "file_page": file_page,
             }
             countries[iso3]["graphs"].append(entry)

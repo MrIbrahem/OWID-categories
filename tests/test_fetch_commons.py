@@ -42,8 +42,6 @@ def test_classification():
     assert file_type == "graph", "Should classify as graph"
     assert parsed_data is not None, "Should parse data successfully"
     assert parsed_data["iso3"] == "CAN", "Should extract correct ISO3 code"
-    assert parsed_data["start_year"] == 1997, "Should extract correct start year"
-    assert parsed_data["end_year"] == 2021, "Should extract correct end year"
     assert "indicator" in parsed_data, "Should have indicator field"
 
     # Test map file with country name
