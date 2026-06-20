@@ -237,7 +237,7 @@ def fetch_files_entry(
         fetch_data.countries,
         fetch_data.continents,
         total_pages=total_pages,
-        not_matched=len(fetch_data.not_matched_data),
+        not_matched=len(fetch_data.not_matched),
     )
 
     logger.info("Processing complete!")
