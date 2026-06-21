@@ -18,6 +18,7 @@ import mwclient.errors
 import wikitextparser as wtp
 from mwclient.client import Site
 
+from ..api_services import get_category_members_titles
 from ..owid_config import USER_AGENT, load_credentials
 
 API_URL = "https://meta.wikimedia.org/w/api.php"
@@ -219,19 +220,25 @@ def main() -> None:
     full_wikitext = full_wikitext.replace("_", " ")
 
     SECTION_HEADINGS = [
-        "Updated as of May 1st 2026",
-        "Messaged to update application",
+        # "Updated as of May 1st 2026",
+        # "Messaged to update application",
         "Draft requests",
     ]
     full_text = ""
     full_text_table = ""
 
-    for srction_title in SECTION_HEADINGS:
-        section = get_section_by_heading(full_wikitext, srction_title)
+    for section_title in SECTION_HEADINGS:
+        section = get_section_by_heading(full_wikitext, section_title)
         subpages = extract_subpage_links(section, BASE_PAGE)
+        if section_title == "Draft requests":
+            members = get_category_members_titles(
+                site,
+                "Category:Hardware donation program drafts",
+                namespace=0,
+            )
+            subpages = [ x.replace("Hardware donation program/", "") for x in members]
 
-        lines = [f"=== {srction_title} ===", ""]
-        rows = []
+        lines = []
 
         data = []
 
@@ -254,6 +261,7 @@ def main() -> None:
 
         editcounts = get_global_editcounts(site, users)
 
+        rows = []
         for sub in data:
             full_title = sub["full_title"]
             last_edit = sub["last_edit"]
@@ -270,10 +278,10 @@ def main() -> None:
             rows.append((page_link, last_edit, user_link, editcount_str))
 
         table = build_wikitable(rows)
-        full_text_table += f"=== {srction_title} ===\n\n{table}\n"
+        full_text_table += f"=== {section_title} ===\n\n{table}\n"
 
         output_text = "\n".join(lines) + "\n"
-        full_text += f"=== {srction_title} ===\n\n{output_text}\n"
+        full_text += f"=== {section_title} ===\n\n{output_text}\n"
 
     OUTPUT_FILE.write_text(full_text, encoding="utf-8")
     OUTPUT_FILE_TABLE.write_text(full_text_table, encoding="utf-8")

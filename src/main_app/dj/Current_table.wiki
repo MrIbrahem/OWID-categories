@@ -1,53 +1,7 @@
-=== Current donation requests ===
+=== Updated as of May 1st 2026 ===
 
 {| class="wikitable sortable"
 ! Page !! Last edited !! User !! Global edits
-|-
-| [[Hardware donation program/511KeV]] || 2023-12-21T14:00:28Z || [[User:511KeV]] || 288,996
-|-
-| [[Hardware donation program/Philemon Niyomwungeli]] || 2026-05-07T11:56:32Z || [[User:Philemon Niyomwungeli]] || 789
-|-
-| [[Hardware donation program/Vjsuseela]] || 2026-05-06T14:17:45Z || [[User:Vjsuseela]] || 20,092
-|-
-| [[Hardware donation program/Abakar B]] || 2026-05-07T08:20:18Z || [[User:Abakar B]] || 6,371
-|-
-| [[Hardware donation program/ZI Jony]] || 2026-05-05T15:53:45Z || [[User:ZI Jony]] || 407,004
-|-
-| [[Hardware donation program/Aafi]] || 2026-05-06T03:24:26Z || [[User:Aafi]] || 73,782
-|-
-| [[Hardware donation program/Abubakar A Gwanki]] || 2026-05-06T13:05:31Z || [[User:Gwanki]] || 70,408
-|-
-| [[Hardware donation program/ChiK]] || 2026-05-08T05:08:02Z || [[User:ChiK]] || 46,265
-|-
-| [[Hardware donation program/Jagmit Singh Brar]] || 2026-05-09T08:29:20Z || [[User:Jagmit Singh Brar]] || 52,445
-|-
-| [[Hardware donation program/J ansari/3]] || 2026-06-16T17:10:49Z || [[User:J ansari]] || 68,202
-|-
-| [[Hardware donation program/Global Open Initiative]] || 2026-05-18T16:51:56Z || [[User:Global Open Initiative]] || 41
-|-
-| [[Hardware donation program/MYADAM ABHILASH]] || 2026-05-23T09:59:23Z || [[User:MYADAM ABHILASH]] || 8,864
-|-
-| [[Hardware donation program/Suyash.dwivedi]] || 2026-05-26T22:19:40Z || [[User:Suyash.dwivedi]] || 239,831
-|-
-| [[Hardware donation program/Ран-кан]] || 2026-05-27T19:25:49Z || [[User:Ран-кан]] || 231,546
-|-
-| [[Hardware donation program/Nokib Sarkar]] || 2026-05-31T08:15:44Z || [[User:Nokib Sarkar]] || 23,997
-|-
-| [[Hardware donation program/ParasharSarthak]] || 2026-05-31T20:24:18Z || [[User:ParasharSarthak]] || 367
-|-
-| [[Hardware donation program/Annick green]] || 2026-05-06T22:59:26Z || [[User:Annick green]] || 2,512
-|-
-| [[Hardware donation program/Ndahiro derrick]] || 2023-04-24T08:21:50Z || [[User:Ndahiro derrick]] || 5,307
-|-
-| [[Hardware donation program/Anasskoko]] || 2026-06-01T07:29:27Z || [[User:Anasskoko]] || 22,940
-|-
-| [[Hardware donation program/DaSupremo]] || 2026-04-17T19:32:45Z || [[User:DaSupremo]] || 474,602
-|-
-| [[Hardware donation program/Yaw tuba]] || 2026-05-19T04:09:28Z || [[User:Yaw tuba]] || 50,834
-|-
-| [[Hardware donation program/Ogundele1]] || 2026-05-18T11:53:58Z || [[User:Ogundele1]] || 2,778
-|-
-| [[Hardware donation program/Abike25]] || 2026-06-15T15:29:32Z || [[User:Abike25]] || 43,394
 |-
 | [[Hardware donation program/Ibjaja055]] || 2026-05-05T20:29:19Z || [[User:Ibjaja055]] || 29,779
 |-
@@ -114,12 +68,19 @@
 | [[Hardware donation program/Aminwa 21]] || 2026-06-15T15:26:20Z || [[User:Aminwa 21]] || 3,720
 |-
 | [[Hardware donation program/Joy Agyepong (2nd Application)]] || 2026-06-17T12:25:38Z || [[User:Joy Agyepong]] || 5,457
+|}
+=== Messaged to update application ===
+
+{| class="wikitable sortable"
+! Page !! Last edited !! User !! Global edits
 |-
 | [[Hardware donation program/Leeturtle]] || 2026-05-11T02:30:41Z || [[User:Leeturtle]] || 4,796
 |-
 | [[Hardware donation program/Emmanuel Anin]] || 2026-05-11T20:29:49Z || [[User:Emmanuel Anin]] || 7,733
 |-
 | [[Hardware donation program/Mbaidoo]] || 2026-06-02T15:11:32Z || [[User:Mbaidoo]] || 2,681
+|-
+| [[Hardware donation program/Pragathi. BH]] || 2026-05-13T11:21:54Z || [[User:Pragathi. BH]] || 18,117
 |-
 | [[Hardware donation program/Obangmoy]] || 2026-06-02T08:21:47Z || [[User:Obangmoy]] || 8,650
 |-
@@ -128,6 +89,8 @@
 | [[Hardware donation program/vinoda mamatharai]] || 2026-05-11T11:04:34Z || [[User:Vinoda mamatharai]] || 8,672
 |-
 | [[Hardware donation program/Thirumalgoud]] || 2026-03-05T18:02:48Z || [[User:Thirumalgoud]] || 4,920
+|-
+| [[Hardware donation program/Agbalagba]] || 2026-05-21T17:11:54Z || [[User:Agbalagba]] || 10,837
 |-
 | [[Hardware donation program/Thiyagu Ganesh]] || 2026-03-05T17:27:04Z || [[User:Thiyagu Ganesh]] || 5,922
 |-
@@ -140,4 +103,15 @@
 | [[Hardware donation program/Cbrescia]] || 2026-06-01T18:36:40Z || [[User:Felino Volador]] || 126,759
 |-
 | [[Hardware donation program/Dezedien]] || 2026-03-05T18:12:26Z || [[User:Dezedien]] || 64,196
+|-
+| [[Hardware donation program/Vinoda mamatharai]] || 2026-05-13T11:24:01Z || [[User:Vinoda mamatharai]] || 8,672
+|-
+| [[Hardware donation program/Senator Choko]] || 2026-05-12T06:51:36Z || [[User:Senator Choko]] || 7,998
+|-
+| [[Hardware donation program/Pharouqenr]] || 2026-05-07T17:20:57Z || [[User:Pharouqenr]] || 63,241
+|}
+=== Draft requests ===
+
+{| class="wikitable sortable"
+! Page !! Last edited !! User !! Global edits
 |}
