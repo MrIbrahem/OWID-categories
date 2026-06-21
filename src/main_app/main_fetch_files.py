@@ -10,7 +10,11 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 
-from .api_services import get_category_count, get_category_members_titles
+from .api_services import (
+    MwClientPage,
+    get_category_count,
+    get_category_members_titles,
+)
 from .categorize import connect_to_commons
 from .categorize.wikitext_report import create_wikitext_report, make_report_data
 from .files_classifier import classify_and_parse_file
@@ -23,7 +27,7 @@ from .files_dumper import (
     write_not_matched_files,
     write_summary_json,
 )
-from .owid_config import CATEGORY_NAME, load_credentials
+from .owid_config import CATEGORY_NAME, REPORT_PAGE, load_credentials
 from .owid_country_codes import get_country_from_iso3, ISO3_TO_COUNTRY_NOT_READY
 
 logger = logging.getLogger(__name__)
@@ -276,6 +280,11 @@ def fetch_files_entry(
 
     wikitext = create_wikitext_report(report_data)
     save_wikitext_report(report_data, wikitext)
+
+    if site:
+        logger.info(f"Saving wikitext report to {REPORT_PAGE}")
+        page = MwClientPage(REPORT_PAGE, site)
+        page.edit(wikitext, "Update OWID report", nocreate=False)
 
     logger.info("Processing complete!")
 

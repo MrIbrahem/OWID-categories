@@ -22,6 +22,7 @@ except Exception as e:
 
 # Configuration
 CATEGORY_NAME = "Category:Uploaded_by_OWID_importer_tool"
+REPORT_PAGE = "User:Mr.Ibrahembot/owid"
 
 # User-Agent header (required by Wikimedia)
 USER_AGENT = "OWID-Commons-Categorizer/1.0 (https://github.com/MrIbrahem/OWID-categories; contact via GitHub)"
@@ -85,4 +86,5 @@ __all__ = [
     "SUMMARY_FILE_BACKUP",
     "CATEGORY_NAME",
     "USER_AGENT",
+    "REPORT_PAGE",
 ]
