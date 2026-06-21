@@ -38,6 +38,12 @@ users_redirects = {
     "sardeeq": "Sardeeq",
     "muralikrishna m": "Muralikrishna m",
     "brazal.dang": "Ballardmaize",
+    "babulbaishya": "BabulB",
+    "micheal kaluba": "MichealKal",
+    "mp1999": "TypeInfo",
+    "premchand murmu thakur": "Nacharhopon",
+    "учитель": "Валентина Кодола",
+    "bhupendra shrestha": "श्रेष्ठ भूपेन्द्र",
 }
 
 

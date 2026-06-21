@@ -114,4 +114,132 @@
 
 {| class="wikitable sortable"
 ! Page !! Last edited !! User !! Global edits
+|-
+| [[Hardware donation program/Adeyinka Ekundayo]] || 2026-06-08T05:01:30Z || [[User:Adeyinka Ekundayo]] || 629
+|-
+| [[Hardware donation program/Africany]] || 2026-05-06T14:34:58Z || [[User:Africany]] || 17,047
+|-
+| [[Hardware donation program/AKibombo]] || 2021-02-25T05:37:12Z || [[User:AKibombo]] || 13,251
+|-
+| [[Hardware donation program/Albetudu]] || 2026-06-03T16:02:20Z || [[User:Albetudu]] || 3,018
+|-
+| [[Hardware donation program/Amikeco]] || 2026-05-07T21:01:41Z || [[User:Amikeco]] || 37,035
+|-
+| [[Hardware donation program/Asamoah Daniel Kwame Oware]] || 2026-05-11T13:55:43Z || [[User:Asamoah Daniel Kwame Oware]] || 4,045
+|-
+| [[Hardware donation program/Ashish D Souza]] || 2018-04-23T07:57:48Z || [[User:Ashish D Souza]] || 170
+|-
+| [[Hardware donation program/Babulbaishya]] || 2023-02-21T02:47:13Z || [[User:Babulbaishya]] || unknown
+|-
+| [[Hardware donation program/Balu1967]] || 2023-02-10T10:27:48Z || [[User:Balu1967]] || 68,143
+|-
+| [[Hardware donation program/Bamjos]] || 2026-06-19T04:07:12Z || [[User:Bamjos]] || 18,684
+|-
+| [[Hardware donation program/Bembety]] || 2026-05-18T09:56:58Z || [[User:Bembety]] || 37,531
+|-
+| [[Hardware donation program/BENET G AMANNA]] || 2023-02-27T07:53:35Z || [[User:BENET G AMANNA]] || 1,642
+|-
+| [[Hardware donation program/CalebTokula6]] || 2026-05-08T10:32:07Z || [[User:CalebTokula6]] || 953
+|-
+| [[Hardware donation program/Charles Kalanzi]] || 2026-05-06T12:34:56Z || [[User:Charles Kalanzi]] || 5,992
+|-
+| [[Hardware donation program/Chicocvenancio]] || 2019-02-27T22:04:36Z || [[User:Chicocvenancio]] || 35,726
+|-
+| [[Hardware donation program/Chizoba Amanambu]] || 2026-05-06T18:01:43Z || [[User:Chizoba Amanambu]] || 95
+|-
+| [[Hardware donation program/ChéRatou]] || 2026-05-08T14:16:26Z || [[User:ChéRatou]] || 4,685
+|-
+| [[Hardware donation program/Dev ammar]] || 2026-05-16T04:34:24Z || [[User:Dev ammar]] || 5,897
+|-
+| [[Hardware donation program/DjMlindos]] || 2026-03-05T17:24:12Z || [[User:DjMlindos]] || 17
+|-
+| [[Hardware donation program/Emmanuel Anin]] || 2026-05-11T20:29:49Z || [[User:Emmanuel Anin]] || 7,733
+|-
+| [[Hardware donation program/Ennydavids]] || 2026-05-06T13:03:22Z || [[User:Ennydavids]] || 4,281
+|-
+| [[Hardware donation program/Eunice Ameh]] || 2026-05-14T12:44:12Z || [[User:Eunice Ameh]] || 2,439
+|-
+| [[Hardware donation program/Germain92]] || 2024-01-10T16:31:56Z || [[User:Germain92]] || 2,570
+|-
+| [[Hardware donation program/Ibrahim abusufyan]] || 2026-05-07T16:12:56Z || [[User:Ibrahim abusufyan]] || 39,678
+|-
+| [[Hardware donation program/Jurema Moraes de Oliveira]] || 2020-01-30T11:10:33Z || [[User:Jurema Moraes de Oliveira]] || unknown
+|-
+| [[Hardware donation program/justwiki]] || 2026-05-14T22:35:17Z || [[User:Justwiki]] || 103,596
+|-
+| [[Hardware donation program/Kalakpagh]] || 2026-05-10T10:11:20Z || [[User:Kalakpagh]] || 41,218
+|-
+| [[Hardware donation program/Kikanakana]] || 2026-06-16T16:26:07Z || [[User:Kikanakana]] || 2,210
+|-
+| [[Hardware donation program/Knowledge and philosophy]] || 2026-05-07T02:09:57Z || [[User:Knowledge and philosophy]] || 3,399
+|-
+| [[Hardware donation program/Mahensingha]] || 2026-03-05T17:46:31Z || [[User:Mahensingha]] || 8,837
+|-
+| [[Hardware donation program/Mahuta]] || 2026-05-06T13:23:35Z || [[User:Mahuta]] || 40,267
+|-
+| [[Hardware donation program/Manamarthe]] || 2026-05-07T12:02:29Z || [[User:Manamarthe]] || 5,505
+|-
+| [[Hardware donation program/Maryleine]] || 2026-05-06T13:33:07Z || [[User:Maryleine]] || 3,328
+|-
+| [[Hardware donation program/Merci Kahubangwa]] || 2026-05-07T16:53:36Z || [[User:Merci Kahubangwa]] || 1,201
+|-
+| [[Hardware donation program/Micheal Kaluba]] || 2026-05-07T19:25:39Z || [[User:Micheal Kaluba]] || unknown
+|-
+| [[Hardware donation program/MP1999]] || 2023-03-30T12:39:29Z || [[User:MP1999]] || unknown
+|-
+| [[Hardware donation program/Mr. Snatch]] || 2026-06-08T06:23:45Z || [[User:Mr. Snatch]] || 15,757
+|-
+| [[Hardware donation program/Muhdavdullahi]] || 2026-05-15T10:49:20Z || [[User:Muhdavdullahi]] || 25,204
+|-
+| [[Hardware donation program/Mwintirew]] || 2026-05-16T09:14:17Z || [[User:Mwintirew]] || 5,616
+|-
+| [[Hardware donation program/Nicole mwenge]] || 2026-06-01T21:17:24Z || [[User:Nicole mwenge]] || 8,001
+|-
+| [[Hardware donation program/Noooote]] || 2026-06-08T06:24:15Z || [[User:Noooote]] || 1,852
+|-
+| [[Hardware donation program/Obedmakolo]] || 2026-05-06T22:09:30Z || [[User:Obedmakolo]] || 8,206
+|-
+| [[Hardware donation program/Ogundele1]] || 2026-05-18T11:53:58Z || [[User:Ogundele1]] || 2,778
+|-
+| [[Hardware donation program/Oluchi-KC]] || 2026-05-06T12:38:20Z || [[User:Oluchi-KC]] || 50
+|-
+| [[Hardware donation program/Orokbest1]] || 2026-05-27T19:14:15Z || [[User:Orokbest1]] || 22,297
+|-
+| [[Hardware donation program/Pallaviv123]] || 2023-02-09T12:00:22Z || [[User:Pallaviv123]] || 6,234
+|-
+| [[Hardware donation program/PediAki]] || 2019-08-16T14:41:21Z || [[User:PediAki]] || 11,413
+|-
+| [[Hardware donation program/Premchand murmu thakur]] || 2026-06-04T06:18:28Z || [[User:Premchand murmu thakur]] || unknown
+|-
+| [[Hardware donation program/raavimohantydelhi]] || 2017-08-13T05:56:00Z || [[User:Raavimohantydelhi]] || 1,387
+|-
+| [[Hardware donation program/SA twenty SA twenty]] || 2026-05-09T21:41:10Z || [[User:SA twenty SA twenty]] || unknown
+|-
+| [[Hardware donation program/Salmooz]] || 2026-06-08T05:02:30Z || [[User:Salmooz]] || 277
+|-
+| [[Hardware donation program/SALMOOZ]] || 2026-05-21T06:34:58Z || [[User:SALMOOZ]] || unknown
+|-
+| [[Hardware donation program/Sir Amugi]] || 2026-05-15T04:23:12Z || [[User:Sir Amugi]] || 61,597
+|-
+| [[Hardware donation program/Tenaciuos Ntaawa]] || 2026-05-09T18:22:57Z || [[User:Tenaciuos Ntaawa]] || 9,207
+|-
+| [[Hardware donation program/Transmummy]] || 2026-05-11T22:15:26Z || [[User:Transmummy]] || 61
+|-
+| [[Hardware donation program/Vaija]] || 2020-03-16T12:47:14Z || [[User:Vaija]] || 14,809
+|-
+| [[Hardware donation program/vidyu44]] || 2023-02-09T15:18:40Z || [[User:Vidyu44]] || 3,435
+|-
+| [[Hardware donation program/Vision L1]] || 2026-05-19T09:32:53Z || [[User:Vision L1]] || 24,397
+|-
+| [[Hardware donation program/Качуровська]] || 2026-03-05T17:43:30Z || [[User:Качуровська]] || 20,892
+|-
+| [[Hardware donation program/Учитель]] || 2020-04-29T19:59:11Z || [[User:Учитель]] || unknown
+|-
+| [[Hardware donation program/अनुश्री साव]] || 2023-03-05T03:41:53Z || [[User:अनुश्री साव]] || 23,734
+|-
+| [[Hardware donation program/श्रेष्ठ भूपेन्द्र]] || 2022-04-14T23:09:09Z || [[User:श्रेष्ठ भूपेन्द्र]] || unknown
+|-
+| [[Hardware donation program/हिंदुस्थान वासी]] || 2019-09-07T09:36:11Z || [[User:हिंदुस्थान वासी]] || 61,968
+|-
+| [[Hardware donation program/নৰুনা বৰুৱা]] || 2026-06-17T05:53:46Z || [[User:নৰুনা বৰুৱা]] || 15,940
 |}
