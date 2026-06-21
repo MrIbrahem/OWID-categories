@@ -110,6 +110,7 @@
 |-
 | [[Hardware donation program/Pharouqenr]] || 2026-05-07T17:20:57Z || [[User:Pharouqenr]] || 63,241
 |}
+
 === Draft requests ===
 
 {| class="wikitable sortable"
@@ -129,7 +130,7 @@
 |-
 | [[Hardware donation program/Ashish D Souza]] || 2018-04-23T07:57:48Z || [[User:Ashish D Souza]] || 170
 |-
-| [[Hardware donation program/Babulbaishya]] || 2023-02-21T02:47:13Z || [[User:Babulbaishya]] || unknown
+| [[Hardware donation program/Babulbaishya]] || 2023-02-21T02:47:13Z || [[User:BabulB]] || 59,982
 |-
 | [[Hardware donation program/Balu1967]] || 2023-02-10T10:27:48Z || [[User:Balu1967]] || 68,143
 |-
@@ -183,9 +184,9 @@
 |-
 | [[Hardware donation program/Merci Kahubangwa]] || 2026-05-07T16:53:36Z || [[User:Merci Kahubangwa]] || 1,201
 |-
-| [[Hardware donation program/Micheal Kaluba]] || 2026-05-07T19:25:39Z || [[User:Micheal Kaluba]] || unknown
+| [[Hardware donation program/Micheal Kaluba]] || 2026-05-07T19:25:39Z || [[User:MichealKal]] || 16,119
 |-
-| [[Hardware donation program/MP1999]] || 2023-03-30T12:39:29Z || [[User:MP1999]] || unknown
+| [[Hardware donation program/MP1999]] || 2023-03-30T12:39:29Z || [[User:TypeInfo]] || 10,831
 |-
 | [[Hardware donation program/Mr. Snatch]] || 2026-06-08T06:23:45Z || [[User:Mr. Snatch]] || 15,757
 |-
@@ -209,7 +210,7 @@
 |-
 | [[Hardware donation program/PediAki]] || 2019-08-16T14:41:21Z || [[User:PediAki]] || 11,413
 |-
-| [[Hardware donation program/Premchand murmu thakur]] || 2026-06-04T06:18:28Z || [[User:Premchand murmu thakur]] || unknown
+| [[Hardware donation program/Premchand murmu thakur]] || 2026-06-04T06:18:28Z || [[User:Nacharhopon]] || 1,620
 |-
 | [[Hardware donation program/raavimohantydelhi]] || 2017-08-13T05:56:00Z || [[User:Raavimohantydelhi]] || 1,387
 |-
@@ -233,7 +234,7 @@
 |-
 | [[Hardware donation program/Качуровська]] || 2026-03-05T17:43:30Z || [[User:Качуровська]] || 20,892
 |-
-| [[Hardware donation program/Учитель]] || 2020-04-29T19:59:11Z || [[User:Учитель]] || unknown
+| [[Hardware donation program/Учитель]] || 2020-04-29T19:59:11Z || [[User:Валентина Кодола]] || 14,572
 |-
 | [[Hardware donation program/अनुश्री साव]] || 2023-03-05T03:41:53Z || [[User:अनुश्री साव]] || 23,734
 |-
