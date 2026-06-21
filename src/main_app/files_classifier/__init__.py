@@ -25,7 +25,7 @@ CONTINENTS = {
 
 CONTINENTS_STR = "(Africa|Antarctica|Asia|Europe|North America|South America|Oceania|Americas|World)"
 
-DATE_FORMAT = r"\d+|\w\w\w \d+,\s* \d+|[\d,]+ BCE"
+DATE_FORMAT = r"\d+|\w\w\w \d+,\s*\d+|[\d,]+ BCE"
 
 # Regex patterns for classification
 GRAPH_PATTERN = re.compile(rf",\s*({DATE_FORMAT})\s+to\s+({DATE_FORMAT}),\s*(\w+)\.svg$")
