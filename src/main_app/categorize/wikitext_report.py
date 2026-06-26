@@ -73,7 +73,7 @@ def create_wikitext_report(
         text.append(f"\n== {key} ==")
         text.append('{| class="wikitable sortable"')
         text.append("|-")
-        text.append("! Category !! Currect members !! To add")
+        text.append("! Category !! Members !! To add")
         text.append("|-")
 
         for category, v in data.items():
