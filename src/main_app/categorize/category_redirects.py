@@ -117,7 +117,9 @@ def add_category_to_page(
     edit_summary = f"Adding [[:{category}]]"
 
     save = page.edit(new_text, edit_summary)
-    return save.get("success") is True
+    result = save.get("success") is True
+    logger.info(f"Save: Success:{result} {title}")
+    return result
 
 
 __all__ = [
