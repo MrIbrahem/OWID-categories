@@ -118,7 +118,10 @@ def add_category_to_page(
 
     save = page.edit(new_text, edit_summary)
     result = save.get("success") is True
-    logger.info(f"Save: Success:{result} {title}")
+    if result:
+        logger.debug(f"Save: True {title}")
+    else:
+        logger.error(f"Save: Failed:{result} {title}")
     return result
 
 
