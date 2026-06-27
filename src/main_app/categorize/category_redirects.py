@@ -122,6 +122,7 @@ def add_category_to_page(
         logger.debug(f"Save: True {title}")
     else:
         logger.error(f"Save: Failed:{result} {title}")
+        logger.error(save)
     return result
 
 
