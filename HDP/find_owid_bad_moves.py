@@ -30,7 +30,6 @@ OUT_CSV = Path(__file__).parent / "owid_bad_moves.csv"
 OUT_LOG = Path(__file__).parent / "owid_bad_moves.log"
 DELAY = 0.5  # seconds between API calls (be polite)
 # ─────────────────────────────────────────────────────────────────────────────
-
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(lineno)d] - %(message)s",
@@ -76,8 +75,7 @@ def iter_move_log(session: requests.Session):
         data = resp.json()
 
         events = data.get("query", {}).get("logevents", [])
-        for ev in events:
-            yield ev
+        yield from events
         fetched += len(events)
 
         cont = data.get("continue", {})
@@ -109,8 +107,8 @@ def main():
         # The *current* title is in ev["title"]   (destination after move)
         # The *original* title lives in ev["params"]["target_title"]  (source)
         params_block = ev.get("params", {})
-        dest_title = ev.get("title", "")
-        src_title = params_block.get("target_title", "")
+        # dest_title = ev.get("title", "")
+        # src_title = params_block.get("target_title", "")
 
         # logevents 'move' puts the OLD title in ev["title"] and
         # NEW title in params["target_title"]  — double-check both directions:
