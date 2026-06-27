@@ -39,7 +39,7 @@ logging.basicConfig(
         logging.StreamHandler(),
     ],
 )
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 # Matches a 2-or-3-letter ISO country code at the end of a bare file stem
 # e.g.  "Cereal production, CHN"  →  group(1)="Cereal production, "  group(2)="CHN"
@@ -84,14 +84,14 @@ def iter_move_log(session: requests.Session):
         if not cont:
             break
         params.update(cont)
-        log.info("  … fetched %d move events so far, continuing …", fetched)
+        logger.info("  … fetched %d move events so far, continuing …", fetched)
         time.sleep(DELAY)
 
-    log.info("Total move events fetched: %d", fetched)
+    logger.info("Total move events fetched: %d", fetched)
 
 
 def main():
-    log.info("Starting scan for bad OWIDImporter moves (user: %s)", USERNAME)
+    logger.info("Starting scan for bad OWIDImporter moves (user: %s)", USERNAME)
     session = requests.Session()
     session.headers["User-Agent"] = (
         "find_owid_bad_moves/1.0 "
@@ -123,7 +123,7 @@ def main():
         is_bad = old_country is not None and new_country is not None and old_country != new_country
 
         if is_bad:
-            log.warning(
+            logger.warning(
                 "BAD MOVE: %s  →  %s  [%s]  comment: %s",
                 old_title,
                 new_title,
@@ -143,17 +143,17 @@ def main():
                 }
             )
 
-    log.info("Scan complete. Total moves examined: %d", total_moves)
-    log.info("Bad moves found: %d", len(bad_moves))
+    logger.info("Scan complete. Total moves examined: %d", total_moves)
+    logger.info("Bad moves found: %d", len(bad_moves))
 
     if bad_moves:
         with OUT_CSV.open("w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=bad_moves[0].keys())
             writer.writeheader()
             writer.writerows(bad_moves)
-        log.info("Results saved to %s", OUT_CSV)
+        logger.info("Results saved to %s", OUT_CSV)
     else:
-        log.info("No bad moves found — nothing written to CSV.")
+        logger.info("No bad moves found — nothing written to CSV.")
 
 
 if __name__ == "__main__":
