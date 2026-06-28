@@ -105,7 +105,7 @@ class MwClientPage:
             result = handle_mwclient_error(exc)
             if result is not None:
                 if result.get("details"):
-                    logger.error("Failed to edit page '%s': %s", self.title, result["details"])
+                    logger.error("Failed to move page '%s': %s", self.title, result["details"])
                 return result
             logger.exception("Failed to move page '%s' -> '%s'", self.title, new_title)
             return {"success": False, "error": str(exc)}
