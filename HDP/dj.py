@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 
-python src/dj.py
+python HDP/dj.py
 
 """
 
@@ -11,7 +11,7 @@ from me1 import main
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(lineno)d] - %(message)s",
+    format="%(asctime)s - %(name)s - %(levelname)-s - [%(lineno)d] - %(message)s",
     handlers=[
         logging.StreamHandler(),
     ],

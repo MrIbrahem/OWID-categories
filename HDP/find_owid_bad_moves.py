@@ -32,7 +32,7 @@ DELAY = 0.5  # seconds between API calls (be polite)
 # ─────────────────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(log_color)s%(levelname)-s %(reset)s- [%(lineno)d] - %(message)s",
+    format="%(asctime)s - %(name)s - %(levelname)-s - [%(lineno)d] - %(message)s",
     handlers=[
         logging.FileHandler(OUT_LOG),
         logging.StreamHandler(),
@@ -106,7 +106,7 @@ def main():
 
         # The *current* title is in ev["title"]   (destination after move)
         # The *original* title lives in ev["params"]["target_title"]  (source)
-        params_block = ev.get("params", {})
+        params_block = ev.get("params") or {}
         # dest_title = ev.get("title", "")
         # src_title = params_block.get("target_title", "")
 
