@@ -23,6 +23,7 @@ class MwClientPage:
         self.title: str = title
         self.site: Site = site
         self.load_page_error: str = ""
+        self.edit_token: str = ""
         self.page: Optional[Page] = None
 
     # ------------------------------------------------------------------
@@ -53,6 +54,38 @@ class MwClientPage:
         except Exception as exc:
             result = handle_mwclient_error(exc)
             if result is not None:
+                if result.get("details"):
+                    logger.error("Failed to edit page '%s': %s", self.title, result["details"])
+                return result
+            logger.exception("Failed to edit page '%s'", self.title)
+            return {"success": False, "error": str(exc)}
+
+    def get_edit_token(self) -> str:
+        if not self.edit_token:
+            self.edit_token = self.site.get_token("edit")
+        return self.edit_token
+
+    def _edit_page2(self, page: Page, text: str, summary: str, **kwargs) -> dict[str, Any]:
+        edit_token = self.get_edit_token()
+        try:
+            # save = page.edit(text, summary=summary, **kwargs) or {}
+            result = self.site.post(
+                "edit",
+                title=self.title,
+                summary=summary,
+                text=text,
+                token=edit_token,
+                **kwargs,
+            )
+            if result["edit"].get("result").lower() == "failure":
+                raise mwclient.errors.EditError(self, result["edit"])
+
+            return {"success": True, **result["edit"]}
+        except Exception as exc:
+            result = handle_mwclient_error(exc)
+            if result is not None:
+                if result.get("details"):
+                    logger.error("Failed to edit page '%s': %s", self.title, result["details"])
                 return result
             logger.exception("Failed to edit page '%s'", self.title)
             return {"success": False, "error": str(exc)}
@@ -71,6 +104,8 @@ class MwClientPage:
         except Exception as exc:
             result = handle_mwclient_error(exc)
             if result is not None:
+                if result.get("details"):
+                    logger.error("Failed to move page '%s': %s", self.title, result["details"])
                 return result
             logger.exception("Failed to move page '%s' -> '%s'", self.title, new_title)
             return {"success": False, "error": str(exc)}
@@ -117,7 +152,7 @@ class MwClientPage:
             logger.warning("Could not check if page '%s' exists: %s", self.title, exc)
             return False
 
-        logger.info("Page '%s' exists", self.title)
+        logger.debug("Page '%s' exists", self.title)
         return True
 
     def get_text(self) -> None:

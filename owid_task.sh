@@ -1,5 +1,6 @@
 #!/bin/bash
 # toolforge-jobs run owidcat --image tf-python39 --command "~/OWID-categories/owid_task.sh"
+# toolforge-jobs run owidcat --image tf-python39 --command "cd $HOME/owid && $HOME/local/bin/python3 src/run_categorize.py --work-path continents --files-type maps"
 
 set -euo pipefail
 
