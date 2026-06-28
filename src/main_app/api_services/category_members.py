@@ -99,13 +99,11 @@ def get_category_members_titles(
             params["cmnamespace"] = str(namespace)
 
     all_files = []
-    first_request = True
     cmcontinue = None
 
     # Initialize tqdm with the total expected items
     with tqdm(total=total_pages, desc="Fetching members", unit="item") as pbar:
-        while first_request or cmcontinue is not None:
-            first_request = False
+        while True:
             if max_items and len(all_files) >= max_items:
                 break
 
