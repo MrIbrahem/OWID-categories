@@ -1,11 +1,11 @@
 #!/bin/bash
-# toolforge-jobs run owidcat --image tf-python39 --command "~/OWID-categories/owid_task.sh"
-# toolforge-jobs run owidcat --image tf-python39 --command "cd $HOME/owid && $HOME/local/bin/python3 src/run_categorize.py --work-path continents --files-type maps"
+# toolforge-jobs run owidcat --image tf-python39 --command "~/BOTS_REPOS/OWID-categories/owid_task.sh"
+# toolforge-jobs run owidcat --image tf-python39 --command "cd $HOME/BOTS_REPOS/OWID-categories && $HOME/local/bin/python3 src/run_categorize.py --work-path continents --files-type maps"
 
 set -euo pipefail
 
 # Configuration
-PROJECT_DIR="$HOME/bots/OWID-categories"
+PROJECT_DIR="$HOME/BOTS_REPOS/OWID-categories"
 PYTHON_BIN="$HOME/local/bin/python3"
 LOG_FILE="$PROJECT_DIR/logs/task_$(date +%Y%m%d).log"
 
