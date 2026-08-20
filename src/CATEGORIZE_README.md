@@ -237,3 +237,17 @@ For every eligible file, the workflow creates or reuses these destination catego
 | `Category:Our World in Data maps showing {topic}` | `[[Category:Our World in Data maps by topic]]` |
 
 Historical filename variants `NorthAmerica` and `SouthAmerica` are normalized to **North America** and **South America**. A file whose page has no old-data template, whose filename cannot safely yield a topic, or whose page contains conflicting old-data years is deliberately skipped and logged for manual review; it is never edited by this command.
+
+
+### Module boundaries
+
+The map recategorization feature is organized as a focused package under `src/main_app/categorize/map_recategorization/` rather than a single large module. The public imports remain available from the package root, so the command-line runner and external callers do not need to change their import path.
+
+| Module | Responsibility |
+|---|---|
+| `definitions.py` | Canonical region aliases, source categories, and prescribed initial category content. |
+| `models.py` | Immutable values representing a planned categorization and a wikitext rewrite. |
+| `wikitext.py` | Pure parsing and rewriting of file-page text; it makes no Commons requests. |
+| `commons.py` | Creation of missing destination categories and the single-file Commons edit workflow. |
+| `batch.py` | Source-category traversal, category cache management, and run statistics. |
+| `__init__.py` | Stable public API that re-exports the feature's supported entry points. |

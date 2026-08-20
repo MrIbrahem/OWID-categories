@@ -139,8 +139,8 @@ class TestMapWikitextRewriting:
 class TestMapRecategorizationOperations:
     """Verify page edits, destination category creation, and batch accounting."""
 
-    @patch("src.main_app.categorize.map_recategorization.MwClientPage")
-    @patch("src.main_app.categorize.map_recategorization.ensure_map_category_exists", return_value=True)
+    @patch("src.main_app.categorize.map_recategorization.commons.MwClientPage")
+    @patch("src.main_app.categorize.map_recategorization.commons.ensure_map_category_exists", return_value=True)
     def test_edits_eligible_page_once_after_ensuring_categories(self, ensure_category, page_class):
         page = MagicMock()
         page.get_text.return_value = """{{Map showing old data|year=1948}}
@@ -167,8 +167,8 @@ class TestMapRecategorizationOperations:
         assert "Our World in Data maps of Asia]]" not in edited_text
         assert "Recategorize OWID map" in summary
 
-    @patch("src.main_app.categorize.map_recategorization.MwClientPage")
-    @patch("src.main_app.categorize.map_recategorization.ensure_map_category_exists", return_value=True)
+    @patch("src.main_app.categorize.map_recategorization.commons.MwClientPage")
+    @patch("src.main_app.categorize.map_recategorization.commons.ensure_map_category_exists", return_value=True)
     def test_dry_run_does_not_edit_page(self, ensure_category, page_class):
         page = MagicMock()
         page.get_text.return_value = (
@@ -187,7 +187,7 @@ class TestMapRecategorizationOperations:
         page.edit.assert_not_called()
         assert all(call.kwargs["dry_run"] is True for call in ensure_category.call_args_list)
 
-    @patch("src.main_app.categorize.map_recategorization.MwClientPage")
+    @patch("src.main_app.categorize.map_recategorization.commons.MwClientPage")
     def test_reports_error_when_file_text_is_unavailable(self, page_class):
         page_class.return_value.get_text.return_value = None
 
@@ -196,8 +196,8 @@ class TestMapRecategorizationOperations:
         assert outcome == "error"
         assert reason == "page text could not be retrieved"
 
-    @patch("src.main_app.categorize.map_recategorization.recategorize_file_page")
-    @patch("src.main_app.categorize.map_recategorization.get_category_members_titles")
+    @patch("src.main_app.categorize.map_recategorization.batch.recategorize_file_page")
+    @patch("src.main_app.categorize.map_recategorization.batch.get_category_members_titles")
     def test_source_category_batch_counts_each_outcome(self, members, recategorize):
         members.return_value = ["File:One.svg", "File:Two.svg", "File:Three.svg"]
         recategorize.side_effect = [
