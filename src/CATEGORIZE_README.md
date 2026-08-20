@@ -205,3 +205,35 @@ python -m py_compile run_categorize.py
 - `PHASE2_USAGE.md` - Detailed usage guide
 - `plans/plan2.md` - Implementation plan
 - `CONTRIBUTING.md` - Contribution guidelines
+
+
+## Recategorizing continent and world maps
+
+`run_map_recategorize.py` migrates legacy files from the broad OWID map categories into categories by **location/year** and **topic**. It scans the source categories for Africa, Asia, Europe, North America, South America, Oceania, and the world. The command is safe to rerun: it modifies a page only when that page contains `{{Map showing old data|year=YYYY}}`, and processed files are removed from the broad source category in the same edit.
+
+Start with a bounded dry run to inspect the planned edits in the log:
+
+```bash
+python src/run_map_recategorize.py --dry-run --regions Asia --max-items 25
+```
+
+After reviewing the pilot, process one region without `--dry-run`:
+
+```bash
+python src/run_map_recategorize.py --regions Asia
+```
+
+Process all seven supported regions only after successful regional pilots:
+
+```bash
+python src/run_map_recategorize.py
+```
+
+For every eligible file, the workflow creates or reuses these destination categories and removes the old-data template plus the legacy year/region and broad OWID region categories:
+
+| Destination | Creation content when the category does not yet exist |
+|---|---|
+| `Category:Our World in Data maps of {region} showing {year} data` | `{{Category description/Our World in Data maps by continent and year}}` |
+| `Category:Our World in Data maps showing {topic}` | `[[Category:Our World in Data maps by topic]]` |
+
+Historical filename variants `NorthAmerica` and `SouthAmerica` are normalized to **North America** and **South America**. A file whose page has no old-data template, whose filename cannot safely yield a topic, or whose page contains conflicting old-data years is deliberately skipped and logged for manual review; it is never edited by this command.

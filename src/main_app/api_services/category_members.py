@@ -114,14 +114,21 @@ def get_category_members_titles(
                 data = site.get("query", **params)
                 members = data.get("query", {}).get("categorymembers", [])
 
-                # Extract titles
+                # Extract titles. The API may return up to 500 entries, so trim
+                # the final batch to make max_items an exact safety limit.
                 new_titles = [x.get("title", "") for x in members]
+                if max_items is not None:
+                    remaining = max_items - len(all_files)
+                    new_titles = new_titles[:remaining]
                 all_files.extend(new_titles)
 
                 # Update the progress bar by the number of items fetched in this batch
                 pbar.update(len(new_titles))
 
                 logger.debug(f"Fetched category members: {len(members)} page, (total: {len(all_files)}/{total_pages})")
+
+                if max_items is not None and len(all_files) >= max_items:
+                    break
 
                 if "continue" in data:
                     cmcontinue = data["continue"].get("cmcontinue")
